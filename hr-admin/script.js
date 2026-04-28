@@ -1,0 +1,392 @@
+// Enhanced Dummy Data structure including Bank Name and Edited Fees
+let candidatesData = [
+    { id: 1, name: "Rahul Sharma", email: "rahul.s@example.com", mobile: "+91 9876543210", experience: "3 Years", status: "Pending", totalAmount: 5000, paidAmount: 0 },
+    { id: 2, name: "Priya Desai", email: "priya.d@example.com", mobile: "+91 8765432109", experience: "5 Years", status: "Completed", totalAmount: 8000, paidAmount: 8000 },
+    { id: 3, name: "Amit Kumar", email: "amit.k@example.com", mobile: "+91 7654321098", experience: "Fresher", status: "Completed", totalAmount: 3000, paidAmount: 1500 }
+];
+
+// Reusable Utilities
+const showToast = (message, type = 'success') => {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast`;
+    toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <div>Success</div> <small>${message}</small>`;
+    
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
+const getPaymentBadge = (paid, total) => {
+    if (paid === 0) return `<span class="badge pending">Pending</span>`;
+    if (paid < total) return `<span class="badge partial">Partial</span>`;
+    return `<span class="badge paid">Fully Paid</span>`;
+}
+const getInterviewBadge = (status) => {
+    return status === 'Completed' ? `<span class="badge completed">Completed</span>` : `<span class="badge pending">Pending</span>`;
+}
+const getInitials = (name) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+}
+
+// Sidebar Mobile Functionality
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarClose = document.getElementById('sidebarClose');
+const sidebar = document.getElementById('sidebar');
+
+if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => sidebar.classList.add('active'));
+}
+if (sidebarClose) {
+    sidebarClose.addEventListener('click', () => sidebar.classList.remove('active'));
+}
+
+// --- LOGIC FOR CANDIDATES PAGE (index.html) ---
+if (document.getElementById('candidatesBody')) {
+    const tbody = document.getElementById('candidatesBody');
+    const searchInput = document.getElementById('candidatesSearch');
+    
+    // Define the generic render function
+    const renderTable = (data) => {
+        tbody.innerHTML = '';
+        if(data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px;">No candidates found</td></tr>';
+            return;
+        }
+        data.forEach(cand => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div class="user-cell">
+                        <div class="user-avatar">${getInitials(cand.name)}</div>
+                        <div><strong>${cand.name}</strong><br><small style="color:var(--text-muted)">${cand.email}</small></div>
+                    </div>
+                </td>
+                <td>${cand.mobile}</td>
+                <td>${cand.experience}</td>
+                <td>${getInterviewBadge(cand.status)}</td>
+                <td>${getPaymentBadge(cand.paidAmount, cand.totalAmount)}</td>
+                <td><a href="candidate-details.html?id=${cand.id}" class="btn btn-secondary btn-sm">View Profile</a></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    };
+
+    // Initial render
+    renderTable(candidatesData);
+
+    // Dynamic Search & Filter Logic
+    if(searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filteredData = candidatesData.filter(cand => 
+                cand.name.toLowerCase().includes(term) ||
+                cand.email.toLowerCase().includes(term) ||
+                cand.experience.toLowerCase().includes(term)
+            );
+            renderTable(filteredData);
+        });
+    }
+
+    // "Add Candidate" Button placeholder action
+    const addCandBtn = document.getElementById('addCandidateBtn');
+    if(addCandBtn) {
+        addCandBtn.addEventListener('click', () => {
+            showToast('Opening Add Candidate Form Modal...');
+            // In real app, open modal or navigate
+        });
+    }
+}
+
+// --- LOGIC FOR CANDIDATE DETAILS PAGE (candidate-details.html) ---
+if (document.getElementById('profileBannerInfo')) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const candidateId = parseInt(urlParams.get('id')) || 1;
+    const candidate = candidatesData.find(c => c.id === candidateId);
+    
+    if(candidate) {
+        // 1. Populate Profile Banner
+        document.getElementById('profileBannerInfo').innerHTML = `
+            <div class="user-avatar" style="width:70px;height:70px;font-size:1.6rem;border-radius:18px;">${getInitials(candidate.name)}</div>
+            <div>
+                <h2>${candidate.name}</h2>
+                <p><i class="fa-solid fa-envelope"></i> ${candidate.email} &nbsp; | &nbsp; <i class="fa-solid fa-phone"></i> ${candidate.mobile}</p>
+            </div>
+        `;
+        
+        // Populate Email Input for Hiring Status
+        const candEmailInput = document.getElementById('candEmail');
+        if(candEmailInput) candEmailInput.value = candidate.email;
+
+        // --- PAYMENT & EDIT FEE LOGIC ---
+        const renderPaymentDetails = () => {
+            const remaining = candidate.totalAmount - candidate.paidAmount;
+            const percent = candidate.totalAmount > 0 ? ((candidate.paidAmount / candidate.totalAmount) * 100).toFixed(0) : 0;
+
+            document.getElementById('paymentSummaryBox').innerHTML = `
+                <div class="payment-summary">
+                    <div class="edit-fee-wrap">
+                        Total Fee: ₹<span id="feeDisplay">${candidate.totalAmount}</span>
+                        <input type="number" id="feeInput" value="${candidate.totalAmount}" class="form-control">
+                        <button class="edit-fee-btn" id="editFeeBtn"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button id="saveFeeBtn">Save</button>
+                    </div>
+                    <span style="color: var(--primary);">Paid: ₹${candidate.paidAmount}</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: ${percent}%"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted);">
+                    <span>${percent}% Completed</span>
+                    <span style="color: var(--danger); font-weight: 500;">Balance: ₹${remaining}</span>
+                </div>
+            `;
+
+            // Attach Edit Fee Handlers
+            const editBtn = document.getElementById('editFeeBtn');
+            const saveBtn = document.getElementById('saveFeeBtn');
+            const display = document.getElementById('feeDisplay');
+            const input = document.getElementById('feeInput');
+
+            if(editBtn && saveBtn && display && input) {
+                editBtn.addEventListener('click', () => {
+                    display.style.display = 'none';
+                    editBtn.style.display = 'none';
+                    input.style.display = 'inline-block';
+                    saveBtn.style.display = 'inline-block';
+                    input.focus();
+                });
+
+                saveBtn.addEventListener('click', () => {
+                    const newFee = parseInt(input.value);
+                    if(!newFee || newFee <= 0 || newFee < candidate.paidAmount) {
+                        alert('Please enter a valid fee amount that is at least equal to the paid amount.');
+                        return;
+                    }
+                    candidate.totalAmount = newFee; // Update dummy data
+                    showToast(`Total Fee updated to ₹${newFee}. Recalculating progress.`);
+                    renderPaymentDetails(); // Re-render this section
+                    renderSendOfferSection(); // Re-check visibility of Send Offer section
+                });
+            }
+        };
+
+        // --- SEND OFFER SECTION LOGIC ---
+        const renderSendOfferSection = () => {
+            const offerSection = document.getElementById('sendOfferSection');
+            if(!offerSection) return;
+
+            if(candidate.paidAmount >= candidate.totalAmount) {
+                offerSection.style.display = 'block';
+            } else {
+                offerSection.style.display = 'none';
+            }
+        };
+
+        // Initialize detailed sections
+        renderPaymentDetails();
+        renderSendOfferSection();
+
+        // Hiring Status UI Toggling
+        const statusSelect = document.getElementById('interviewStatusSelect');
+        const scheduleSection = document.getElementById('scheduleSection');
+        const emailSection = document.getElementById('emailSection');
+
+        if(statusSelect) {
+            statusSelect.value = candidate.status;
+            const toggleHiringViews = (status) => {
+                if (status === 'Completed') {
+                    scheduleSection.style.display = 'none';
+                    emailSection.style.display = 'block';
+                } else {
+                    scheduleSection.style.display = 'block';
+                    emailSection.style.display = 'none';
+                }
+            }
+            toggleHiringViews(candidate.status);
+            statusSelect.addEventListener('change', (e) => toggleHiringViews(e.target.value));
+        }
+
+        // --- IMAGE PREVIEW MODAL LOGIC ---
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeModal = document.getElementById('modalClose');
+
+        if(modal && modalImg && closeModal) {
+            window.openModal = (src) => {
+                modal.style.display = 'flex';
+                modalImg.src = src;
+            }
+            closeModal.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', (e) => {
+                if(e.target == modal) modal.style.display = 'none';
+            });
+        }
+    }
+}
+
+
+// Profile Dropdown Logic
+const profileBtn = document.getElementById('profileDropdownBtn');
+const profileMenu = document.getElementById('profileDropdown');
+
+if (profileBtn && profileMenu) {
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent immediate closing
+        profileMenu.classList.toggle('show');
+    });
+
+    // Close dropdown when clicking outside
+    window.addEventListener('click', () => {
+        if (profileMenu.classList.contains('show')) {
+            profileMenu.classList.remove('show');
+        }
+    });
+}
+
+// Global Logout Function
+window.logoutAdmin = function() {
+    showToast('Logging out... Redirecting to login.', 'success');
+    // In a real app: setTimeout(() => window.location.href = 'login.html', 1500);
+}
+
+// Global Image Modal Setup (Ensuring it runs globally for Payments Page)
+if (!window.openModal) {
+    window.openModal = function(src) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        if (modal && modalImg) {
+            modal.style.display = 'flex';
+            modalImg.src = src;
+        }
+    }
+}
+
+// --- NEW INTERVIEW MODAL LOGIC ---
+// ==========================================
+// INTERVIEW MODAL & MEETING LINKS UNIFIED LOGIC
+// ==========================================
+
+// 1. Get Modal Elements
+const interviewModal = document.getElementById('newInterviewModal');
+const openInterviewBtn = document.getElementById('openInterviewModalBtn');
+const closeInterviewBtn = document.getElementById('closeInterviewModalBtn');
+const saveInterviewBtn = document.getElementById('saveInterviewBtn');
+
+// 2. Get Meeting Link Elements
+const savedLinksDropdown = document.getElementById('savedLinksDropdown');
+const toggleAddLinkBtn = document.getElementById('toggleAddLinkBtn');
+const addNewLinkContainer = document.getElementById('addNewLinkContainer');
+const saveNewLinkBtn = document.getElementById('saveNewLinkBtn');
+const newLinkLabel = document.getElementById('newLinkLabel');
+const newLinkUrl = document.getElementById('newLinkUrl');
+
+// 3. Default links
+const defaultLinks = [
+    { label: "Technical Room (General)", url: "meet.google.com/abc-defg-hij" },
+    { label: "HR Interview Room", url: "meet.google.com/xyz-uvwx-abc" }
+];
+
+// --- FUNCTION: Load & Display Links ---
+function loadMeetingLinks() {
+    if (!savedLinksDropdown) return;
+    
+    let links = JSON.parse(localStorage.getItem('hr_meeting_links'));
+    if (!links) {
+        links = defaultLinks;
+        localStorage.setItem('hr_meeting_links', JSON.stringify(links));
+    }
+    
+    savedLinksDropdown.innerHTML = '<option value="">-- Select a Link --</option>';
+    links.forEach((link) => {
+        const option = document.createElement('option');
+        option.value = link.url;
+        option.textContent = `${link.label} (${link.url})`;
+        savedLinksDropdown.appendChild(option);
+    });
+}
+
+// Call immediately on page load
+if (savedLinksDropdown) {
+    loadMeetingLinks();
+}
+
+// --- LOGIC: Open & Close Modal ---
+if (openInterviewBtn && interviewModal) {
+    // Open the modal
+    openInterviewBtn.addEventListener('click', () => {
+        interviewModal.style.display = 'flex';
+        loadMeetingLinks(); // Refresh links just in case
+    });
+}
+
+if (closeInterviewBtn && interviewModal) {
+    // Close the modal via 'X'
+    closeInterviewBtn.addEventListener('click', () => {
+        interviewModal.style.display = 'none';
+    });
+}
+
+// Close the modal when clicking outside the white box
+window.addEventListener('click', (e) => {
+    if (e.target === interviewModal) {
+        interviewModal.style.display = 'none';
+    }
+});
+
+// --- LOGIC: Add New Meeting Link ---
+if (toggleAddLinkBtn && addNewLinkContainer) {
+    toggleAddLinkBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isHidden = addNewLinkContainer.style.display === 'none' || addNewLinkContainer.style.display === '';
+        addNewLinkContainer.style.display = isHidden ? 'block' : 'none';
+        toggleAddLinkBtn.textContent = isHidden ? '- Cancel' : '+ Add New Link';
+    });
+}
+
+if (saveNewLinkBtn) {
+    saveNewLinkBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const label = newLinkLabel.value.trim();
+        const url = newLinkUrl.value.trim();
+
+        if (!label || !url) {
+            alert("Please provide both a label and a URL.");
+            return;
+        }
+
+        const links = JSON.parse(localStorage.getItem('hr_meeting_links')) || [];
+        links.push({ label, url });
+        localStorage.setItem('hr_meeting_links', JSON.stringify(links));
+
+        // Reset inputs and refresh dropdown
+        newLinkLabel.value = '';
+        newLinkUrl.value = '';
+        addNewLinkContainer.style.display = 'none';
+        toggleAddLinkBtn.textContent = '+ Add New Link';
+        loadMeetingLinks();
+        
+        if (typeof showToast === 'function') {
+            showToast('Meeting link saved to your list!', 'success');
+        } else {
+            alert('Meeting link saved to your list!');
+        }
+    });
+}
+
+// --- LOGIC: Save Interview Button ---
+if (saveInterviewBtn) {
+    saveInterviewBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (interviewModal) interviewModal.style.display = 'none';
+        
+        if (typeof showToast === 'function') {
+            showToast('Interview Successfully Scheduled!', 'success');
+        } else {
+            alert('Interview Successfully Scheduled!');
+        }
+    });
+}

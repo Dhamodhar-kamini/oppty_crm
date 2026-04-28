@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-briefcase"></i> HR Admin</div>
+                <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li class="active"><a href="index.html"><i class="fa-solid fa-users"></i> Candidates</a></li>
+                <li><a href="payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
+                <li><a href="interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button id="sidebarToggle" class="btn-icon"><i class="fa-solid fa-bars"></i></button>
+                    <a href="index.html" class="btn btn-secondary" style="margin-left: 10px;"><i class="fa-solid fa-arrow-left"></i> Back to List</a>
+                </div>
+                <div class="nav-right">
+                    <div class="profile"><img src="https://ui-avatars.com/api/?name=Admin&background=ff6b00&color=fff&bold=true" alt="Admin"></div>
+                </div>
+            </header>
+
+            <div class="content-wrapper" style="margin-top: 30px;">
+                
+                <div class="card profile-banner">
+                    <div class="profile-info-wrap" id="profileBannerInfo">
+                        </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="showToast('Downloading Resume...')"><i class="fa-solid fa-download"></i> Download Resume</button>
+                    </div>
+                </div>
+
+                <div class="grid-container">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-indian-rupee-sign" style="color: var(--primary);"></i> Fee & Payment Tracking</h3>
+                        <div id="paymentSummaryBox">
+                            </div>
+                        
+                        <h4 style="margin-top: 25px; margin-bottom: 10px; font-weight: 500;">Payment Proofs</h4>
+                        <div class="screenshot-gallery">
+                            <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=300&q=80" alt="Receipt 1" onclick="openModal(this.src)">
+                            <img src="https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?w=300&q=80" alt="Receipt 2" onclick="openModal(this.src)">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Hiring Actions</h3>
+                        
+                        <div class="form-group">
+                            <label>Current Status</label>
+                            <select id="interviewStatusSelect" class="form-control">
+                                <option value="Pending">Interview Not Completed</option>
+                                <option value="Completed">Completed (Passed Interview)</option>
+                            </select>
+                        </div>
+
+                        <div id="scheduleSection" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label>Meeting Link</label>
+                                <select class="form-control">
+                                    <option>meet.google.com/abc-defg-hij (Technical Team)</option>
+                                    <option>meet.google.com/xyz-uvwx-abc (HR Team)</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button class="btn btn-primary" onclick="showToast('Interview Scheduled!')"><i class="fa-regular fa-calendar-check"></i> Schedule</button>
+                                <button class="btn btn-secondary" onclick="showToast('Meet Link Sent via WhatsApp!')"><i class="fa-brands fa-whatsapp"></i> Send Link</button>
+                            </div>
+                        </div>
+
+                        <div id="emailSection" style="display: none; margin-top: 20px;">
+                            <p style="color: var(--text-muted); padding: 15px; background:var(--bg-body); border-radius:10px;">The candidate has completed the interview process. Hiring actions can be performed below if payment is completed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card hidden-section" id="sendOfferSection" style="margin-top: 30px; display: none;">
+                    <h3><i class="fa-solid fa-paper-plane" style="color: var(--success);"></i> Send Offer & Onboarding Letters</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">The total fee has been fully paid. You can now upload and send the final offer letter and onboarding documentation.</p>
+                    
+                    <div class="grid-container" style="grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="file-upload-wrap">
+                            <label class="btn btn-secondary" style="width:100%;" for="offerFile">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Offer Letter (PDF)
+                            </label>
+                            <input type="file" id="offerFile" style="display:none;">
+                        </div>
+                        <div class="file-upload-wrap">
+                            <label class="btn btn-secondary" style="width:100%;" for="onboardFile">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Onboarding Letter (PDF)
+                            </label>
+                            <input type="file" id="onboardFile" style="display:none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Candidate Email</label>
+                        <input type="email" id="candEmail" class="form-control" readonly>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%;" onclick="showToast('Congratulations! Offer Letter successfully sent.')">
+                        <i class="fa-solid fa-paper-plane"></i> Send Official Documents
+                    </button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

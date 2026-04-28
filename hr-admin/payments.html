@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Admin - Payments Ledger</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-briefcase"></i> HR Admin</div>
+                <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-users"></i> Candidates</a></li>
+                <li class="active"><a href="payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
+                <li><a href="interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button id="sidebarToggle" class="btn-icon"><i class="fa-solid fa-bars"></i></button>
+                </div>
+                <div class="nav-right">
+                    <div class="profile-container">
+                        <div class="profile" id="profileDropdownBtn">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=ff6b00&color=fff&bold=true" alt="Admin">
+                        </div>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <a href="#" onclick="logoutAdmin()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="page-header mt-15" style="margin-top: 30px;">
+                    <h1>Payment Ledger</h1>
+                </div>
+                
+                <div class="card">
+                    <h3>Recent Transactions</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Trx ID</th>
+                                    <th>Candidate</th>
+                                    <th>Date</th>
+                                    <th>Bank Name</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#TRX-9081</td>
+                                    <td><strong>Rahul Sharma</strong></td>
+                                    <td>Oct 15, 2023</td>
+                                    <td>HDFC Bank Ltd.</td>
+                                    <td>₹5000</td>
+                                    <td><span class="badge paid">Paid</span></td>
+                                    <td><button class="btn btn-secondary btn-sm" onclick="openModal('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80')">Receipt</button></td>
+                                </tr>
+                                <tr>
+                                    <td>#TRX-9082</td>
+                                    <td><strong>Priya Desai</strong></td>
+                                    <td>Oct 18, 2023</td>
+                                    <td>ICICI Bank</td>
+                                    <td>₹8000</td>
+                                    <td><span class="badge paid">Paid</span></td>
+                                    <td><button class="btn btn-secondary btn-sm" onclick="openModal('https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?w=400&q=80')">Receipt</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <span class="modal-close" id="modalClose" onclick="document.getElementById('imageModal').style.display='none'">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="script.js"></script>
+</body>
+</html>

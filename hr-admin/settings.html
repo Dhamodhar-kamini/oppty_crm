@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Admin - Panel Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-briefcase"></i> HR Admin</div>
+                <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-users"></i> Candidates</a></li>
+                <li><a href="payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
+                <li><a href="interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
+                <li class="active"><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button id="sidebarToggle" class="btn-icon"><i class="fa-solid fa-bars"></i></button>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="page-header mt-15" style="margin-top: 30px;">
+                    <h1>Panel Settings</h1>
+                </div>
+                
+                <div class="grid-container">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-building-user"></i> Organization Details</h3>
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" class="form-control" value="My HR Organization">
+                        </div>
+                        <button class="btn btn-primary" onclick="showToast('Organization details updated.')">Save Changes</button>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fa-solid fa-user-shield"></i> Admin Access</h3>
+                        <div class="form-group">
+                            <label>Admin Username</label>
+                            <input type="text" class="form-control" value="admin_panel">
+                        </div>
+                        <button class="btn btn-secondary" onclick="showToast('Password reset link sent to registered email.')">Reset Password</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="script.js"></script>
+</body>
+</html>
