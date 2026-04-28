@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oppty - #1 Hiring Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="heropage.css">
+</head>
+<body>
+
+    <div class="particles">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div id="mainLandingPage">
+        
+        <nav class="navbar slide-down">
+            <div class="logo">
+                <i class="fa-solid fa-briefcase" style="margin-right: 10px;"></i> Oppty
+            </div>
+        </nav>
+
+        <section class="hero"> 
+            <div class="hero-container">
+                
+                <div class="hero-text fade-in-left">
+                    <div class="badge-pill">🚀 #1 Talent Acquisition Platform</div>
+                    <h1>Discover Top <br> <span class="text-gradient">Talent</span> Today.</h1>
+                    <p>Streamline your hiring process, easily manage applicant data, and build your dream team effortlessly with our next-gen recruiting platform.</p>
+                </div>
+
+                <div class="hero-cards-wrapper fade-in-right">
+                    
+                    <div class="glass-card" onclick="openModal('signupModal')">
+                        <div class="card-glow"></div>
+                        <div class="icon-box icon-signup">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <h2>Create Account</h2>
+                        <p>Start hiring in minutes</p>
+                        <div class="arrow-circle">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" onclick="openModal('signinModal')">
+                        <div class="card-glow"></div>
+                        <div class="icon-box">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                        </div>
+                        <h2>Sign In</h2>
+                        <p>Access your dashboard</p>
+                        <div class="arrow-circle">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="scroll-mouse fade-in-up">
+                <div class="wheel"></div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="section-header scroll-reveal">
+                <h2>Why Choose <span class="highlight">Oppty?</span></h2>
+                <p>Everything you need to source, interview, and hire the best candidates.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item scroll-reveal delay-1">
+                    <div class="f-icon color-1"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h3>Smart Matching</h3>
+                    <p>AI-driven applicant parsing automatically highlights the candidates most suited to your open roles.</p>
+                </div>
+                <div class="feature-item scroll-reveal delay-2">
+                    <div class="f-icon color-2"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h3>Interview Scheduling</h3>
+                    <p>Automated calendar integrations allow candidates to book their own interview slots seamlessly.</p>
+                </div>
+                <div class="feature-item scroll-reveal delay-3">
+                    <div class="f-icon color-3"><i class="fa-solid fa-file-contract"></i></div>
+                    <h3>Offer Management</h3>
+                    <p>Generate, send, and track digital offer letters with legally binding e-signatures built right in.</p>
+                </div>
+            </div>
+        </section>
+    </div> <div id="hiringDashboard" class="fade-in-up">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h2><i class="fa-solid fa-address-card" style="color: var(--primary); margin-right: 10px;"></i> Add Candidate Profile</h2>
+                <button class="btn-outline" onclick="signOut()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+            </div>
+
+            <form id="hiringForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>First Name</label>
+                        <input type="text" placeholder="e.g. John" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Last Name</label>
+                        <input type="text" placeholder="e.g. Doe" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="john.doe@example.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+1 (555) 000-0000" required>
+                    </div>
+                    <div class="input-group full-width-grid">
+                        <label>Years of Experience</label>
+                        <input type="number" min="0" placeholder="e.g. 4" required>
+                    </div>
+                </div>
+
+                <div class="full-width-container">
+                    <label for="resumeInput" class="upload-area" id="dropZone">
+                        <div class="upload-icon-container"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div class="upload-text-container">
+                            <p><strong>Click to upload</strong> or drag and drop</p>
+                            <p class="subtext">PDF, DOCX up to 10MB</p>
+                            <span id="fileNameDisplay" style="display: none; color: var(--primary); font-weight: 700; margin-top: 5px;"></span>
+                        </div>
+                    </label>
+                    <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" required>
+
+                    <button type="submit" class="btn-full" style="padding: 18px; font-size: 18px; margin-top: 20px;">
+                        <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Submit Profile
+                    </button>
+                </div>
+            </form>
+
+            <div id="processingSection" class="process-status-view">
+                <div class="anim-wrapper">
+                    <div class="scanner-pulse"></div>
+                    <div class="scanner-circle"></div>
+                    <i class="fa-solid fa-magnifying-glass scanner-icon"></i>
+                </div>
+                <h3>Processing Profile...</h3>
+                <p>Our HR team is currently reviewing your skills, experience, and portfolio.<br>This may take some time. Please leave this page open.</p>
+            </div>
+
+            <div id="interviewSection" class="process-status-view">
+                <div class="success-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <h3>Interview Scheduled!</h3>
+                <p>Congratulations! Your profile matches our requirements perfectly. HR has sent you an invite.</p>
+                
+                <div class="interview-card">
+                    <div class="i-row">
+                        <span><i class="fa-solid fa-clock"></i> Date & Time:</span>
+                        <strong>Tomorrow, 10:00 AM (EST)</strong>
+                    </div>
+                    <div class="i-row">
+                        <span><i class="fa-solid fa-user-tie"></i> Interviewer:</span>
+                        <strong>Sarah Jenkins (HR Manager)</strong>
+                    </div>
+                    
+                    <a href="#" class="btn-primary join-btn" onclick="alert('Starting Video Interview Bridge...')">
+                        <i class="fa-solid fa-video"></i> Join Live Interview
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="modal-overlay" id="signinModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('signinModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your hiring dashboard</p>
+            </div>
+            <form onsubmit="performSignIn(event)">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-full">Sign In</button>
+                <div class="modal-footer">
+                    Don't have an account? <a onclick="switchModal('signinModal', 'signupModal')">Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('signupModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h2>Create Account</h2>
+                <p>Start building your dream team today</p>
+            </div>
+            <form onsubmit="performSignUp(event)">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="input-group">
+                    <label>Company Email</label>
+                    <input type="email" placeholder="name@company.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Create Password</label>
+                    <input type="password" placeholder="Minimum 8 characters" required>
+                </div>
+                <button type="submit" class="btn-full">Sign Up Free</button>
+                <div class="modal-footer">
+                    Already have an account? <a onclick="switchModal('signupModal', 'signinModal')">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="hrSimulatorTool" class="hr-simulator-panel">
+        <p><i class="fa-solid fa-user-tie"></i> <b>HR Dashboard</b> (Simulator)</p>
+        <p style="font-size: 12px; margin-bottom: 10px;">A profile is waiting for review.</p>
+        <button onclick="approveCandidate()" class="btn-hr-approve"><i class="fa-solid fa-check"></i> Approve & Schedule</button>
+    </div>
+
+    <script src="heropage.js"></script>
+</body>
+</html>
