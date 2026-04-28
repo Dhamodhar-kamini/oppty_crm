@@ -186,7 +186,8 @@ p { font-size: 18px; color: var(--text-grey); margin-bottom: 30px; line-height: 
 .upload-text-container strong { color: var(--primary); }
 #resumeInput { display: none; }
 
-/* --- CUSTOM PROCESSING & SUCCESS STATES --- */
+
+/* --- UIVERSE PROCESSING SVG ANIMATION --- */
 .process-status-view {
     display: none; text-align: center; padding: 60px 20px; animation: fadeInUp 0.5s ease forwards;
 }
@@ -194,37 +195,71 @@ p { font-size: 18px; color: var(--text-grey); margin-bottom: 30px; line-height: 
 .process-status-view h3 { font-size: 28px; color: #0f172a; margin-bottom: 15px; font-weight: 800;}
 .process-status-view p { font-size: 16px; color: #64748b; line-height: 1.6; margin: 0 auto 30px; max-width: 500px;}
 
-/* Modern Scanner Animation */
-.anim-wrapper {
-    position: relative; width: 110px; height: 110px; margin: 0 auto 30px;
-    display: flex; justify-content: center; align-items: center;
-}
-.scanner-circle {
-    position: absolute; width: 100%; height: 100%; border-radius: 50%;
-    border: 5px solid transparent; border-top-color: var(--primary); border-left-color: var(--primary);
-    animation: spin-smooth 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-}
-.scanner-icon {
-    font-size: 45px; color: #0f172a;
-    animation: pulse-icon 1.5s ease-in-out infinite; z-index: 2;
-}
-.scanner-pulse {
-    position: absolute; width: 100%; height: 100%; border-radius: 50%;
-    background: rgba(255, 107, 0, 0.15);
-    animation: pulse-ring 1.5s ease-out infinite; z-index: 1;
+.pl {
+  display: block;
+  width: 9.375em;
+  height: 9.375em;
 }
 
-@keyframes spin-smooth {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.pl__arrows,
+.pl__ring-rotate,
+.pl__ring-stroke,
+.pl__tick {
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
-@keyframes pulse-icon {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); color: var(--primary); }
+
+.pl__arrows {
+  animation-name: arrows42;
+  transform: rotate(45deg);
+  transform-origin: 16px 52px;
 }
-@keyframes pulse-ring {
-    0% { transform: scale(0.8); opacity: 1; }
-    100% { transform: scale(1.6); opacity: 0; }
+
+.pl__ring-rotate,
+.pl__ring-stroke {
+  transform-origin: 80px 80px;
+}
+
+.pl__ring-rotate {
+  animation-name: ringRotate42;
+}
+
+.pl__ring-stroke {
+  animation-name: ringStroke42;
+  transform: rotate(-45deg);
+}
+
+.pl__tick {
+  animation-name: tick42;
+}
+
+.pl__tick:nth-child(2) { animation-delay: -1.75s; }
+.pl__tick:nth-child(3) { animation-delay: -1.5s; }
+.pl__tick:nth-child(4) { animation-delay: -1.25s; }
+.pl__tick:nth-child(5) { animation-delay: -1s; }
+.pl__tick:nth-child(6) { animation-delay: -0.75s; }
+.pl__tick:nth-child(7) { animation-delay: -0.5s; }
+.pl__tick:nth-child(8) { animation-delay: -0.25s; }
+
+@keyframes arrows42 {
+  from { transform: rotate(45deg); }
+  to { transform: rotate(405deg); }
+}
+
+@keyframes ringRotate42 {
+  from { transform: rotate(0); }
+  to { transform: rotate(720deg); }
+}
+
+@keyframes ringStroke42 {
+  from, to { stroke-dashoffset: 452; transform: rotate(-45deg); }
+  50% { stroke-dashoffset: 169.5; transform: rotate(-180deg); }
+}
+
+@keyframes tick42 {
+  from, 3%, 47%, to { stroke-dashoffset: -12; }
+  14%, 36% { stroke-dashoffset: 0; }
 }
 
 /* Success icon elements */
