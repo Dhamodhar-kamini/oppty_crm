@@ -93,29 +93,42 @@
     </div> <div id="hiringDashboard" class="fade-in-up">
         <div class="dashboard-container">
             <div class="dashboard-header">
-                <h2><i class="fa-solid fa-address-card" style="color: var(--primary); margin-right: 10px;"></i> Add Candidate Profile</h2>
+                <h2><i class="fa-solid fa-address-card" style="color: var(--primary); margin-right: 10px;"></i>Candidate Details</h2>
                 <button class="btn-outline" onclick="signOut()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
             </div>
 
             <form id="hiringForm" onsubmit="handleFormSubmit(event)">
                 <div class="form-grid">
                     <div class="input-group">
-                        <label>First Name</label>
-                        <input type="text" placeholder="e.g. John" required>
+                        <label>Full Name</label>
+                        <input type="text" placeholder="e.g. Narala Prasad Reddy" required>
                     </div>
-                    <div class="input-group">
+                    <!-- <div class="input-group">
                         <label>Last Name</label>
                         <input type="text" placeholder="e.g. Doe" required>
-                    </div>
+                    </div> -->
                     <div class="input-group">
                         <label>Email Address</label>
-                        <input type="email" placeholder="john.doe@example.com" required>
+                        <input type="email" placeholder="oppty@gmail.com" required>
                     </div>
                     <div class="input-group">
                         <label>Phone Number</label>
-                        <input type="tel" placeholder="+1 (555) 000-0000" required>
+                        <input type="tel" placeholder="9448989819" required>
                     </div>
-                    <div class="input-group full-width-grid">
+                    
+                    <!-- <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+1 (555) 000-0000" required>
+                    </div> -->
+                    <div class="input-group">
+                        <label>Date of Birth</label>
+                        <input type="date" min="1900" max="2023" placeholder="e.g. 2001" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Passedout Year</label>
+                        <input type="number" min="1900" max="2023" placeholder="e.g. 2020" required>
+                    </div>
+                    <div class="input-group">
                         <label>Years of Experience</label>
                         <input type="number" min="0" placeholder="e.g. 4" required>
                     </div>
@@ -139,13 +152,80 @@
             </form>
 
             <div id="processingSection" class="process-status-view">
-                <div class="anim-wrapper">
-                    <div class="scanner-pulse"></div>
-                    <div class="scanner-circle"></div>
-                    <i class="fa-solid fa-magnifying-glass scanner-icon"></i>
-                </div>
+                
+                <svg class="pl" viewBox="0 0 160 160" width="160px" height="160px" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto 30px; display: block;">
+                    <defs>
+                        <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#000"></stop>
+                            <stop offset="100%" stop-color="#fff"></stop>
+                        </linearGradient>
+                        <mask id="mask1">
+                            <rect x="0" y="0" width="160" height="160" fill="url(#grad)"></rect>
+                        </mask>
+                        <mask id="mask2">
+                            <rect x="28" y="28" width="104" height="104" fill="url(#grad)"></rect>
+                        </mask>
+                    </defs>
+                    
+                    <g>
+                        <g class="pl__ring-rotate">
+                            <circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(223,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)"></circle>
+                        </g>
+                    </g>
+                    <g mask="url(#mask1)">
+                        <g class="pl__ring-rotate">
+                            <circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(193,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)"></circle>
+                        </g>
+                    </g>
+                    
+                    <g>
+                        <g stroke-width="4" stroke-dasharray="12 12" stroke-dashoffset="12" stroke-linecap="round" transform="translate(80,80)">
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(0,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(180,0,0) translate(0,40)"></polyline>
+                        </g>
+                    </g>
+                    <g mask="url(#mask1)">
+                        <g stroke-width="4" stroke-dasharray="12 12" stroke-dashoffset="12" stroke-linecap="round" transform="translate(80,80)">
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(0,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(180,0,0) translate(0,40)"></polyline>
+                        </g>
+                    </g>
+                    
+                    <g>
+                        <g transform="translate(64,28)">
+                            <g class="pl__arrows" transform="rotate(45,16,52)">
+                                <line x1="16" y1="42" x2="16" y2="86" stroke="#0f172a" stroke-width="14" stroke-linecap="round" />
+                                <circle cx="16" cy="24" r="14" fill="none" stroke="#0f172a" stroke-width="6" />
+                                <circle cx="16" cy="24" r="21" fill="none" stroke="#ff6b00" stroke-width="8" />
+                            </g>
+                        </g>
+                    </g>
+                    
+                    <g mask="url(#mask2)">
+                        <g transform="translate(64,28)">
+                            <g class="pl__arrows" transform="rotate(45,16,52)">
+                                <line x1="16" y1="42" x2="16" y2="86" stroke="#475569" stroke-width="14" stroke-linecap="round" />
+                                <circle cx="16" cy="24" r="14" fill="none" stroke="#475569" stroke-width="6" />
+                                <circle cx="16" cy="24" r="21" fill="none" stroke="#ff9f43" stroke-width="8" />
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+
                 <h3>Processing Profile...</h3>
-                <p>Our HR team is currently reviewing your skills, experience, and portfolio.<br>This may take some time. Please leave this page open.</p>
+                <p>Our HR team is currently reviewing your skills, experience, and portfolio.<br>This may take some time. Please leave this page.</p>
             </div>
 
             <div id="interviewSection" class="process-status-view">
@@ -204,18 +284,18 @@
                 <h2>Create Account</h2>
                 <p>Start building your dream team today</p>
             </div>
-            <form onsubmit="performSignUp(event)">
+            <form id="create-form">
                 <div class="input-group">
                     <label>Full Name</label>
-                    <input type="text" placeholder="John Doe" required>
+                    <input id="fullName" type="text" placeholder="John Doe" required>
                 </div>
                 <div class="input-group">
                     <label>Company Email</label>
-                    <input type="email" placeholder="name@company.com" required>
+                    <input id="email" type="email" placeholder="name@company.com" required>
                 </div>
                 <div class="input-group">
                     <label>Create Password</label>
-                    <input type="password" placeholder="Minimum 8 characters" required>
+                    <input id="password" type="password" placeholder="Minimum 8 characters" required>
                 </div>
                 <button type="submit" class="btn-full">Sign Up Free</button>
                 <div class="modal-footer">

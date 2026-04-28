@@ -25,29 +25,107 @@ window.onclick = function(event) {
 // ====== LOGIN / REGISTRATION LOGIC ======
 
 // 1. Sign Up Flow (Does NOT open dashboard directly)
-function performSignUp(event) {
-    event.preventDefault(); // Prevent page reload
-    
-    // Simulate successful account creation
-    alert("Account created successfully! Please sign in to access your dashboard.");
-    
-    // Automatically switch from Sign Up to Sign In
-    switchModal('signupModal', 'signinModal');
-}
+document.getElementById('create-form').addEventListener('submit',(event)=>{
+    event.preventDefault();
+
+    const data = {
+        name: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+    };
+
+    fetch('http://192.168.1.10:8000/api/createaccount/', {
+       method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        alert("Account created successfully!");
+        switchModal('signupModal', 'signinModal');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Something went wrong");
+    });
+})
 
 // 2. Sign In Flow (Opens the dashboard)
 function performSignIn(event) {
-    event.preventDefault(); // Prevent page reload
-    
-    closeModal('signinModal');
-    
-    // Hide landing page, show dashboard
-    document.getElementById('mainLandingPage').style.display = 'none';
-    document.getElementById('hiringDashboard').style.display = 'block';
-    
-    // Scroll to top safely
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    event.preventDefault();
+
+    const data = {
+        email: document.querySelector('#signinModal input[type="email"]').value,
+        password: document.querySelector('#signinModal input[type="password"]').value
+    };
+
+    fetch('http://192.168.1.10:8000/api/signin/', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(async res => {
+        const result = await res.json();
+
+        if (!res.ok) {
+            console.log("Login Error:", result);
+            throw new Error(result.message || "Login failed");
+        }
+
+        return result;
+    })
+    .then(result => {
+
+        console.log("Backend Response:", result);
+
+        if (result.status === "success") {
+
+            // ✅ store user id
+            localStorage.setItem('id', result.id);
+
+            closeModal('signinModal');
+
+            document.getElementById('mainLandingPage').style.display = 'none';
+            document.getElementById('hiringDashboard').style.display = 'block';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 🔥 NEW: handle tracking UI
+            const status = result.form_status;
+
+            // Reset all sections first
+            document.getElementById('hiringForm').style.display = 'none';
+            document.getElementById('processingSection').style.display = 'none';
+            document.getElementById('interviewSection').style.display = 'none';
+            document.getElementById('hrSimulatorTool').style.display = 'none';
+
+            if (status === "form_pending" || !status) {
+                
+                document.getElementById('hiringForm').style.display = 'block';
+
+            } else if (status === "form_submitted") {
+               
+                document.getElementById('processingSection').style.display = 'block';
+
+            } else if (status === "interview_scheduled") {
+                
+                document.getElementById('interviewSection').style.display = 'block';
+
+            } else if (status === "offer_released") {
+                
+                alert("Offer Letter Released 🎉");
+            }
+
+        } else {
+            alert(result.message || "INVALID EMAIL OR PASSWORD");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert(err.message || "INVALID EMAIL OR PASSWORD");
+    });
 }
+
 
 // 3. Sign Out Function
 function signOut() {
@@ -69,16 +147,57 @@ function signOut() {
 
 
 // ====== FORM SUBMISSION & HR SIMULATION ======
-
+const emp_id = localStorage.getItem('id');  // Retrieved from login response, used for form submission
 function handleFormSubmit(event) {
-    event.preventDefault(); // Prevent page reload
+    event.preventDefault();
 
-    // Hide Form, Show Processing Animation (Continues indefinitely)
-    document.getElementById('hiringForm').style.display = 'none';
-    document.getElementById('processingSection').style.display = 'block';
+    const form = document.getElementById('hiringForm');
+    const formData = new FormData();
 
-    // Show the hidden HR Simulator panel so you can manually trigger the next step
-    document.getElementById('hrSimulatorTool').style.display = 'block';
+    const emp_id = localStorage.getItem('id');
+
+    if (!emp_id) {
+        alert("User not logged in");
+        return;
+    }
+
+    const fileInput = document.getElementById('resumeInput');
+
+    if (fileInput.files.length === 0) {
+        alert("Resume is required");
+        return;
+    }
+
+    formData.append("name", emp_id);
+    formData.append("full_name", form.querySelector('input[type="text"]').value);
+    formData.append("email", form.querySelector('input[type="email"]').value);
+    formData.append("phone", form.querySelector('input[type="tel"]').value.slice(0,10)); // limit
+    formData.append("dob", form.querySelector('input[type="date"]').value);
+    formData.append("passed_out", form.querySelectorAll('input[type="number"]')[0].value.toString().slice(0,4));
+    formData.append("experiences", form.querySelectorAll('input[type="number"]')[1].value.toString());
+    formData.append("resume", fileInput.files[0]);
+
+    // DEBUG
+    for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+    }
+
+    fetch('http://192.168.1.10:8000/api/formsubmit/', {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(result => {
+        console.log("Form Submit Response:", result);
+
+        document.getElementById('hiringForm').style.display = 'none';
+        document.getElementById('processingSection').style.display = 'block';
+        document.getElementById('hrSimulatorTool').style.display = 'block';
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error submitting form");
+    });
 }
 
 // Manually triggered by the presenter using the floating "Approve & Schedule" button
