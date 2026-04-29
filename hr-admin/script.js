@@ -559,3 +559,160 @@ if (savePaymentUpdateBtn) {
         }
     });
 }
+
+
+
+// ==========================================
+// EXPENSES PAGE & MODAL LOGIC
+// ==========================================
+
+const addExpenseModal = document.getElementById('addExpenseModal');
+const openExpenseModalBtn = document.getElementById('openExpenseModalBtn');
+const closeExpenseModalBtn = document.getElementById('closeExpenseModalBtn');
+const saveExpenseBtn = document.getElementById('saveExpenseBtn');
+const expenseReceiptFile = document.getElementById('expenseReceiptFile');
+const expensesTableBody = document.getElementById('expensesTableBody');
+
+// Default initial expenses data (Status Removed)
+const defaultExpenses = [
+    { id: 1, date: "2023-10-28", category: "Software Tools", desc: "AWS Hosting Renewal", amount: 8500, receipt: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80" },
+    { id: 2, date: "2023-10-25", category: "Office Supplies", desc: "New monitors and keyboards", amount: 12500, receipt: "https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?w=400&q=80" },
+    { id: 3, date: "2023-10-20", category: "Marketing", desc: "LinkedIn Job Ads", amount: 24200, receipt: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80" }
+];
+
+// Helper: Format Date from YYYY-MM-DD to Oct 28, 2023
+function formatExpenseDate(dateStr) {
+    if (!dateStr) return "N/A";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// Render Expenses Table & Update Totals
+function renderExpenses() {
+    if (!expensesTableBody) return;
+
+    let expenses = JSON.parse(localStorage.getItem('hr_expenses'));
+    if (!expenses || expenses.length === 0) {
+        expenses = defaultExpenses;
+        localStorage.setItem('hr_expenses', JSON.stringify(expenses));
+    }
+
+    expensesTableBody.innerHTML = '';
+    let allTimeTotal = 0;
+    let monthlyTotal = 0;
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    expenses.forEach(exp => {
+        // Calculate Totals
+        allTimeTotal += exp.amount;
+        const expDate = new Date(exp.date);
+        if (expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear) {
+            monthlyTotal += exp.amount;
+        }
+
+        // Render Row (Status TD Removed)
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${formatExpenseDate(exp.date)}</td>
+            <td><strong>${exp.category}</strong></td>
+            <td><span style="color: var(--text-muted);">${exp.desc}</span></td>
+            <td>₹${exp.amount.toLocaleString('en-IN')}</td>
+            <td><button class="btn btn-secondary btn-sm" onclick="openModal('${exp.receipt}')"><i class="fa-solid fa-eye"></i> View</button></td>
+        `;
+        // Insert new expenses at the top
+        expensesTableBody.prepend(tr); 
+    });
+
+    // Update Summary Cards
+    const monthEl = document.getElementById('monthlyExpensesTotal');
+    const allTimeEl = document.getElementById('allTimeExpensesTotal');
+    
+    if (monthEl) monthEl.textContent = `₹${monthlyTotal.toLocaleString('en-IN')}`;
+    if (allTimeEl) allTimeEl.textContent = `₹${allTimeTotal.toLocaleString('en-IN')}`;
+}
+
+// Call automatically if on expenses page
+if (expensesTableBody) {
+    renderExpenses();
+}
+
+// --- MODAL TOGGLES ---
+if (addExpenseModal && openExpenseModalBtn && closeExpenseModalBtn) {
+    openExpenseModalBtn.addEventListener('click', () => addExpenseModal.style.display = 'flex');
+    closeExpenseModalBtn.addEventListener('click', () => addExpenseModal.style.display = 'none');
+    window.addEventListener('click', (e) => {
+        if (e.target === addExpenseModal) addExpenseModal.style.display = 'none';
+    });
+}
+
+// --- FILE UPLOAD NAME DISPLAY ---
+if (expenseReceiptFile) {
+    expenseReceiptFile.addEventListener('change', function(e) {
+        const fileName = e.target.files[0] ? e.target.files[0].name : "Select Image/PDF";
+        const label = this.previousElementSibling;
+        if (label) label.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> ${fileName}`;
+    });
+}
+
+// --- SUBMIT NEW EXPENSE ---
+if (saveExpenseBtn) {
+    saveExpenseBtn.addEventListener('click', () => {
+        const amount = document.getElementById('expenseAmount').value;
+        const date = document.getElementById('expenseDate').value;
+        const category = document.getElementById('expenseCategory').value.trim();
+        const desc = document.getElementById('expenseDescription').value.trim();
+
+        if (!amount || !category || !date) {
+            alert('Please fill out the Amount, Date, and Category.');
+            return;
+        }
+
+        const handleSave = (receiptDataUrl) => {
+            let expenses = JSON.parse(localStorage.getItem('hr_expenses')) || [];
+            expenses.push({
+                id: Date.now(),
+                date: date,
+                category: category,
+                desc: desc || "No description",
+                amount: parseFloat(amount),
+                receipt: receiptDataUrl
+            });
+            
+            localStorage.setItem('hr_expenses', JSON.stringify(expenses));
+            
+            // Re-render table and cards dynamically
+            renderExpenses();
+
+            // Reset Modal
+            addExpenseModal.style.display = 'none';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseCategory').value = '';
+            document.getElementById('expenseDate').value = '';
+            document.getElementById('expenseDescription').value = '';
+            
+            if (expenseReceiptFile) {
+                expenseReceiptFile.value = '';
+                expenseReceiptFile.previousElementSibling.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Select Image/PDF`;
+            }
+
+            if (typeof showToast === 'function') {
+                showToast('Expense recorded successfully!', 'success');
+            } else {
+                alert('Expense recorded successfully!');
+            }
+        };
+
+        // If file is uploaded, convert to Base64 to save and display instantly
+        if (expenseReceiptFile && expenseReceiptFile.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                handleSave(e.target.result);
+            };
+            reader.readAsDataURL(expenseReceiptFile.files[0]);
+        } else {
+            // Default placeholder image if no receipt is uploaded
+            handleSave("https://placehold.co/600x400/eeeeee/ff6b00?text=No+Receipt+Uploaded");
+        }
+    });
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Admin - Expenses</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/opptylogo.png" alt="Logo" style="width: 150px; margin-bottom: 20px;">
+                <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-users"></i> Candidates</a></li>
+                <li><a href="payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
+                <li><a href="interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
+                <li class="active"><a href="expenses.html"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button id="sidebarToggle" class="btn-icon"><i class="fa-solid fa-bars"></i></button>
+                </div>
+                <div class="nav-right">
+                    <div class="profile-container">
+                        <div class="profile" id="profileDropdownBtn">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=ff6b00&color=fff&bold=true" alt="Admin">
+                        </div>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <a href="#" onclick="logoutAdmin()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="page-header mt-15" style="margin-top: 30px;">
+                    <h1>Expense Management</h1>
+                    <button class="btn btn-primary" id="openExpenseModalBtn"><i class="fa-solid fa-plus"></i> Add Expense</button>
+                </div>
+
+                <div class="grid-container" style="margin-bottom: 25px;">
+                    <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <p style="color:var(--text-muted); margin-bottom: 5px;">Total Expenses (This Month)</p>
+                            <h3 style="font-size: 1.8rem; margin: 0;" id="monthlyExpensesTotal">₹0</h3>
+                        </div>
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(255, 107, 0, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <p style="color:var(--text-muted); margin-bottom: 5px;">Total Expenses (All Time)</p>
+                            <h3 style="font-size: 1.8rem; margin: 0;" id="allTimeExpensesTotal">₹0</h3>
+                        </div>
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(5, 205, 153, 0.15); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 20px;">Recent Expenses</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Receipt</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expensesTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="addExpenseModal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: var(--bg-card); padding: 30px; width: 100%; max-width: 500px; border-radius: 16px; position: relative; max-height: 90vh; overflow-y: auto;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="font-size: 1.4rem; color: var(--text-main);">Add New Expense</h2>
+                <span id="closeExpenseModalBtn" style="font-size: 2rem; color: var(--text-muted); cursor: pointer; line-height: 1;">&times;</span>
+            </div>
+
+            <div class="grid-container" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 0;">
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="expenseAmount" class="form-control" placeholder="e.g. 5000">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="expenseDate" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" id="expenseCategory" class="form-control" placeholder="e.g. Software, Office Supplies, Travel">
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="expenseDescription" class="form-control" placeholder="What was this expense for?">
+            </div>
+
+            <div class="form-group">
+                <label>Upload Receipt/Invoice</label>
+                <div class="file-upload-wrap">
+                    <label class="btn btn-secondary" style="width:100%; justify-content: center;" for="expenseReceiptFile">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Select Image/PDF
+                    </label>
+                    <input type="file" id="expenseReceiptFile" accept="image/*,.pdf" style="display:none;">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="saveExpenseBtn" style="width: 100%; margin-top: 15px;">
+                <i class="fa-solid fa-floppy-disk"></i> Submit Expense
+            </button>
+        </div>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <span class="modal-close" id="modalClose" onclick="document.getElementById('imageModal').style.display='none'">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="script.js"></script>
+</body>
+</html>
