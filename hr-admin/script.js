@@ -1,3 +1,39 @@
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loaderWrapper = document.getElementById('oppty-page-loader');
+    
+    // Hide loader smoothly once the page is fully loaded
+    window.addEventListener('load', () => {
+        if (loaderWrapper) {
+            setTimeout(() => {
+                loaderWrapper.classList.add('hidden');
+            }, 800); // Slight delay to ensure the bounce animation cycles elegantly
+        }
+    });
+
+    // Re-trigger loader on internal page navigation
+    document.querySelectorAll('a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            const target = this.getAttribute('target');
+            
+            // Check if it's a valid internal link (not a # anchor or new tab)
+            if (href && href !== '#' && !href.startsWith('#') && target !== '_blank' && !href.startsWith('javascript')) {
+                if (loaderWrapper) {
+                    loaderWrapper.classList.remove('hidden');
+                }
+            }
+        });
+    });
+});
+
+
+
+
+
+
+
+
 let candidatesData = [
     { id: 1, name: "Rahul Sharma", email: "rahul.s@example.com", mobile: "+91 9876543210", experience: "3 Years", status: "Pending", totalAmount: 5000, paidAmount: 0, joinDate: "2023-10-15" },
     { id: 2, name: "Priya Desai", email: "priya.d@example.com", mobile: "+91 8765432109", experience: "5 Years", status: "Completed", totalAmount: 8000, paidAmount: 8000, joinDate: "2023-10-22" },
@@ -800,3 +836,6 @@ if (saveExpenseBtn) {
         }
     });
 }
+
+
+
