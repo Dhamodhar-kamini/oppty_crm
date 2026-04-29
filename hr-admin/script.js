@@ -1,8 +1,7 @@
-// Enhanced Dummy Data structure including Bank Name and Edited Fees
 let candidatesData = [
-    { id: 1, name: "Rahul Sharma", email: "rahul.s@example.com", mobile: "+91 9876543210", experience: "3 Years", status: "Pending", totalAmount: 5000, paidAmount: 0 },
-    { id: 2, name: "Priya Desai", email: "priya.d@example.com", mobile: "+91 8765432109", experience: "5 Years", status: "Completed", totalAmount: 8000, paidAmount: 8000 },
-    { id: 3, name: "Amit Kumar", email: "amit.k@example.com", mobile: "+91 7654321098", experience: "Fresher", status: "Completed", totalAmount: 3000, paidAmount: 1500 }
+    { id: 1, name: "Rahul Sharma", email: "rahul.s@example.com", mobile: "+91 9876543210", experience: "3 Years", status: "Pending", totalAmount: 5000, paidAmount: 0, joinDate: "2023-10-15" },
+    { id: 2, name: "Priya Desai", email: "priya.d@example.com", mobile: "+91 8765432109", experience: "5 Years", status: "Completed", totalAmount: 8000, paidAmount: 8000, joinDate: "2023-10-22" },
+    { id: 3, name: "Amit Kumar", email: "amit.k@example.com", mobile: "+91 7654321098", experience: "Fresher", status: "Completed", totalAmount: 3000, paidAmount: 1500, joinDate: "2023-11-05" }
 ];
 
 // Reusable Utilities
@@ -48,15 +47,21 @@ if (sidebarClose) {
 if (document.getElementById('candidatesBody')) {
     const tbody = document.getElementById('candidatesBody');
     const searchInput = document.getElementById('candidatesSearch');
+    const monthFilter = document.getElementById('candidateMonthFilter');
+    const clearBtn = document.getElementById('clearFiltersBtn');
     
     // Define the generic render function
     const renderTable = (data) => {
         tbody.innerHTML = '';
         if(data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px;">No candidates found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px;">No candidates found matching the criteria</td></tr>';
             return;
         }
         data.forEach(cand => {
+            // Format the Join Date (e.g., Oct 15, 2023)
+            const dateObj = new Date(cand.joinDate);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>
@@ -66,7 +71,10 @@ if (document.getElementById('candidatesBody')) {
                     </div>
                 </td>
                 <td>${cand.mobile}</td>
-                <td>${cand.experience}</td>
+                <td>
+                    <div>${cand.experience}</div>
+                    <small style="color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> Joined: ${formattedDate}</small>
+                </td>
                 <td>${getInterviewBadge(cand.status)}</td>
                 <td>${getPaymentBadge(cand.paidAmount, cand.totalAmount)}</td>
                 <td><a href="candidate-details.html?id=${cand.id}" class="btn btn-secondary btn-sm">View Profile</a></td>
@@ -75,7 +83,39 @@ if (document.getElementById('candidatesBody')) {
         });
     };
 
-    // Initial render
+    // Unified Filtering Function (Handles both Search and Month Filter)
+    const applyFilters = () => {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const monthTerm = monthFilter ? monthFilter.value : ''; // Returns format "YYYY-MM"
+
+        const filteredData = candidatesData.filter(cand => {
+            // Check text match
+            const matchesSearch = cand.name.toLowerCase().includes(searchTerm) ||
+                                  cand.email.toLowerCase().includes(searchTerm) ||
+                                  cand.experience.toLowerCase().includes(searchTerm);
+            
+            // Check month match (if month filter is used, does the joinDate start with "YYYY-MM"?)
+            const matchesMonth = monthTerm === '' || cand.joinDate.startsWith(monthTerm);
+
+            return matchesSearch && matchesMonth;
+        });
+
+        renderTable(filteredData);
+    };
+
+    // Event Listeners for Filters
+    if(searchInput) searchInput.addEventListener('input', applyFilters);
+    if(monthFilter) monthFilter.addEventListener('change', applyFilters);
+    
+    if(clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if(searchInput) searchInput.value = '';
+            if(monthFilter) monthFilter.value = '';
+            applyFilters(); // Reset the table
+        });
+    }
+
+    // Initial render on page load
     renderTable(candidatesData);
 
     // Dynamic Search & Filter Logic
@@ -563,7 +603,7 @@ if (savePaymentUpdateBtn) {
 
 
 // ==========================================
-// EXPENSES PAGE & MODAL LOGIC
+// EXPENSES PAGE, FILTER, & MODAL LOGIC
 // ==========================================
 
 const addExpenseModal = document.getElementById('addExpenseModal');
@@ -572,8 +612,9 @@ const closeExpenseModalBtn = document.getElementById('closeExpenseModalBtn');
 const saveExpenseBtn = document.getElementById('saveExpenseBtn');
 const expenseReceiptFile = document.getElementById('expenseReceiptFile');
 const expensesTableBody = document.getElementById('expensesTableBody');
+const expenseMonthFilter = document.getElementById('expenseMonthFilter');
 
-// Default initial expenses data (Status Removed)
+// Default initial expenses data
 const defaultExpenses = [
     { id: 1, date: "2023-10-28", category: "Software Tools", desc: "AWS Hosting Renewal", amount: 8500, receipt: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80" },
     { id: 2, date: "2023-10-25", category: "Office Supplies", desc: "New monitors and keyboards", amount: 12500, receipt: "https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?w=400&q=80" },
@@ -587,7 +628,7 @@ function formatExpenseDate(dateStr) {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-// Render Expenses Table & Update Totals
+// Render Expenses Table & Update Totals based on Calendar Filter
 function renderExpenses() {
     if (!expensesTableBody) return;
 
@@ -597,44 +638,81 @@ function renderExpenses() {
         localStorage.setItem('hr_expenses', JSON.stringify(expenses));
     }
 
+    // Determine the month and year to filter by
+    let filterYear, filterMonthIndex;
+    if (expenseMonthFilter && expenseMonthFilter.value) {
+        const parts = expenseMonthFilter.value.split('-');
+        filterYear = parseInt(parts[0]);
+        filterMonthIndex = parseInt(parts[1]) - 1; // 0-indexed for JS Date
+    } else {
+        const d = new Date();
+        filterYear = d.getFullYear();
+        filterMonthIndex = d.getMonth();
+    }
+
     expensesTableBody.innerHTML = '';
     let allTimeTotal = 0;
-    let monthlyTotal = 0;
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+    let filteredMonthlyTotal = 0;
+
+    // Sort by date (newest first)
+    expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     expenses.forEach(exp => {
-        // Calculate Totals
-        allTimeTotal += exp.amount;
+        allTimeTotal += exp.amount; // All time total always calculates
+        
         const expDate = new Date(exp.date);
-        if (expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear) {
-            monthlyTotal += exp.amount;
-        }
+        const isMatch = (expDate.getMonth() === filterMonthIndex && expDate.getFullYear() === filterYear);
+        
+        // Only render the row if it matches the selected month
+        if (isMatch) {
+            filteredMonthlyTotal += exp.amount;
 
-        // Render Row (Status TD Removed)
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${formatExpenseDate(exp.date)}</td>
-            <td><strong>${exp.category}</strong></td>
-            <td><span style="color: var(--text-muted);">${exp.desc}</span></td>
-            <td>₹${exp.amount.toLocaleString('en-IN')}</td>
-            <td><button class="btn btn-secondary btn-sm" onclick="openModal('${exp.receipt}')"><i class="fa-solid fa-eye"></i> View</button></td>
-        `;
-        // Insert new expenses at the top
-        expensesTableBody.prepend(tr); 
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${formatExpenseDate(exp.date)}</td>
+                <td><strong>${exp.category}</strong></td>
+                <td><span style="color: var(--text-muted);">${exp.desc}</span></td>
+                <td>₹${exp.amount.toLocaleString('en-IN')}</td>
+                <td><button class="btn btn-secondary btn-sm" onclick="openModal('${exp.receipt}')"><i class="fa-solid fa-eye"></i> View</button></td>
+            `;
+            expensesTableBody.appendChild(tr); 
+        }
     });
 
-    // Update Summary Cards
+    // Handle empty state for the selected month
+    if (filteredMonthlyTotal === 0 && expensesTableBody.children.length === 0) {
+        expensesTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:40px;">No expenses found for this month.</td></tr>';
+    }
+
+    // Update Summary Cards dynamically
     const monthEl = document.getElementById('monthlyExpensesTotal');
     const allTimeEl = document.getElementById('allTimeExpensesTotal');
+    const monthLabelEl = document.getElementById('monthlyExpensesLabel');
     
-    if (monthEl) monthEl.textContent = `₹${monthlyTotal.toLocaleString('en-IN')}`;
+    if (monthEl) monthEl.textContent = `₹${filteredMonthlyTotal.toLocaleString('en-IN')}`;
     if (allTimeEl) allTimeEl.textContent = `₹${allTimeTotal.toLocaleString('en-IN')}`;
+    
+    if (monthLabelEl) {
+         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+         monthLabelEl.textContent = `Total Expenses (${monthNames[filterMonthIndex]} ${filterYear})`;
+    }
 }
 
-// Call automatically if on expenses page
+// Set default value for month filter to CURRENT month and render
 if (expensesTableBody) {
+    if (expenseMonthFilter && !expenseMonthFilter.value) {
+        const today = new Date();
+        const currentMonthString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        expenseMonthFilter.value = currentMonthString;
+    }
+    
+    // Initial Render
     renderExpenses();
+    
+    // Re-render when admin changes the month
+    if (expenseMonthFilter) {
+        expenseMonthFilter.addEventListener('change', renderExpenses);
+    }
 }
 
 // --- MODAL TOGGLES ---
@@ -681,6 +759,12 @@ if (saveExpenseBtn) {
             
             localStorage.setItem('hr_expenses', JSON.stringify(expenses));
             
+            // Set the calendar filter to the month of the newly added expense
+            const newExpDate = new Date(date);
+            if (expenseMonthFilter) {
+                expenseMonthFilter.value = `${newExpDate.getFullYear()}-${String(newExpDate.getMonth() + 1).padStart(2, '0')}`;
+            }
+
             // Re-render table and cards dynamically
             renderExpenses();
 

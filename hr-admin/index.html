@@ -11,8 +11,7 @@
     <div class="dashboard-container">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <!-- <div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-briefcase"></i> HR Admin</div> -->
-                 <img src="../assets/opptylogo.png" alt=" Logo" style="width: 150px; margin-bottom: 20px;">
+                <img src="../assets/opptylogo.png" alt="Logo" style="width: 150px; margin-bottom: 20px;">
                 <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
             </div>
             <ul class="sidebar-menu">
@@ -45,12 +44,20 @@
             <div class="content-wrapper">
                 <div class="page-header mt-15" style="margin-top: 30px;">
                     <h1>Candidates List</h1>
-                    <div class="header-actions">
+                    
+                    <div class="header-actions" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <div class="page-filter" style="width: auto;">
+                            <i class="fa-regular fa-calendar"></i>
+                            <input type="month" id="candidateMonthFilter" style="border:none; outline:none; background:transparent; font-size:0.95rem; color:var(--text-main); cursor:pointer;" title="Filter by Join Month">
+                        </div>
+                        
                         <div class="page-filter">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="candidatesSearch" placeholder="Search name or experience...">
                         </div>
-                        </div>
+                        
+                        <button class="btn btn-secondary btn-sm" id="clearFiltersBtn" style="padding: 10px 15px;"><i class="fa-solid fa-filter-circle-xmark"></i> Clear</button>
+                    </div>
                 </div>
                 
                 <div class="card">
@@ -60,7 +67,7 @@
                                 <tr>
                                     <th>Candidate Info</th>
                                     <th>Contact</th>
-                                    <th>Experience</th>
+                                    <th>Experience & Date</th>
                                     <th>Status</th>
                                     <th>Payment</th>
                                     <th>Action</th>

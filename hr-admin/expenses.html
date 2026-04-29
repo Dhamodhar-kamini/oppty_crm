@@ -50,7 +50,7 @@
                 <div class="grid-container" style="margin-bottom: 25px;">
                     <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
                         <div>
-                            <p style="color:var(--text-muted); margin-bottom: 5px;">Total Expenses (This Month)</p>
+                            <p style="color:var(--text-muted); margin-bottom: 5px;" id="monthlyExpensesLabel">Total Expenses (Selected Month)</p>
                             <h3 style="font-size: 1.8rem; margin: 0;" id="monthlyExpensesTotal">₹0</h3>
                         </div>
                         <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(255, 107, 0, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
@@ -70,7 +70,17 @@
                 </div>
                 
                 <div class="card">
-                    <h3 style="margin-bottom: 20px;">Recent Expenses</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                        <h3 style="margin: 0;">Recent Expenses</h3>
+                        
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="expenseMonthFilter" style="color: var(--text-muted); font-weight: 500; font-size: 0.95rem;">
+                                <i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> Filter Month:
+                            </label>
+                            <input type="month" id="expenseMonthFilter" class="form-control" style="width: auto; padding: 8px 15px; border-radius: 8px; cursor: pointer;">
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table>
                             <thead>
