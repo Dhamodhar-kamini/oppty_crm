@@ -390,3 +390,172 @@ if (saveInterviewBtn) {
         }
     });
 }
+
+
+
+// ==========================================
+// PAYMENT UPDATE MODAL LOGIC (UPDATED)
+// ==========================================
+
+const paymentUpdateModal = document.getElementById('paymentUpdateModal');
+const openPaymentModalBtn = document.getElementById('openPaymentModalBtn');
+const closePaymentModalBtn = document.getElementById('closePaymentModalBtn');
+const savePaymentUpdateBtn = document.getElementById('savePaymentUpdateBtn');
+const paymentScreenshotFile = document.getElementById('paymentScreenshotFile');
+
+if (paymentUpdateModal && openPaymentModalBtn && closePaymentModalBtn) {
+    // Open Modal
+    openPaymentModalBtn.addEventListener('click', () => {
+        paymentUpdateModal.style.display = 'flex';
+    });
+
+    // Close Modal via 'X' button
+    closePaymentModalBtn.addEventListener('click', () => {
+        paymentUpdateModal.style.display = 'none';
+    });
+
+    // Close Modal when clicking outside the box
+    window.addEventListener('click', (e) => {
+        if (e.target === paymentUpdateModal) {
+            paymentUpdateModal.style.display = 'none';
+        }
+    });
+}
+
+// Show selected file name on the upload button label
+if (paymentScreenshotFile) {
+    paymentScreenshotFile.addEventListener('change', function(e) {
+        const fileName = e.target.files[0] ? e.target.files[0].name : "Select Image";
+        const label = this.previousElementSibling;
+        if (label) {
+            label.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> ${fileName}`;
+        }
+    });
+}
+
+// Handle Save Button Click (Update Data & UI)
+if (savePaymentUpdateBtn) {
+    savePaymentUpdateBtn.addEventListener('click', () => {
+        const paidAmountInput = document.getElementById('updatePaidAmount').value;
+        const bankName = document.getElementById('updateBankName').value;
+        const paymentDate = document.getElementById('updatePaymentDate').value;
+        
+        const addedAmount = parseInt(paidAmountInput);
+
+        // Validation
+        if (!addedAmount || addedAmount <= 0) {
+            alert('Please enter a valid paid amount.');
+            return;
+        }
+
+        // 1. Get Current Candidate Context
+        const urlParams = new URLSearchParams(window.location.search);
+        const candidateId = parseInt(urlParams.get('id')) || 1;
+        const candidate = candidatesData.find(c => c.id === candidateId);
+
+        if (candidate) {
+            // Add new payment to total paid
+            candidate.paidAmount += addedAmount;
+            
+            // Prevent paying more than the total fee
+            if (candidate.paidAmount > candidate.totalAmount) {
+                candidate.paidAmount = candidate.totalAmount;
+            }
+
+            // Recalculate Math
+            const remaining = candidate.totalAmount - candidate.paidAmount;
+            const percent = candidate.totalAmount > 0 ? ((candidate.paidAmount / candidate.totalAmount) * 100).toFixed(0) : 0;
+
+            // Update UI dynamically
+            const paymentSummaryBox = document.getElementById('paymentSummaryBox');
+            if (paymentSummaryBox) {
+                paymentSummaryBox.innerHTML = `
+                    <div class="payment-summary">
+                        <div class="edit-fee-wrap">
+                            Total Fee: ₹<span id="feeDisplay">${candidate.totalAmount}</span>
+                            <input type="number" id="feeInput" value="${candidate.totalAmount}" class="form-control" style="display:none; width: 100px; padding: 6px 10px; margin-left: 5px;">
+                            <button class="edit-fee-btn" id="editFeeBtn"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button id="saveFeeBtn" class="btn btn-primary btn-sm" style="display:none; margin-left: 10px;">Save</button>
+                        </div>
+                        <span style="color: var(--primary);">Paid: ₹${candidate.paidAmount}</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${percent}%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted);">
+                        <span>${percent}% Completed</span>
+                        <span style="color: var(--danger); font-weight: 500;">Balance: ₹${remaining}</span>
+                    </div>
+                `;
+
+                // Re-attach edit fee button logic after UI update
+                const editBtn = document.getElementById('editFeeBtn');
+                const saveBtn = document.getElementById('saveFeeBtn');
+                const display = document.getElementById('feeDisplay');
+                const input = document.getElementById('feeInput');
+
+                if(editBtn && saveBtn && display && input) {
+                    editBtn.addEventListener('click', () => {
+                        display.style.display = 'none';
+                        editBtn.style.display = 'none';
+                        input.style.display = 'inline-block';
+                        saveBtn.style.display = 'inline-block';
+                        input.focus();
+                    });
+
+                    saveBtn.addEventListener('click', () => {
+                        const newFee = parseInt(input.value);
+                        if(!newFee || newFee <= 0 || newFee < candidate.paidAmount) {
+                            alert('Invalid fee amount. It must be greater than the paid amount.');
+                            return;
+                        }
+                        candidate.totalAmount = newFee; 
+                        showToast(`Total Fee updated to ₹${newFee}.`);
+                        // Re-trigger the logic to reset the UI
+                        document.getElementById('savePaymentUpdateBtn').click(); 
+                    });
+                }
+            }
+
+            // Show Offer Section automatically if fully paid
+            const offerSection = document.getElementById('sendOfferSection');
+            if (offerSection && candidate.paidAmount >= candidate.totalAmount) {
+                offerSection.style.display = 'block';
+            }
+        }
+
+        // 2. Handle Image Upload & Add to Gallery
+        const screenshotGallery = document.querySelector('.screenshot-gallery');
+        if (paymentScreenshotFile && paymentScreenshotFile.files && paymentScreenshotFile.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newImg = document.createElement('img');
+                newImg.src = e.target.result; // Convert uploaded file to base64 image URL
+                newImg.alt = "Uploaded Receipt";
+                newImg.onclick = function() { openModal(this.src); }; // Retain modal popup functionality
+                if (screenshotGallery) {
+                    screenshotGallery.appendChild(newImg);
+                }
+            };
+            reader.readAsDataURL(paymentScreenshotFile.files[0]);
+        }
+
+        // 3. Reset Modal Fields and Close
+        if (paymentUpdateModal) paymentUpdateModal.style.display = 'none';
+        
+        document.getElementById('updatePaidAmount').value = '';
+        document.getElementById('updateBankName').value = '';
+        document.getElementById('updatePaymentDate').value = '';
+        
+        if (paymentScreenshotFile) {
+            paymentScreenshotFile.value = '';
+            paymentScreenshotFile.previousElementSibling.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Select Image`;
+        }
+
+        if (typeof showToast === 'function') {
+            showToast(`Added ₹${addedAmount} to candidate payment!`, 'success');
+        } else {
+            alert(`Added ₹${addedAmount} to candidate payment!`);
+        }
+    });
+}
