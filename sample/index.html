@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oppty | Initializing Experience</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background Grid -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <!-- Main Loading Interface -->
+    <main class="loader-container" id="loader-container">
+        <div class="glass-panel">
+            
+            <!-- Logo & Orbiting Elements -->
+            <div class="brand-core">
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+                <div class="logo-wrapper">
+                    <img src="../assets/opptylogo.png" alt="Oppty Logo" class="oppty-logo">
+                </div>
+            </div>
+
+            <!-- Dynamic Text System -->
+            <div class="status-container">
+                <p id="status-text" class="status-text text-fade-in">Initializing Core Systems...</p>
+                <div class="status-glitch" id="status-glitch"></div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-wrapper">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill">
+                        <div class="progress-glow"></div>
+                    </div>
+                </div>
+                <div class="progress-data">
+                    <span class="data-label">SYS_LOAD</span>
+                    <span class="data-value" id="progress-percentage">0%</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
