@@ -1,223 +1,170 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. PAGE LOADER
     const loaderWrapper = document.getElementById('oppty-page-loader');
-    
-    // Hide loader smoothly once the page is fully loaded
-    window.addEventListener('load', () => {
-        if (loaderWrapper) {
-            setTimeout(() => {
-                loaderWrapper.classList.add('hidden');
-            }, 800); // Slight delay to ensure the bounce animation cycles elegantly
-        }
-    });
+    if (loaderWrapper) {
+        setTimeout(() => { loaderWrapper.classList.add('hidden'); }, 800);
+    }
 
-    // Re-trigger loader on internal page navigation
-    document.querySelectorAll('a').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            const target = this.getAttribute('target');
-            
-            // Check if it's a valid internal link (not a # anchor or new tab)
-            if (href && href !== '#' && !href.startsWith('#') && target !== '_blank' && !href.startsWith('javascript')) {
-                if (loaderWrapper) {
-                    loaderWrapper.classList.remove('hidden');
-                }
-            }
-        });
-    });
-});
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    // 1. SKELETON LOADER SIMULATION
-    // Remove the 'loading' class after 1.5 seconds to reveal content
+    // 2. SKELETON LOADER
     const dashboard = document.querySelector('.skeleton-container');
-    dashboard.classList.add('loading');
-    setTimeout(() => {
-        dashboard.classList.remove('loading');
-        animateCounters(); // Start counters only after loading completes
-    }, 1500);
-
-    // 2. NUMBER COUNTER ANIMATION
-    function animateCounters() {
-        const counters = document.querySelectorAll('.counter');
-        const speed = 200; // The lower the slower
-
-        counters.forEach(counter => {
-            const updateCount = () => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText.replace(/,/g, ''); // Remove commas for calculation
-                const inc = target / speed;
-
-                if (count < target) {
-                    const newValue = Math.ceil(count + inc);
-                    counter.innerText = newValue.toLocaleString('en-US'); // Add commas back
-                    setTimeout(updateCount, 10);
-                } else {
-                    counter.innerText = target.toLocaleString('en-US');
-                }
-            };
-            updateCount();
-        });
+    if(dashboard) {
+        dashboard.classList.add('loading');
+        setTimeout(() => {
+            dashboard.classList.remove('loading');
+            initDashboardData();
+        }, 1200);
     }
 
-    // 3. CHART.JS INITIALIZATION
-    // Global Chart Configuration for theming
-    Chart.defaults.color = '#a3bed1';
-    Chart.defaults.font.family = "'Poppins', sans-serif";
+    // 3. SIDEBAR TOGGLE
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebarClose = document.getElementById('sidebarClose');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-    // A. Hiring Funnel (Bar Chart)
-    const ctxFunnel = document.getElementById('hiringFunnelChart').getContext('2d');
-    new Chart(ctxFunnel, {
-        type: 'bar',
-        data: {
-            labels: ['Applied', 'Screened', 'Interviewed', 'Offered', 'Hired'],
-            datasets: [{
-                label: 'Candidates',
-                data: [350, 150, 80, 35, 28],
-                backgroundColor: 'rgba(255, 107, 0, 0.8)',
-                borderRadius: 6,
-                borderSkipped: false
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(163, 190, 209, 0.1)' } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // B. Cash Flow (Line Chart)
-    const ctxCash = document.getElementById('cashFlowChart').getContext('2d');
-    
-    // Create gradient for Revenue line
-    const gradientRev = ctxCash.createLinearGradient(0, 0, 0, 300);
-    gradientRev.addColorStop(0, 'rgba(5, 205, 153, 0.4)');
-    gradientRev.addColorStop(1, 'rgba(5, 205, 153, 0.0)');
-
-    // Create gradient for Expense line
-    const gradientExp = ctxCash.createLinearGradient(0, 0, 0, 300);
-    gradientExp.addColorStop(0, 'rgba(238, 93, 80, 0.4)');
-    gradientExp.addColorStop(1, 'rgba(238, 93, 80, 0.0)');
-
-    new Chart(ctxCash, {
-        type: 'line',
-        data: {
-            labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-            datasets: [
-                {
-                    label: 'Revenue',
-                    data: [320000, 340000, 310000, 380000, 410000, 450000],
-                    borderColor: '#05cd99',
-                    backgroundColor: gradientRev,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 2
-                },
-                {
-                    label: 'Expenses',
-                    data: [100000, 105000, 110000, 95000, 115000, 125000],
-                    borderColor: '#ee5d50',
-                    backgroundColor: gradientExp,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 2
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: { position: 'top', align: 'end' }
-            },
-            scales: {
-                y: { 
-                    beginAtZero: true, 
-                    grid: { color: 'rgba(163, 190, 209, 0.1)' },
-                    ticks: { callback: function(value) { return '₹' + value / 1000 + 'k'; } }
-                },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // 4. ROLE-BASED UI SIMULATION
-    const roleSwitch = document.getElementById('roleSwitch');
-    const financeElements = document.querySelectorAll('.finance-item');
-
-    // Toggle Role Function
-    roleSwitch.addEventListener('change', (e) => {
-        const isRecruiter = e.target.checked;
-        
-        financeElements.forEach(el => {
-            // Apply fade animation
-            el.style.transition = 'opacity 0.3s ease';
-            if (isRecruiter) {
-                el.style.opacity = '0';
-                setTimeout(() => el.style.display = 'none', 300);
-            } else {
-                el.style.display = ''; // Reset to default (flex/block based on CSS)
-                setTimeout(() => el.style.opacity = '1', 10);
-            }
-        });
-
-        // Optional: Show a toast/alert
-        console.log(`Role switched to: ${isRecruiter ? 'Recruiter' : 'Admin'}`);
-    });
-
-    // 5. GLOBAL SEARCH (Mock Filtering)
-    const searchInput = document.getElementById('globalSearch');
-    searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        // In a real app, this would filter a table or make an API call.
-        // Here, we just log to show it's hooked up.
-        console.log(`Searching for: ${term}`);
-    });
-
-    // 6. QUICK ACTIONS & EXPORTS (Mock functionality)
-    window.triggerAction = function(actionName) {
-        alert(`Opening modal for: ${actionName}`);
-    };
-
-    document.getElementById('exportPdf').addEventListener('click', () => {
-        alert('Generating PDF Dashboard Report...');
-    });
-
-    document.getElementById('exportCsv').addEventListener('click', () => {
-        alert('Exporting Financial & Candidate Data to CSV...');
-    });
-
-    // 7. DARK MODE TOGGLE
-    const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
-
-    // Check local storage for theme preference
-    if(localStorage.getItem('theme') === 'dark') {
-        body.setAttribute('data-theme', 'dark');
+    function openSidebar() {
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.add('active');
     }
-
-    themeToggle.addEventListener('click', () => {
-        if (body.getAttribute('data-theme') === 'light') {
-            body.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            body.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-        }
-        
-        // Update Chart colors if needed (requires chart.update())
-        // For production, you would update Chart.defaults.color and re-render here.
-    });
-
-    // Format currency prefix initially before counter starts
-    document.querySelectorAll('.prefix-currency').forEach(el => {
-        el.innerText = '₹0';
-    });
+    function closeSidebarMobile() {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+    }
+    if(menuToggle) menuToggle.addEventListener('click', openSidebar);
+    if(sidebarClose) sidebarClose.addEventListener('click', closeSidebarMobile);
+    if(sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebarMobile);
 });
+
+// Global state to hold candidates
+let allCandidates = [];
+let currentSelectedId = null;
+
+// 4. FETCH DATA FROM DJANGO
+async function initDashboardData() {
+    try {
+        const response = await fetch('http://192.168.1.10:8000/api/candidates');
+        const data = await response.json();
+        
+        allCandidates = Array.isArray(data) ? data : (data.candidates || []);
+
+        // Filter based on status
+        const pending = allCandidates.filter(c => c.status === 'form_pending');
+        const accepted = allCandidates.filter(c => c.status === 'approved');
+        const rejected = allCandidates.filter(c => c.status === 'rejected');
+
+        renderTable(pending);
+        updateCounters(pending.length, accepted.length, rejected.length);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+// 5. RENDER TABLE
+function renderTable(candidates) {
+    const tableBody = document.getElementById('candidateTableBody');
+    const emptyState = document.getElementById('emptyState');
+    const table = document.querySelector('.data-table');
+    
+    tableBody.innerHTML = ''; 
+
+    if (!candidates || candidates.length === 0) {
+        table.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+
+    table.style.display = 'table';
+    emptyState.style.display = 'none';
+
+    candidates.forEach(candidate => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${candidate.full_name}</strong></td>
+            <td>${candidate.email}</td>
+            <td><a href="tel:${candidate.phone}" class="btn-phone"><i class="fa-solid fa-phone"></i> ${candidate.phone}</a></td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn-icon accept" onclick="handleAction(${candidate.id}, 'approved')" title="Accept"><i class="fa-solid fa-check"></i></button>
+                    <button class="btn-icon reject" onclick="handleAction(${candidate.id}, 'rejected')" title="Reject"><i class="fa-solid fa-xmark"></i></button>
+                    <button class="btn-icon view" onclick="openDetailsModal(${candidate.id})" title="Show More"><i class="fa-solid fa-eye"></i></button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// 6. APPROVAL/REJECTION HANDLER
+async function handleAction(id, statusValue) {
+    try {
+        const response = await fetch(`http://192.168.1.10:8000/api/approval/${id}/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: statusValue })
+        });
+
+        if (!response.ok) throw new Error('Failed to update status');
+
+        showToast(`Candidate ${statusValue} successfully!`, 'success');
+        await initDashboardData(); 
+        closeModal('detailsModal');
+    } catch (error) {
+        console.error('Action error:', error);
+        showToast('Error updating candidate.', 'danger');
+    }
+}
+
+// 7. MODAL LOGIC
+function openDetailsModal(id) {
+    const candidate = allCandidates.find(c => c.id === id);
+    if (!candidate) return;
+
+    currentSelectedId = id;
+
+    document.getElementById('modalName').innerText = candidate.full_name;
+    document.getElementById('modalEmail').innerText = candidate.email;
+    document.getElementById('modalPhone').innerText = candidate.phone;
+    document.getElementById('modalDob').innerText = candidate.dob || 'N/A';
+    document.getElementById('modalPassedOut').innerText = candidate.passed_out || 'N/A';
+    document.getElementById('modalExperience').innerText = candidate.experiences ? `${candidate.experiences} Years` : 'N/A';
+    // Add skill display if it exists in your model
+    const skillEl = document.getElementById('modalSkills');
+    if(skillEl) skillEl.innerText = candidate.skills || 'N/A';
+
+    document.getElementById('detailsModal').classList.add('active');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+document.getElementById('modalBtnAccept').addEventListener('click', () => {
+    if(currentSelectedId) handleAction(currentSelectedId, 'approved');
+});
+document.getElementById('modalBtnReject').addEventListener('click', () => {
+    if(currentSelectedId) handleAction(currentSelectedId, 'rejected');
+});
+
+// 8. COUNTERS
+function updateCounters(pending, accepted, rejected) {
+    document.getElementById('count-pending').setAttribute('data-target', pending);
+    document.getElementById('count-accepted').setAttribute('data-target', accepted);
+    document.getElementById('count-rejected').setAttribute('data-target', rejected);
+    animateCounters();
+}
+
+function animateCounters() {
+    document.querySelectorAll('.counter').forEach(counter => {
+        counter.innerText = counter.getAttribute('data-target');
+    });
+}
+
+// 9. TOAST
+function showToast(message, type) {
+    const toast = document.getElementById('toastNotification');
+    const icon = toast.querySelector('.toast-icon');
+    const text = document.getElementById('toastMessage');
+    text.innerText = message;
+    toast.className = `toast show ${type}`;
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check toast-icon' : 'fa-solid fa-circle-xmark toast-icon';
+    setTimeout(() => { toast.classList.remove('show'); }, 3500);
+}
