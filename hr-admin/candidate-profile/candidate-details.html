@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR CRM Admin - Candidate Profile</title>
+    <link rel="icon" href="../assets/opptylogo2.png" type="image/png">
+    <link rel="stylesheet" href="./candidate-details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="oppty-page-loader" class="oppty-loader-overlay">
+    <div class="loader-content">
+        <img src="../../assets/opptylogo.png" alt="Oppty Logo" class="oppty-logo-loader">
+        <div class="wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="shadow"></div>
+            <div class="shadow"></div>
+            <div class="shadow"></div>
+        </div>
+    </div>
+</div>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../../assets/opptylogo.png" alt="Logo" style="width: 150px; margin-bottom: 20px;">
+                <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li class="active"><a href="../candidates/candidates.html"><i class="fa-solid fa-users"></i> Candidates</a></li>
+                <li><a href="../../payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
+                <li><a href="../../interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
+                <li><a href="../../expenses.html"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses</a></li>
+                <li><a href="../../settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button id="sidebarToggle" class="btn-icon"><i class="fa-solid fa-bars"></i></button>
+                    <a href="./index.html" class="btn btn-secondary" style="margin-left: 10px;"><i class="fa-solid fa-arrow-left"></i> Back to List</a>
+                </div>
+                <div class="nav-right">
+                    <div class="profile"><img src="https://ui-avatars.com/api/?name=Admin&background=ff6b00&color=fff&bold=true" alt="Admin"></div>
+                </div>
+            </header>
+
+            <div class="content-wrapper" style="margin-top: 30px;">
+                
+                <div class="card profile-banner">
+                    <div class="profile-info-wrap" id="profileBannerInfo">
+                        </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="showToast('Downloading Resume...')"><i class="fa-solid fa-download"></i> Download Resume</button>
+                    </div>
+                </div>
+
+                <div class="grid-container">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-indian-rupee-sign" style="color: var(--primary);"></i> Fee & Payment Tracking</h3>
+                        <div id="paymentSummaryBox">
+                            </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; margin-bottom: 15px;">
+                            <h4 style="font-weight: 500; margin: 0;">Payment Proofs</h4>
+                            <button class="btn btn-secondary btn-sm" id="openPaymentModalBtn"><i class="fa-solid fa-pen-to-square"></i> Update Details</button>
+                        </div>
+
+                        <div class="screenshot-gallery">
+                            <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=300&q=80" alt="Receipt 1" onclick="openModal(this.src)">
+                            <img src="https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?w=300&q=80" alt="Receipt 2" onclick="openModal(this.src)">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Hiring Actions</h3>
+                        
+                        <div class="form-group">
+                            <label>Current Status</label>
+                            <select id="interviewStatusSelect" class="form-control">
+                                <option value="Pending">Interview Not Completed</option>
+                                <option value="Completed">Completed (Passed Interview)</option>
+                            </select>
+                        </div>
+
+                        <div id="scheduleSection" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label>Interview Date & Time</label>
+                                <input type="datetime-local" class="form-control" id="interviewDateTime">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Meeting Link</label>
+                                <input type="text" class="form-control" id="interviewMeetingLink" placeholder="Paste meeting link here (e.g., meet.google.com/xyz...)">
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button class="btn btn-primary" onclick="showToast('Interview Scheduled Successfully!')"><i class="fa-regular fa-calendar-check"></i> Schedule</button>
+                                <button class="btn btn-secondary" onclick="showToast('Meet Link Sent via WhatsApp!')"><i class="fa-brands fa-whatsapp"></i> Send Link</button>
+                            </div>
+                        </div>
+
+                        <div id="emailSection" style="display: none; margin-top: 20px;">
+                            <p style="color: var(--text-muted); padding: 15px; background:var(--bg-body); border-radius:10px;">The candidate has completed the interview process. Hiring actions can be performed below if payment is completed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card hidden-section" id="sendOfferSection" style="margin-top: 30px; display: none;">
+                    <h3><i class="fa-solid fa-paper-plane" style="color: var(--success);"></i> Send Offer & Onboarding Letters</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">The total fee has been fully paid. You can now upload and send the final offer letter and onboarding documentation.</p>
+                    
+                    <div class="grid-container" style="grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="file-upload-wrap">
+                            <label class="btn btn-secondary" style="width:100%;" for="offerFile">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Offer Letter (PDF)
+                            </label>
+                            <input type="file" id="offerFile" style="display:none;">
+                        </div>
+                        <div class="file-upload-wrap">
+                            <label class="btn btn-secondary" style="width:100%;" for="onboardFile">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Onboarding Letter (PDF)
+                            </label>
+                            <input type="file" id="onboardFile" style="display:none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Candidate Email</label>
+                        <input type="email" id="candEmail" class="form-control" readonly>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%;" onclick="showToast('Congratulations! Offer Letter successfully sent.')">
+                        <i class="fa-solid fa-paper-plane"></i> Send Official Documents
+                    </button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <span class="modal-close" id="modalClose" onclick="document.getElementById('imageModal').style.display='none'">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <div id="paymentUpdateModal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: var(--bg-card); padding: 30px; width: 100%; max-width: 500px; border-radius: 16px; position: relative;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="font-size: 1.4rem; color: var(--text-main);">Update Payment Info</h2>
+                <span id="closePaymentModalBtn" style="font-size: 2rem; color: var(--text-muted); cursor: pointer; line-height: 1;">&times;</span>
+            </div>
+
+            <div class="form-group">
+                <label>Amount Paid (₹)</label>
+                <input type="number" id="updatePaidAmount" class="form-control" placeholder="Enter amount paid">
+            </div>
+
+            <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" id="updateBankName" class="form-control" placeholder="e.g. HDFC, ICICI, SBI">
+            </div>
+
+            <div class="form-group">
+                <label>Payment Received Date</label>
+                <input type="date" id="updatePaymentDate" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Upload Payment Screenshot</label>
+                <div class="file-upload-wrap">
+                    <label class="btn btn-secondary" style="width:100%; justify-content: center;" for="paymentScreenshotFile">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Select Image
+                    </label>
+                    <input type="file" id="paymentScreenshotFile" accept="image/*" style="display:none;">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="savePaymentUpdateBtn" style="width: 100%; margin-top: 15px;">
+                <i class="fa-solid fa-floppy-disk"></i> Save Payment Info
+            </button>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="candidate-details.js"></script>
+</body>
+</html>

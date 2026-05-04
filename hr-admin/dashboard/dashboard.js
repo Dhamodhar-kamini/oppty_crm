@@ -41,7 +41,7 @@ let currentSelectedId = null;
 // 4. FETCH DATA FROM DJANGO
 async function initDashboardData() {
     try {
-        const response = await fetch('http://192.168.1.10:8000/api/candidates');
+        const response = await fetch('http://127.0.0.1:8000/api/candidates');
         const data = await response.json();
         
         allCandidates = Array.isArray(data) ? data : (data.candidates || []);
@@ -96,7 +96,7 @@ function renderTable(candidates) {
 // 6. APPROVAL/REJECTION HANDLER
 async function handleAction(id, statusValue) {
     try {
-        const response = await fetch(`http://192.168.1.10:8000/api/approval/${id}/`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/approval/${id}/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: statusValue })

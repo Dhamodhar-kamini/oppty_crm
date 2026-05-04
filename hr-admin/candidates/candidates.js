@@ -6,7 +6,7 @@ let candidatesData = [];
 
 async function fetchCandidates() {
     try {
-        const response = await fetch('http://192.168.1.10:8000/api/approved_candidates/');
+        const response = await fetch('http://127.0.0.1:8000/api/approved_candidates/');
         console.log("Response Status:", response.status); // Check if it's 200
         
         const data = await response.json();
@@ -50,6 +50,7 @@ const showToast = (message) => {
 };
 
 // 4. Render Table
+// 4. Render Table
 const renderTable = (data) => {
     const tbody = document.getElementById('candidatesBody');
     if (!tbody) return;
@@ -63,12 +64,20 @@ const renderTable = (data) => {
     data.forEach(cand => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><div class="user-cell"><div class="user-avatar">${getInitials(cand.name)}</div><div><strong>${cand.name}</strong><br><small>${cand.email}</small></div></div></td>
-            <td>${cand.mobile || 'N/A'}</td>
-            <td><div>${cand.experience}</div><small><i class="fa-regular fa-calendar"></i> Joined: 11/08/2020</small></td>
+            <td>
+                <div class="user-cell">
+                    <div class="user-avatar">${getInitials(cand.full_name)}</div>
+                    <div>
+                        <strong>${cand.full_name}</strong><br>
+                        <small>${cand.email}</small>
+                    </div>
+                </div>
+            </td>
+            <td>${cand.phone || 'N/A'}</td>
+            <td><div>${cand.experiences || '0'} Years</div><small><i class="fa-regular fa-calendar"></i> Joined: 11/08/2020</small></td>
             <td>${getInterviewBadge(cand.status)}</td>
             <td>100000</td>
-            <td><a href="candidate-details.html?id=${cand.id}" class="btn btn-secondary btn-sm">View Profile</a></td>
+            <td><a href="../candidate-profile/candidate-details.html?id=${cand.id}" class="btn btn-secondary btn-sm">View Profile</a></td>
         `;
         tbody.appendChild(tr);
     });
