@@ -91,7 +91,9 @@
                 </div>
             </div>
         </section>
-    </div> <div id="hiringDashboard" class="fade-in-up">
+    </div> 
+    
+    <div id="hiringDashboard" class="fade-in-up" style="display: none;">
         <div class="dashboard-container">
             <div class="dashboard-header">
                 <h2><i class="fa-solid fa-address-card" style="color: var(--primary); margin-right: 10px;"></i>Candidate Details</h2>
@@ -104,10 +106,6 @@
                         <label>Full Name</label>
                         <input type="text" placeholder="" required>
                     </div>
-                    <!-- <div class="input-group">
-                        <label>Last Name</label>
-                        <input type="text" placeholder="e.g. Doe" required>
-                    </div> -->
                     <div class="input-group">
                         <label>Email Address</label>
                         <input type="email" placeholder="oppty@gmail.com" required>
@@ -116,11 +114,6 @@
                         <label>Phone Number</label>
                         <input type="tel" placeholder="9448989819" required>
                     </div>
-                    
-                    <!-- <div class="input-group">
-                        <label>Phone Number</label>
-                        <input type="tel" placeholder="+1 (555) 000-0000" required>
-                    </div> -->
                     <div class="input-group">
                         <label>Date of Birth</label> 
                         <input type="date" min="1900" max="2023" placeholder="e.g. 2001" required>
@@ -152,8 +145,7 @@
                 </div>
             </form>
 
-            <div id="processingSection" class="process-status-view">
-                
+            <div id="processingSection" class="process-status-view" style="display: none;">
                 <svg class="pl" viewBox="0 0 160 160" width="160px" height="160px" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto 30px; display: block;">
                     <defs>
                         <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
@@ -167,7 +159,6 @@
                             <rect x="28" y="28" width="104" height="104" fill="url(#grad)"></rect>
                         </mask>
                     </defs>
-                    
                     <g>
                         <g class="pl__ring-rotate">
                             <circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(223,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)"></circle>
@@ -178,7 +169,6 @@
                             <circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(193,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)"></circle>
                         </g>
                     </g>
-                    
                     <g>
                         <g stroke-width="4" stroke-dasharray="12 12" stroke-dashoffset="12" stroke-linecap="round" transform="translate(80,80)">
                             <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-135,0,0) translate(0,40)"></polyline>
@@ -203,7 +193,6 @@
                             <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(180,0,0) translate(0,40)"></polyline>
                         </g>
                     </g>
-                    
                     <g>
                         <g transform="translate(64,28)">
                             <g class="pl__arrows" transform="rotate(45,16,52)">
@@ -213,7 +202,6 @@
                             </g>
                         </g>
                     </g>
-                    
                     <g mask="url(#mask2)">
                         <g transform="translate(64,28)">
                             <g class="pl__arrows" transform="rotate(45,16,52)">
@@ -229,7 +217,7 @@
                 <p>Our HR team is currently reviewing your skills, experience, and portfolio.<br>This may take some time. Please leave this page.</p>
             </div>
 
-            <div id="interviewSection" class="process-status-view">
+            <div id="interviewSection" class="process-status-view" style="display: none;">
                 <div class="success-icon"><i class="fa-solid fa-calendar-check"></i></div>
                 <h3>Interview Scheduled!</h3>
                 <p>Congratulations! Your profile matches our requirements perfectly. HR has sent you an invite.</p>
@@ -247,6 +235,32 @@
                     <a href="#" class="btn-primary join-btn" onclick="alert('Starting Video Interview Bridge...')">
                         <i class="fa-solid fa-video"></i> Join Live Interview
                     </a>
+                </div>
+            </div>
+
+            <div id="postInterviewSection" class="process-status-view" style="display: none;">
+                <div class="success-icon" style="color: #ff9f43; font-size: 48px; margin-bottom: 20px;"><i class="fa-solid fa-trophy"></i></div>
+                <h3>Congratulations!</h3>
+                <p>You have successfully cleared the interview round.<br>Your Offer and Onboarding letters will be sent to your registered email shortly.</p>
+                
+                <div class="app-cards-wrapper" style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                    
+                    <div class="glass-card app-link-card" onclick="window.location.href='/hrms'" style="cursor: pointer; flex: 1; min-width: 200px; max-width: 250px; padding: 25px; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
+                        <div class="icon-box" style="margin: 0 auto 15px; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255, 159, 67, 0.1); color: #ff9f43; font-size: 24px;">
+                            <i class="fa-solid fa-users-gear"></i>
+                        </div>
+                        <h4 style="margin-bottom: 10px; font-weight: 700;">Employee HRMS</h4>
+                        <p style="font-size: 14px; opacity: 0.8; margin: 0;">Access your profile, attendance, and payroll records.</p>
+                    </div>
+
+                    <div class="glass-card app-link-card" onclick="window.location.href='/chat'" style="cursor: pointer; flex: 1; min-width: 200px; max-width: 250px; padding: 25px; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
+                        <div class="icon-box" style="margin: 0 auto 15px; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0, 210, 255, 0.1); color: #00d2ff; font-size: 24px;">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h4 style="margin-bottom: 10px; font-weight: 700;">Oppty Chats</h4>
+                        <p style="font-size: 14px; opacity: 0.8; margin: 0;">Connect, collaborate, and chat with your new team.</p>
+                    </div>
+
                 </div>
             </div>
 
@@ -288,7 +302,7 @@
             <form id="create-form">
                 <div class="input-group">
                     <label>Full Name</label>
-                    <input id="fullName" type="text" placeholder="John Doe" required>
+                    <input id="fullName" type="text" placeholder="Your full name" required>
                 </div>
                 <div class="input-group">
                     <label>Company Email</label>
@@ -306,10 +320,11 @@
         </div>
     </div>
 
-    <div id="hrSimulatorTool" class="hr-simulator-panel">
+    <div id="hrSimulatorTool" class="hr-simulator-panel" style="display: none;">
         <p><i class="fa-solid fa-user-tie"></i> <b>HR Dashboard</b> (Simulator)</p>
-        <p style="font-size: 12px; margin-bottom: 10px;">A profile is waiting for review.</p>
-        <button onclick="approveCandidate()" class="btn-hr-approve"><i class="fa-solid fa-check"></i> Approve & Schedule</button>
+        <p id="hrSimText" style="font-size: 12px; margin-bottom: 10px;">A profile is waiting for review.</p>
+        <button id="btnApprove" onclick="approveCandidate()" class="btn-hr-approve"><i class="fa-solid fa-check"></i> Approve & Schedule</button>
+        <button id="btnReleaseOffer" onclick="releaseOffer()" class="btn-hr-approve" style="display: none; background: #28a745;"><i class="fa-solid fa-envelope-open-text"></i> Release Offer</button>
     </div>
 
     <script src="heropage.js"></script>

@@ -11,10 +11,9 @@ function switchModal(closeId, openId) {
     closeModal(closeId);
     setTimeout(() => {
         openModal(openId);
-    }, 300); // Wait for fade out
+    }, 300); 
 }
 
-// Close modal on outside click
 window.onclick = function(event) {
     if (event.target.classList.contains('modal-overlay')) {
         event.target.classList.remove('active');
@@ -23,8 +22,6 @@ window.onclick = function(event) {
 
 
 // ====== LOGIN / REGISTRATION LOGIC ======
-
-// 1. Sign Up Flow (Does NOT open dashboard directly)
 document.getElementById('create-form').addEventListener('submit',(event)=>{
     event.preventDefault();
 
@@ -50,7 +47,6 @@ document.getElementById('create-form').addEventListener('submit',(event)=>{
     });
 })
 
-// 2. Sign In Flow (Opens the dashboard)
 function performSignIn(event) {
     event.preventDefault();
 
@@ -66,54 +62,44 @@ function performSignIn(event) {
     })
     .then(async res => {
         const result = await res.json();
-
-        if (!res.ok) {
-            console.log("Login Error:", result);
-            throw new Error(result.message || "Login failed");
-        }
-
+        if (!res.ok) throw new Error(result.message || "Login failed");
         return result;
     })
     .then(result => {
-
-        console.log("Backend Response:", result);
-
         if (result.status === "success") {
-
-            // ✅ store user id
             localStorage.setItem('id', result.id);
-
             closeModal('signinModal');
 
             document.getElementById('mainLandingPage').style.display = 'none';
             document.getElementById('hiringDashboard').style.display = 'block';
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // 🔥 NEW: handle tracking UI
             const status = result.form_status;
 
             // Reset all sections first
             document.getElementById('hiringForm').style.display = 'none';
             document.getElementById('processingSection').style.display = 'none';
             document.getElementById('interviewSection').style.display = 'none';
+            document.getElementById('postInterviewSection').style.display = 'none'; // NEW
             document.getElementById('hrSimulatorTool').style.display = 'none';
 
             if (status === "form_pending" || !status) {
-                
                 document.getElementById('hiringForm').style.display = 'block';
-
             } else if (status === "form_submitted") {
-               
                 document.getElementById('processingSection').style.display = 'block';
-
+                document.getElementById('hrSimulatorTool').style.display = 'block';
             } else if (status === "interview_scheduled") {
-                
                 document.getElementById('interviewSection').style.display = 'block';
-
-            } else if (status === "offer_released") {
                 
-                alert("Offer Letter Released 🎉");
+                // Setup simulator for the next stage
+                document.getElementById('hrSimulatorTool').style.display = 'block';
+                document.getElementById('btnApprove').style.display = 'none';
+                document.getElementById('btnReleaseOffer').style.display = 'inline-block';
+                document.getElementById('hrSimText').innerText = 'Interview completed. Release offer?';
+                
+            } else if (status === "offer_released") {
+                // UPDATED: Now shows the Post-Interview Section instead of just an alert
+                document.getElementById('postInterviewSection').style.display = 'block';
             }
 
         } else {
@@ -127,33 +113,28 @@ function performSignIn(event) {
 }
 
 
-// 3. Sign Out Function
 function signOut() {
-    // Reset Dashboard Views to default form state
     document.getElementById('hiringForm').style.display = 'block';
     document.getElementById('processingSection').style.display = 'none';
     document.getElementById('interviewSection').style.display = 'none';
+    document.getElementById('postInterviewSection').style.display = 'none'; // NEW
     document.getElementById('hrSimulatorTool').style.display = 'none';
     
-    // Reset the Form
     document.getElementById('hiringForm').reset();
     document.getElementById('fileNameDisplay').style.display = 'none';
     
-    // Switch Views Back to Landing
     document.getElementById('hiringDashboard').style.display = 'none';
     document.getElementById('mainLandingPage').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 
-// ====== FORM SUBMISSION & HR SIMULATION ======
-const emp_id = localStorage.getItem('id');  // Retrieved from login response, used for form submission
+// ====== FORM SUBMISSION ======
 function handleFormSubmit(event) {
     event.preventDefault();
 
     const form = document.getElementById('hiringForm');
     const formData = new FormData();
-
     const emp_id = localStorage.getItem('id');
 
     if (!emp_id) {
@@ -162,7 +143,6 @@ function handleFormSubmit(event) {
     }
 
     const fileInput = document.getElementById('resumeInput');
-
     if (fileInput.files.length === 0) {
         alert("Resume is required");
         return;
@@ -171,16 +151,11 @@ function handleFormSubmit(event) {
     formData.append("name", emp_id);
     formData.append("full_name", form.querySelector('input[type="text"]').value);
     formData.append("email", form.querySelector('input[type="email"]').value);
-    formData.append("phone", form.querySelector('input[type="tel"]').value.slice(0,10)); // limit
+    formData.append("phone", form.querySelector('input[type="tel"]').value.slice(0,10));
     formData.append("dob", form.querySelector('input[type="date"]').value);
     formData.append("passed_out", form.querySelectorAll('input[type="number"]')[0].value.toString().slice(0,4));
     formData.append("experiences", form.querySelectorAll('input[type="number"]')[1].value.toString());
     formData.append("resume", fileInput.files[0]);
-
-    // DEBUG
-    for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-    }
 
     fetch('http://192.168.1.10:8000/api/formsubmit/', {
         method: "POST",
@@ -188,10 +163,13 @@ function handleFormSubmit(event) {
     })
     .then(res => res.json())
     .then(result => {
-        console.log("Form Submit Response:", result);
-
         document.getElementById('hiringForm').style.display = 'none';
         document.getElementById('processingSection').style.display = 'block';
+        
+        // Reset simulator buttons for fresh flow
+        document.getElementById('btnApprove').style.display = 'inline-block';
+        document.getElementById('btnReleaseOffer').style.display = 'none';
+        document.getElementById('hrSimText').innerText = 'A profile is waiting for review.';
         document.getElementById('hrSimulatorTool').style.display = 'block';
     })
     .catch(err => {
@@ -200,14 +178,22 @@ function handleFormSubmit(event) {
     });
 }
 
-// Manually triggered by the presenter using the floating "Approve & Schedule" button
+// ====== HR SIMULATOR LOGIC ======
 function approveCandidate() {
-    // Hide processing spinner and HR Simulator panel
     document.getElementById('processingSection').style.display = 'none';
-    document.getElementById('hrSimulatorTool').style.display = 'none';
-    
-    // Show the final Scheduled Interview view
     document.getElementById('interviewSection').style.display = 'block';
+    
+    // Switch simulator button to Offer mode
+    document.getElementById('btnApprove').style.display = 'none';
+    document.getElementById('btnReleaseOffer').style.display = 'inline-block';
+    document.getElementById('hrSimText').innerText = 'Interview completed. Release offer?';
+}
+
+// NEW: Simulator button to mimic sending the offer and updating status to "offer_released"
+function releaseOffer() {
+    document.getElementById('interviewSection').style.display = 'none';
+    document.getElementById('postInterviewSection').style.display = 'block';
+    document.getElementById('hrSimulatorTool').style.display = 'none'; // Hide simulator as flow is complete
 }
 
 
@@ -218,7 +204,6 @@ const fileNameDisplay = document.getElementById('fileNameDisplay');
 
 fileInput.addEventListener('change', function() {
     if (this.files && this.files[0]) {
-        // Display the selected file name
         fileNameDisplay.innerText = "Selected: " + this.files[0].name;
         fileNameDisplay.style.display = 'block';
     } else {
@@ -226,7 +211,6 @@ fileInput.addEventListener('change', function() {
     }
 });
 
-// Drag and drop visual effects
 dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropZone.classList.add('dragover');
