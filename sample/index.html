@@ -3,2235 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiger Chase - Cinematic Experience</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            overflow: hidden;
-            background: #000;
-            font-family: 'Georgia', serif;
-        }
-
-        #canvas-container {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-        }
-
-        canvas {
-            display: block;
-        }
-
-        #cinematic-bars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .bar-top, .bar-bottom {
-            position: absolute;
-            width: 100%;
-            height: 12%;
-            background: #000;
-            z-index: 10;
-        }
-
-        .bar-top { top: 0; }
-        .bar-bottom { bottom: 0; }
-
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            transition: opacity 1.5s ease;
-        }
-
-        #loading-screen h1 {
-            color: #c4a35a;
-            font-size: 3em;
-            letter-spacing: 15px;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-            text-shadow: 0 0 30px rgba(196, 163, 90, 0.5);
-        }
-
-        #loading-bar-container {
-            width: 300px;
-            height: 3px;
-            background: #333;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        #loading-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #c4a35a, #ffd700);
-            transition: width 0.3s;
-        }
-
-        #subtitle {
-            position: fixed;
-            bottom: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-size: 1.4em;
-            text-align: center;
-            z-index: 20;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            letter-spacing: 2px;
-            max-width: 80%;
-        }
-
-        #vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9;
-            background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
-        }
-
-        #title-card {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
-            text-align: center;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #title-card h1 {
-            color: #c4a35a;
-            font-size: 5em;
-            letter-spacing: 20px;
-            text-transform: uppercase;
-            text-shadow: 0 0 60px rgba(196, 163, 90, 0.8);
-        }
-
-        #title-card p {
-            color: #999;
-            font-size: 1.2em;
-            letter-spacing: 10px;
-            margin-top: 20px;
-        }
-
-        #restart-btn {
-            position: fixed;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 60;
-            padding: 15px 40px;
-            background: transparent;
-            border: 2px solid #c4a35a;
-            color: #c4a35a;
-            font-size: 1.2em;
-            letter-spacing: 5px;
-            cursor: pointer;
-            display: none;
-            transition: all 0.3s;
-        }
-
-        #restart-btn:hover {
-            background: #c4a35a;
-            color: #000;
-        }
-
-        .lens-flare {
-            position: fixed;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 8;
-            opacity: 0;
-        }
-
-        #heartbeat {
-            position: fixed;
-            top: 15%;
-            right: 5%;
-            z-index: 20;
-            opacity: 0;
-            transition: opacity 1s;
-        }
-
-        #heartbeat-text {
-            color: #ff3333;
-            font-size: 1.5em;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255,0,0,0.5);
-        }
-
-        #speed-lines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 7;
-            opacity: 0;
-        }
-
-        .motion-blur {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 6;
-            backdrop-filter: blur(0px);
-            transition: backdrop-filter 0.3s;
-        }
-    </style>
+    <title>Oppty - #1 Hiring Platform</title>
+    <link rel="icon" href="../assets/opptylogo2.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="loading-screen">
-    <h1>The Chase</h1>
-    <div id="loading-bar-container">
-        <div id="loading-bar"></div>
+    <div class="particles">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
     </div>
-</div>
 
-<div id="canvas-container"></div>
-
-<div id="cinematic-bars">
-    <div class="bar-top"></div>
-    <div class="bar-bottom"></div>
-</div>
-
-<div id="vignette"></div>
-
-<div id="title-card">
-    <h1>The Chase</h1>
-    <p>Deep in the wilderness</p>
-</div>
-
-<div id="subtitle"></div>
-
-<div id="heartbeat">
-    <span id="heartbeat-text">♥ 165 BPM</span>
-</div>
-
-<canvas id="speed-lines"></canvas>
-
-<div class="motion-blur"></div>
-
-<button id="restart-btn" onclick="location.reload()">REPLAY</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-<script>
-// ==================== CINEMATIC ENGINE ====================
-
-class CinematicEngine {
-    constructor() {
-        this.scene = new THREE.Scene();
-        this.clock = new THREE.Clock();
-        this.time = 0;
-        this.phase = 'loading';
-        this.cameraShakeIntensity = 0;
-        this.trees = [];
-        this.rocks = [];
-        this.particles = [];
-        this.waterParticles = [];
-        this.dustParticles = [];
-        this.leaves = [];
-        this.mistParticles = [];
-        this.fireflies = [];
-        this.manParts = {};
-        this.tigerParts = {};
-        this.runCycle = 0;
-        this.tigerRunCycle = 0;
-        this.manPosition = new THREE.Vector3(0, 0, 0);
-        this.tigerPosition = new THREE.Vector3(0, 0, -25);
-        this.subtitle = document.getElementById('subtitle');
-        this.heartbeat = document.getElementById('heartbeat');
-        this.heartbeatText = document.getElementById('heartbeat-text');
-        this.speedLinesCanvas = document.getElementById('speed-lines');
-        this.speedLinesCtx = this.speedLinesCanvas.getContext('2d');
-        this.waterfallReached = false;
-        this.jumpStarted = false;
-        this.jumpTime = 0;
-        this.fogDensity = 0.015;
-        this.audioCtx = null;
-
-        this.init();
-    }
-
-    init() {
-        // Renderer
-        this.renderer = new THREE.WebGLRenderer({ 
-            antialias: true,
-            alpha: false,
-            powerPreference: "high-performance"
-        });
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 0.8;
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
-        document.getElementById('canvas-container').appendChild(this.renderer.domElement);
-
-        // Camera
-        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set(0, 8, 20);
-
-        // Speed lines canvas
-        this.speedLinesCanvas.width = window.innerWidth;
-        this.speedLinesCanvas.height = window.innerHeight;
-
-        // Fog
-        this.scene.fog = new THREE.FogExp2(0x1a2a1a, this.fogDensity);
-
-        this.createLighting();
-        this.createForest();
-        this.createGround();
-        this.createMan();
-        this.createTiger();
-        this.createWaterfall();
-        this.createParticleSystems();
-        this.createMist();
-        this.createFireflies();
-        this.createSkybox();
-
-        // Audio
-        this.initAudio();
-
-        // Loading simulation
-        this.simulateLoading();
-
-        window.addEventListener('resize', () => this.onResize());
-    }
-
-    initAudio() {
-        try {
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch(e) {}
-    }
-
-    playHeartbeat() {
-        if (!this.audioCtx) return;
-        try {
-            const osc = this.audioCtx.createOscillator();
-            const gain = this.audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(this.audioCtx.destination);
-            osc.frequency.value = 60;
-            osc.type = 'sine';
-            gain.gain.setValueAtTime(0.3, this.audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.3);
-            osc.start();
-            osc.stop(this.audioCtx.currentTime + 0.3);
-        } catch(e) {}
-    }
-
-    playFootstep() {
-        if (!this.audioCtx) return;
-        try {
-            const bufferSize = this.audioCtx.sampleRate * 0.1;
-            const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
-            }
-            const source = this.audioCtx.createBufferSource();
-            source.buffer = buffer;
-            const filter = this.audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 300;
-            const gain = this.audioCtx.createGain();
-            gain.gain.value = 0.15;
-            source.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.audioCtx.destination);
-            source.start();
-        } catch(e) {}
-    }
-
-    playWaterfall() {
-        if (!this.audioCtx || this.waterfallAudioPlaying) return;
-        this.waterfallAudioPlaying = true;
-        try {
-            const bufferSize = this.audioCtx.sampleRate * 4;
-            const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * 0.3;
-            }
-            const source = this.audioCtx.createBufferSource();
-            source.buffer = buffer;
-            source.loop = true;
-            const filter = this.audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 800;
-            const gain = this.audioCtx.createGain();
-            gain.gain.value = 0;
-            gain.gain.linearRampToValueAtTime(0.2, this.audioCtx.currentTime + 3);
-            source.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.audioCtx.destination);
-            source.start();
-            this.waterfallGain = gain;
-        } catch(e) {}
-    }
-
-    simulateLoading() {
-        let progress = 0;
-        const loadingBar = document.getElementById('loading-bar');
-        const interval = setInterval(() => {
-            progress += Math.random() * 15 + 5;
-            if (progress >= 100) {
-                progress = 100;
-                loadingBar.style.width = '100%';
-                clearInterval(interval);
-                setTimeout(() => {
-                    document.getElementById('loading-screen').style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById('loading-screen').style.display = 'none';
-                        this.startCinematic();
-                    }, 1500);
-                }, 500);
-            } else {
-                loadingBar.style.width = progress + '%';
-            }
-        }, 200);
-    }
-
-    createSkybox() {
-        const skyGeo = new THREE.SphereGeometry(500, 32, 32);
-        const skyMat = new THREE.ShaderMaterial({
-            uniforms: {
-                topColor: { value: new THREE.Color(0x0a1520) },
-                bottomColor: { value: new THREE.Color(0x1a3a1a) },
-                offset: { value: 20 },
-                exponent: { value: 0.4 }
-            },
-            vertexShader: `
-                varying vec3 vWorldPosition;
-                void main() {
-                    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-                    vWorldPosition = worldPosition.xyz;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                uniform vec3 topColor;
-                uniform vec3 bottomColor;
-                uniform float offset;
-                uniform float exponent;
-                varying vec3 vWorldPosition;
-                void main() {
-                    float h = normalize(vWorldPosition + offset).y;
-                    gl_FragColor = vec4(mix(bottomColor, topColor, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);
-                }
-            `,
-            side: THREE.BackSide
-        });
-        this.scene.add(new THREE.Mesh(skyGeo, skyMat));
-    }
-
-    createLighting() {
-        // Ambient
-        const ambientLight = new THREE.AmbientLight(0x1a2a15, 0.3);
-        this.scene.add(ambientLight);
-
-        // Main directional (sun rays through canopy)
-        this.sunLight = new THREE.DirectionalLight(0xffeedd, 1.2);
-        this.sunLight.position.set(30, 50, 20);
-        this.sunLight.castShadow = true;
-        this.sunLight.shadow.mapSize.width = 2048;
-        this.sunLight.shadow.mapSize.height = 2048;
-        this.sunLight.shadow.camera.near = 0.5;
-        this.sunLight.shadow.camera.far = 200;
-        this.sunLight.shadow.camera.left = -50;
-        this.sunLight.shadow.camera.right = 50;
-        this.sunLight.shadow.camera.top = 50;
-        this.sunLight.shadow.camera.bottom = -50;
-        this.sunLight.shadow.bias = -0.001;
-        this.scene.add(this.sunLight);
-
-        // God rays (volumetric light shafts simulation)
-        for (let i = 0; i < 8; i++) {
-            const rayGeo = new THREE.PlaneGeometry(2, 40);
-            const rayMat = new THREE.MeshBasicMaterial({
-                color: 0xffeeaa,
-                transparent: true,
-                opacity: 0.03,
-                side: THREE.DoubleSide,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-            const ray = new THREE.Mesh(rayGeo, rayMat);
-            ray.position.set(
-                Math.random() * 100 - 50,
-                15,
-                Math.random() * 200 - 100
-            );
-            ray.rotation.y = Math.random() * Math.PI;
-            ray.rotation.z = Math.random() * 0.3 - 0.15;
-            this.scene.add(ray);
-        }
-
-        // Rim light (back light for dramatic effect)
-        const rimLight = new THREE.DirectionalLight(0x4488ff, 0.5);
-        rimLight.position.set(-20, 30, -40);
-        this.scene.add(rimLight);
-
-        // Fill light
-        const fillLight = new THREE.HemisphereLight(0x4488aa, 0x224422, 0.4);
-        this.scene.add(fillLight);
-
-        // Point lights for atmosphere
-        const pointLight1 = new THREE.PointLight(0xffaa44, 0.5, 30);
-        pointLight1.position.set(10, 8, -20);
-        this.scene.add(pointLight1);
-    }
-
-    createGround() {
-        // Main ground
-        const groundGeo = new THREE.PlaneGeometry(200, 600, 100, 300);
-        const positions = groundGeo.attributes.position.array;
+    <div id="mainLandingPage">
         
-        for (let i = 0; i < positions.length; i += 3) {
-            const x = positions[i];
-            const z = positions[i + 1];
-            let height = Math.sin(x * 0.1) * 0.5 + Math.cos(z * 0.05) * 0.8;
-            height += (Math.random() - 0.5) * 0.3;
-            
-            // Waterfall cliff
-            if (z < -120) {
-                height -= (Math.abs(z + 120)) * 0.8;
-            }
-            
-            // Path (flatten center)
-            const distFromCenter = Math.abs(x);
-            if (distFromCenter < 4) {
-                height *= 0.3;
-            }
-            
-            positions[i + 2] = height;
-        }
-        
-        groundGeo.computeVertexNormals();
-
-        const groundMat = new THREE.MeshStandardMaterial({
-            color: 0x2a3a1a,
-            roughness: 0.9,
-            metalness: 0.0,
-        });
-        
-        const ground = new THREE.Mesh(groundGeo, groundMat);
-        ground.rotation.x = -Math.PI / 2;
-        ground.receiveShadow = true;
-        this.scene.add(ground);
-        this.ground = ground;
-
-        // Dirt path
-        const pathGeo = new THREE.PlaneGeometry(5, 600, 10, 100);
-        const pathMat = new THREE.MeshStandardMaterial({
-            color: 0x4a3520,
-            roughness: 1.0,
-            metalness: 0.0,
-        });
-        const path = new THREE.Mesh(pathGeo, pathMat);
-        path.rotation.x = -Math.PI / 2;
-        path.position.y = 0.05;
-        path.receiveShadow = true;
-        this.scene.add(path);
-    }
-
-    createTree(x, z, scale = 1) {
-        const treeGroup = new THREE.Group();
-        
-        // Trunk
-        const trunkHeight = (6 + Math.random() * 6) * scale;
-        const trunkGeo = new THREE.CylinderGeometry(0.2 * scale, 0.4 * scale, trunkHeight, 8);
-        const trunkMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(0x3a2a15).lerp(new THREE.Color(0x5a4a30), Math.random()),
-            roughness: 0.95,
-            metalness: 0.0
-        });
-        const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-        trunk.position.y = trunkHeight / 2;
-        trunk.castShadow = true;
-        trunk.receiveShadow = true;
-        treeGroup.add(trunk);
-
-        // Branches
-        const branchCount = 3 + Math.floor(Math.random() * 4);
-        for (let i = 0; i < branchCount; i++) {
-            const branchLen = (2 + Math.random() * 3) * scale;
-            const branchGeo = new THREE.CylinderGeometry(0.05 * scale, 0.12 * scale, branchLen, 6);
-            const branch = new THREE.Mesh(branchGeo, trunkMat);
-            const branchHeight = trunkHeight * (0.4 + Math.random() * 0.5);
-            branch.position.y = branchHeight;
-            const angle = Math.random() * Math.PI * 2;
-            branch.position.x = Math.cos(angle) * 0.5;
-            branch.position.z = Math.sin(angle) * 0.5;
-            branch.rotation.z = (Math.random() - 0.5) * 1.2;
-            branch.rotation.x = (Math.random() - 0.5) * 0.5;
-            branch.castShadow = true;
-            treeGroup.add(branch);
-        }
-
-        // Foliage layers
-        const foliageLayers = 2 + Math.floor(Math.random() * 3);
-        for (let i = 0; i < foliageLayers; i++) {
-            const foliageRadius = (2 + Math.random() * 2.5) * scale;
-            const foliageGeo = new THREE.SphereGeometry(foliageRadius, 8, 8);
-            
-            // Deform foliage
-            const fPos = foliageGeo.attributes.position.array;
-            for (let j = 0; j < fPos.length; j += 3) {
-                fPos[j] += (Math.random() - 0.5) * foliageRadius * 0.4;
-                fPos[j + 1] += (Math.random() - 0.5) * foliageRadius * 0.3;
-                fPos[j + 2] += (Math.random() - 0.5) * foliageRadius * 0.4;
-            }
-            foliageGeo.computeVertexNormals();
-
-            const greenVariant = Math.random();
-            const foliageMat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color().setHSL(0.28 + greenVariant * 0.08, 0.5 + greenVariant * 0.3, 0.15 + greenVariant * 0.15),
-                roughness: 0.8,
-                metalness: 0.0,
-                transparent: true,
-                opacity: 0.9
-            });
-            const foliage = new THREE.Mesh(foliageGeo, foliageMat);
-            foliage.position.y = trunkHeight * (0.7 + i * 0.15) + Math.random() * 2;
-            foliage.position.x = (Math.random() - 0.5) * 2 * scale;
-            foliage.position.z = (Math.random() - 0.5) * 2 * scale;
-            foliage.castShadow = true;
-            foliage.receiveShadow = true;
-            treeGroup.add(foliage);
-        }
-
-        // Roots
-        for (let i = 0; i < 4; i++) {
-            const rootGeo = new THREE.CylinderGeometry(0.05 * scale, 0.15 * scale, 2 * scale, 4);
-            const root = new THREE.Mesh(rootGeo, trunkMat);
-            root.position.y = 0.3;
-            const angle = (i / 4) * Math.PI * 2 + Math.random() * 0.5;
-            root.position.x = Math.cos(angle) * 0.4 * scale;
-            root.position.z = Math.sin(angle) * 0.4 * scale;
-            root.rotation.z = Math.cos(angle) * 0.8;
-            root.rotation.x = Math.sin(angle) * 0.8;
-            treeGroup.add(root);
-        }
-
-        treeGroup.position.set(x, 0, z);
-        treeGroup.rotation.y = Math.random() * Math.PI * 2;
-        this.scene.add(treeGroup);
-        this.trees.push(treeGroup);
-        return treeGroup;
-    }
-
-    createForest() {
-        // Dense forest on both sides of path
-        for (let z = 50; z > -200; z -= 3) {
-            // Left side
-            for (let i = 0; i < 3; i++) {
-                const x = -(5 + Math.random() * 40);
-                const zOff = z + Math.random() * 3;
-                this.createTree(x, zOff, 0.7 + Math.random() * 0.8);
-            }
-            // Right side
-            for (let i = 0; i < 3; i++) {
-                const x = 5 + Math.random() * 40;
-                const zOff = z + Math.random() * 3;
-                this.createTree(x, zOff, 0.7 + Math.random() * 0.8);
-            }
-        }
-
-        // Some trees closer to path for near-misses
-        for (let z = 30; z > -110; z -= 15) {
-            const side = Math.random() > 0.5 ? 1 : -1;
-            this.createTree(side * (3 + Math.random() * 2), z + Math.random() * 5, 0.5 + Math.random() * 0.4);
-        }
-
-        // Undergrowth (bushes and ferns)
-        for (let i = 0; i < 200; i++) {
-            const bushGeo = new THREE.SphereGeometry(0.5 + Math.random() * 1, 6, 6);
-            const fPos = bushGeo.attributes.position.array;
-            for (let j = 0; j < fPos.length; j += 3) {
-                fPos[j] += (Math.random() - 0.5) * 0.5;
-                fPos[j + 1] *= 0.6;
-                fPos[j + 2] += (Math.random() - 0.5) * 0.5;
-            }
-            const bushMat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color().setHSL(0.25 + Math.random() * 0.1, 0.6, 0.1 + Math.random() * 0.15),
-                roughness: 0.9
-            });
-            const bush = new THREE.Mesh(bushGeo, bushMat);
-            bush.position.set(
-                (Math.random() - 0.5) * 80,
-                0.3,
-                Math.random() * 200 - 150
-            );
-            if (Math.abs(bush.position.x) < 4) bush.position.x = (bush.position.x > 0 ? 4 : -4) + Math.random();
-            bush.castShadow = true;
-            this.scene.add(bush);
-        }
-
-        // Rocks
-        for (let i = 0; i < 80; i++) {
-            const rockSize = 0.3 + Math.random() * 1.5;
-            const rockGeo = new THREE.DodecahedronGeometry(rockSize, 1);
-            const rPos = rockGeo.attributes.position.array;
-            for (let j = 0; j < rPos.length; j += 3) {
-                rPos[j] += (Math.random() - 0.5) * rockSize * 0.3;
-                rPos[j + 1] += (Math.random() - 0.5) * rockSize * 0.3;
-                rPos[j + 2] += (Math.random() - 0.5) * rockSize * 0.3;
-            }
-            rockGeo.computeVertexNormals();
-            const rockMat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color().setHSL(0.08, 0.1, 0.15 + Math.random() * 0.2),
-                roughness: 0.95,
-                metalness: 0.1
-            });
-            const rock = new THREE.Mesh(rockGeo, rockMat);
-            rock.position.set(
-                (Math.random() - 0.5) * 60,
-                rockSize * 0.3,
-                Math.random() * 200 - 150
-            );
-            rock.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-            rock.castShadow = true;
-            rock.receiveShadow = true;
-            this.scene.add(rock);
-            this.rocks.push(rock);
-        }
-
-        // Fallen logs
-        for (let i = 0; i < 10; i++) {
-            const logGeo = new THREE.CylinderGeometry(0.2, 0.3, 5 + Math.random() * 4, 8);
-            const logMat = new THREE.MeshStandardMaterial({
-                color: 0x3a2815,
-                roughness: 0.95
-            });
-            const log = new THREE.Mesh(logGeo, logMat);
-            log.position.set(
-                (Math.random() - 0.5) * 40,
-                0.2,
-                Math.random() * 150 - 100
-            );
-            log.rotation.z = Math.PI / 2;
-            log.rotation.y = Math.random() * Math.PI;
-            if (Math.abs(log.position.x) < 5) log.position.x += (log.position.x > 0 ? 5 : -5);
-            log.castShadow = true;
-            this.scene.add(log);
-        }
-    }
-
-    createMan() {
-        this.manGroup = new THREE.Group();
-        
-        const skinColor = 0xc4956a;
-        const shirtColor = 0x334455;
-        const pantsColor = 0x2a2a2a;
-        const shoeColor = 0x1a1008;
-
-        // Head
-        const headGeo = new THREE.SphereGeometry(0.3, 12, 12);
-        const headMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.7 });
-        const head = new THREE.Mesh(headGeo, headMat);
-        head.position.y = 2.8;
-        head.castShadow = true;
-        this.manGroup.add(head);
-        this.manParts.head = head;
-
-        // Hair
-        const hairGeo = new THREE.SphereGeometry(0.32, 8, 8, 0, Math.PI * 2, 0, Math.PI * 0.6);
-        const hairMat = new THREE.MeshStandardMaterial({ color: 0x1a0a05, roughness: 0.9 });
-        const hair = new THREE.Mesh(hairGeo, hairMat);
-        hair.position.y = 2.85;
-        this.manGroup.add(hair);
-
-        // Torso
-        const torsoGeo = new THREE.BoxGeometry(0.7, 1.0, 0.4);
-        const torsoMat = new THREE.MeshStandardMaterial({ color: shirtColor, roughness: 0.8 });
-        const torso = new THREE.Mesh(torsoGeo, torsoMat);
-        torso.position.y = 2.1;
-        torso.castShadow = true;
-        this.manGroup.add(torso);
-        this.manParts.torso = torso;
-
-        // Upper arms
-        const armGeo = new THREE.BoxGeometry(0.18, 0.6, 0.18);
-        const armMat = new THREE.MeshStandardMaterial({ color: shirtColor, roughness: 0.8 });
-
-        const leftUpperArm = new THREE.Group();
-        const leftArmMesh = new THREE.Mesh(armGeo, armMat);
-        leftArmMesh.position.y = -0.3;
-        leftArmMesh.castShadow = true;
-        leftUpperArm.add(leftArmMesh);
-        leftUpperArm.position.set(-0.5, 2.5, 0);
-        this.manGroup.add(leftUpperArm);
-        this.manParts.leftUpperArm = leftUpperArm;
-
-        // Left forearm
-        const forearmGeo = new THREE.BoxGeometry(0.15, 0.5, 0.15);
-        const forearmMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.7 });
-        const leftForearm = new THREE.Group();
-        const leftForearmMesh = new THREE.Mesh(forearmGeo, forearmMat);
-        leftForearmMesh.position.y = -0.25;
-        leftForearmMesh.castShadow = true;
-        leftForearm.add(leftForearmMesh);
-        leftForearm.position.y = -0.6;
-        leftUpperArm.add(leftForearm);
-        this.manParts.leftForearm = leftForearm;
-
-        const rightUpperArm = new THREE.Group();
-        const rightArmMesh = new THREE.Mesh(armGeo, armMat);
-        rightArmMesh.position.y = -0.3;
-        rightArmMesh.castShadow = true;
-        rightUpperArm.add(rightArmMesh);
-        rightUpperArm.position.set(0.5, 2.5, 0);
-        this.manGroup.add(rightUpperArm);
-        this.manParts.rightUpperArm = rightUpperArm;
-
-        const rightForearm = new THREE.Group();
-        const rightForearmMesh = new THREE.Mesh(forearmGeo, forearmMat);
-        rightForearmMesh.position.y = -0.25;
-        rightForearmMesh.castShadow = true;
-        rightForearm.add(rightForearmMesh);
-        rightForearm.position.y = -0.6;
-        rightUpperArm.add(rightForearm);
-        this.manParts.rightForearm = rightForearm;
-
-        // Legs
-        const legGeo = new THREE.BoxGeometry(0.22, 0.7, 0.22);
-        const legMat = new THREE.MeshStandardMaterial({ color: pantsColor, roughness: 0.8 });
-
-        const leftUpperLeg = new THREE.Group();
-        const leftLegMesh = new THREE.Mesh(legGeo, legMat);
-        leftLegMesh.position.y = -0.35;
-        leftLegMesh.castShadow = true;
-        leftUpperLeg.add(leftLegMesh);
-        leftUpperLeg.position.set(-0.2, 1.5, 0);
-        this.manGroup.add(leftUpperLeg);
-        this.manParts.leftUpperLeg = leftUpperLeg;
-
-        const leftLowerLeg = new THREE.Group();
-        const leftLowerLegMesh = new THREE.Mesh(legGeo, legMat);
-        leftLowerLegMesh.position.y = -0.35;
-        leftLowerLegMesh.castShadow = true;
-        leftLowerLeg.add(leftLowerLegMesh);
-        leftLowerLeg.position.y = -0.7;
-        leftUpperLeg.add(leftLowerLeg);
-        this.manParts.leftLowerLeg = leftLowerLeg;
-
-        // Shoe
-        const shoeGeo = new THREE.BoxGeometry(0.2, 0.12, 0.35);
-        const shoeMat = new THREE.MeshStandardMaterial({ color: shoeColor, roughness: 0.9 });
-        const leftShoe = new THREE.Mesh(shoeGeo, shoeMat);
-        leftShoe.position.set(0, -0.7, 0.05);
-        leftShoe.castShadow = true;
-        leftLowerLeg.add(leftShoe);
-
-        const rightUpperLeg = new THREE.Group();
-        const rightLegMesh = new THREE.Mesh(legGeo, legMat);
-        rightLegMesh.position.y = -0.35;
-        rightLegMesh.castShadow = true;
-        rightUpperLeg.add(rightLegMesh);
-        rightUpperLeg.position.set(0.2, 1.5, 0);
-        this.manGroup.add(rightUpperLeg);
-        this.manParts.rightUpperLeg = rightUpperLeg;
-
-        const rightLowerLeg = new THREE.Group();
-        const rightLowerLegMesh = new THREE.Mesh(legGeo, legMat);
-        rightLowerLegMesh.position.y = -0.35;
-        rightLowerLegMesh.castShadow = true;
-        rightLowerLeg.add(rightLowerLegMesh);
-        rightLowerLeg.position.y = -0.7;
-        rightUpperLeg.add(rightLowerLeg);
-        this.manParts.rightLowerLeg = rightLowerLeg;
-
-        const rightShoe = new THREE.Mesh(shoeGeo, shoeMat);
-        rightShoe.position.set(0, -0.7, 0.05);
-        rightShoe.castShadow = true;
-        rightLowerLeg.add(rightShoe);
-
-        this.manGroup.position.copy(this.manPosition);
-        this.scene.add(this.manGroup);
-    }
-
-    createTiger() {
-        this.tigerGroup = new THREE.Group();
-
-        const orangeColor = 0xcc6a10;
-        const darkStripe = 0x1a0a00;
-        const whiteColor = 0xf0e8d8;
-
-        // Body
-        const bodyGeo = new THREE.BoxGeometry(0.9, 0.8, 2.2);
-        const bodyMat = new THREE.MeshStandardMaterial({ color: orangeColor, roughness: 0.7 });
-        const body = new THREE.Mesh(bodyGeo, bodyMat);
-        body.position.y = 1.2;
-        body.castShadow = true;
-        this.tigerGroup.add(body);
-        this.tigerParts.body = body;
-
-        // Stripes
-        for (let i = 0; i < 8; i++) {
-            const stripeGeo = new THREE.BoxGeometry(0.95, 0.08, 0.15);
-            const stripeMat = new THREE.MeshStandardMaterial({ color: darkStripe, roughness: 0.8 });
-            const stripe = new THREE.Mesh(stripeGeo, stripeMat);
-            stripe.position.set(0, 1.2 + (Math.random() - 0.5) * 0.5, -0.8 + i * 0.22);
-            this.tigerGroup.add(stripe);
-        }
-
-        // Head
-        const headGeo = new THREE.BoxGeometry(0.7, 0.65, 0.7);
-        const headMat = new THREE.MeshStandardMaterial({ color: orangeColor, roughness: 0.7 });
-        const head = new THREE.Mesh(headGeo, headMat);
-        head.position.set(0, 1.5, 1.3);
-        head.castShadow = true;
-        this.tigerGroup.add(head);
-        this.tigerParts.head = head;
-
-        // Snout
-        const snoutGeo = new THREE.BoxGeometry(0.4, 0.3, 0.35);
-        const snoutMat = new THREE.MeshStandardMaterial({ color: whiteColor, roughness: 0.7 });
-        const snout = new THREE.Mesh(snoutGeo, snoutMat);
-        snout.position.set(0, 1.35, 1.7);
-        this.tigerGroup.add(snout);
-
-        // Nose
-        const noseGeo = new THREE.SphereGeometry(0.06, 6, 6);
-        const noseMat = new THREE.MeshStandardMaterial({ color: 0x1a0a0a, roughness: 0.5 });
-        const nose = new THREE.Mesh(noseGeo, noseMat);
-        nose.position.set(0, 1.42, 1.88);
-        this.tigerGroup.add(nose);
-
-        // Eyes
-        const eyeGeo = new THREE.SphereGeometry(0.08, 8, 8);
-        const eyeMat = new THREE.MeshStandardMaterial({ color: 0xddaa00, roughness: 0.3, emissive: 0x443300, emissiveIntensity: 0.3 });
-        const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-        leftEye.position.set(-0.2, 1.6, 1.6);
-        this.tigerGroup.add(leftEye);
-        const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-        rightEye.position.set(0.2, 1.6, 1.6);
-        this.tigerGroup.add(rightEye);
-
-        // Pupils
-        const pupilGeo = new THREE.SphereGeometry(0.04, 6, 6);
-        const pupilMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
-        const leftPupil = new THREE.Mesh(pupilGeo, pupilMat);
-        leftPupil.position.set(-0.2, 1.6, 1.68);
-        this.tigerGroup.add(leftPupil);
-        const rightPupil = new THREE.Mesh(pupilGeo, pupilMat);
-        rightPupil.position.set(0.2, 1.6, 1.68);
-        this.tigerGroup.add(rightPupil);
-
-        // Ears
-        const earGeo = new THREE.ConeGeometry(0.12, 0.25, 4);
-        const earMat = new THREE.MeshStandardMaterial({ color: orangeColor, roughness: 0.7 });
-        const leftEar = new THREE.Mesh(earGeo, earMat);
-        leftEar.position.set(-0.25, 1.9, 1.2);
-        this.tigerGroup.add(leftEar);
-        this.tigerParts.leftEar = leftEar;
-        const rightEar = new THREE.Mesh(earGeo, earMat);
-        rightEar.position.set(0.25, 1.9, 1.2);
-        this.tigerGroup.add(rightEar);
-        this.tigerParts.rightEar = rightEar;
-
-        // Jaw (for mouth open animation)
-        const jawGeo = new THREE.BoxGeometry(0.35, 0.12, 0.3);
-        const jawMat = new THREE.MeshStandardMaterial({ color: 0x881111, roughness: 0.6 });
-        const jaw = new THREE.Mesh(jawGeo, jawMat);
-        jaw.position.set(0, 1.22, 1.7);
-        this.tigerGroup.add(jaw);
-        this.tigerParts.jaw = jaw;
-
-        // Teeth
-        for (let i = 0; i < 4; i++) {
-            const toothGeo = new THREE.ConeGeometry(0.02, 0.1, 4);
-            const toothMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-            const tooth = new THREE.Mesh(toothGeo, toothMat);
-            tooth.rotation.x = Math.PI;
-            tooth.position.set(-0.1 + i * 0.07, 1.28, 1.82);
-            this.tigerGroup.add(tooth);
-        }
-
-        // Legs
-        const legGeo = new THREE.BoxGeometry(0.25, 0.8, 0.25);
-        const legMat = new THREE.MeshStandardMaterial({ color: orangeColor, roughness: 0.7 });
-
-        const frontLeftLeg = new THREE.Group();
-        const fllMesh = new THREE.Mesh(legGeo, legMat);
-        fllMesh.position.y = -0.4;
-        fllMesh.castShadow = true;
-        frontLeftLeg.add(fllMesh);
-        frontLeftLeg.position.set(-0.35, 0.9, 0.7);
-        this.tigerGroup.add(frontLeftLeg);
-        this.tigerParts.frontLeftLeg = frontLeftLeg;
-
-        const frontRightLeg = new THREE.Group();
-        const frlMesh = new THREE.Mesh(legGeo, legMat);
-        frlMesh.position.y = -0.4;
-        frlMesh.castShadow = true;
-        frontRightLeg.add(frlMesh);
-        frontRightLeg.position.set(0.35, 0.9, 0.7);
-        this.tigerGroup.add(frontRightLeg);
-        this.tigerParts.frontRightLeg = frontRightLeg;
-
-        const backLeftLeg = new THREE.Group();
-        const bllMesh = new THREE.Mesh(legGeo, legMat);
-        bllMesh.position.y = -0.4;
-        bllMesh.castShadow = true;
-        backLeftLeg.add(bllMesh);
-        backLeftLeg.position.set(-0.35, 0.9, -0.7);
-        this.tigerGroup.add(backLeftLeg);
-        this.tigerParts.backLeftLeg = backLeftLeg;
-
-        const backRightLeg = new THREE.Group();
-        const brlMesh = new THREE.Mesh(legGeo, legMat);
-        brlMesh.position.y = -0.4;
-        brlMesh.castShadow = true;
-        backRightLeg.add(brlMesh);
-        backRightLeg.position.set(0.35, 0.9, -0.7);
-        this.tigerGroup.add(backRightLeg);
-        this.tigerParts.backRightLeg = backRightLeg;
-
-        // Paws
-        const pawGeo = new THREE.SphereGeometry(0.15, 6, 6);
-        const pawMat = new THREE.MeshStandardMaterial({ color: 0x2a1a0a });
-        [frontLeftLeg, frontRightLeg, backLeftLeg, backRightLeg].forEach(leg => {
-            const paw = new THREE.Mesh(pawGeo, pawMat);
-            paw.position.y = -0.8;
-            paw.scale.y = 0.5;
-            leg.add(paw);
-        });
-
-        // Tail
-        const tailGroup = new THREE.Group();
-        const tailSegments = 8;
-        for (let i = 0; i < tailSegments; i++) {
-            const segGeo = new THREE.CylinderGeometry(0.06 - i * 0.005, 0.07 - i * 0.005, 0.3, 6);
-            const segMat = new THREE.MeshStandardMaterial({ 
-                color: i % 2 === 0 ? orangeColor : darkStripe, roughness: 0.7 
-            });
-            const seg = new THREE.Mesh(segGeo, segMat);
-            seg.position.y = -0.15;
-            
-            const segGroup = new THREE.Group();
-            segGroup.add(seg);
-            segGroup.position.y = i === 0 ? 0 : -0.28;
-            
-            if (i === 0) {
-                segGroup.position.set(0, 1.3, -1.1);
-                segGroup.rotation.x = -0.8;
-                tailGroup.add(segGroup);
-            } else {
-                tailGroup.children[tailGroup.children.length - 1].traverse(child => {
-                    if (child === tailGroup.children[tailGroup.children.length - 1].children[tailGroup.children[tailGroup.children.length - 1].children.length - 1] ||
-                        child.children.length === 1) {
-                    }
-                });
-            }
-        }
-        // Simplified tail
-        const simpleTailGeo = new THREE.CylinderGeometry(0.04, 0.1, 1.8, 6);
-        const simpleTailMat = new THREE.MeshStandardMaterial({ color: orangeColor, roughness: 0.7 });
-        const simpleTail = new THREE.Mesh(simpleTailGeo, simpleTailMat);
-        simpleTail.position.set(0, 1.5, -1.5);
-        simpleTail.rotation.x = -1.2;
-        simpleTail.castShadow = true;
-        this.tigerGroup.add(simpleTail);
-        this.tigerParts.tail = simpleTail;
-
-        this.tigerGroup.position.copy(this.tigerPosition);
-        this.scene.add(this.tigerGroup);
-    }
-
-    createWaterfall() {
-        this.waterfallGroup = new THREE.Group();
-        const waterfallZ = -130;
-
-        // Cliff face
-        const cliffGeo = new THREE.BoxGeometry(40, 40, 8);
-        const cliffMat = new THREE.MeshStandardMaterial({
-            color: 0x3a3028,
-            roughness: 0.95,
-            metalness: 0.1
-        });
-        const cliff = new THREE.Mesh(cliffGeo, cliffMat);
-        cliff.position.set(0, -18, waterfallZ);
-        cliff.receiveShadow = true;
-        cliff.castShadow = true;
-        this.waterfallGroup.add(cliff);
-
-        // Cliff top edge rocks
-        for (let i = 0; i < 30; i++) {
-            const rockGeo = new THREE.DodecahedronGeometry(0.5 + Math.random() * 1.5, 1);
-            const rPos = rockGeo.attributes.position.array;
-            for (let j = 0; j < rPos.length; j += 3) {
-                rPos[j] += (Math.random() - 0.5) * 0.3;
-                rPos[j + 1] += (Math.random() - 0.5) * 0.3;
-                rPos[j + 2] += (Math.random() - 0.5) * 0.3;
-            }
-            rockGeo.computeVertexNormals();
-            const rockMat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color().setHSL(0.08, 0.15, 0.2 + Math.random() * 0.15),
-                roughness: 0.9
-            });
-            const rock = new THREE.Mesh(rockGeo, rockMat);
-            rock.position.set(
-                (Math.random() - 0.5) * 30,
-                0.5,
-                waterfallZ + (Math.random() - 0.5) * 3
-            );
-            rock.castShadow = true;
-            this.waterfallGroup.add(rock);
-        }
-
-        // Water stream (falling water)
-        const waterGeo = new THREE.PlaneGeometry(6, 40, 20, 80);
-        const waterMat = new THREE.ShaderMaterial({
-            uniforms: {
-                time: { value: 0 },
-                color1: { value: new THREE.Color(0x4488aa) },
-                color2: { value: new THREE.Color(0xaaddff) },
-                opacity: { value: 0.7 }
-            },
-            vertexShader: `
-                uniform float time;
-                varying vec2 vUv;
-                varying float vDisplacement;
-                void main() {
-                    vUv = uv;
-                    vec3 pos = position;
-                    float displacement = sin(pos.y * 3.0 + time * 5.0) * 0.3 + 
-                                        sin(pos.y * 7.0 + time * 8.0) * 0.15;
-                    pos.x += displacement;
-                    pos.z += sin(pos.y * 5.0 + time * 6.0) * 0.2;
-                    vDisplacement = displacement;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-                }
-            `,
-            fragmentShader: `
-                uniform vec3 color1;
-                uniform vec3 color2;
-                uniform float opacity;
-                uniform float time;
-                varying vec2 vUv;
-                varying float vDisplacement;
-                void main() {
-                    float flow = fract(vUv.y * 3.0 - time * 2.0);
-                    vec3 color = mix(color1, color2, flow + vDisplacement * 0.5);
-                    float alpha = opacity * (0.5 + 0.5 * sin(vUv.y * 20.0 + time * 10.0));
-                    alpha *= smoothstep(0.0, 0.2, vUv.x) * smoothstep(1.0, 0.8, vUv.x);
-                    gl_FragColor = vec4(color, alpha);
-                }
-            `,
-            transparent: true,
-            side: THREE.DoubleSide,
-            depthWrite: false
-        });
-        this.waterfall = new THREE.Mesh(waterGeo, waterMat);
-        this.waterfall.position.set(0, -18, waterfallZ + 4.5);
-        this.waterfallGroup.add(this.waterfall);
-        this.waterfallMaterial = waterMat;
-
-        // Pool at bottom
-        const poolGeo = new THREE.CircleGeometry(12, 32);
-        const poolMat = new THREE.MeshStandardMaterial({
-            color: 0x1a4466,
-            roughness: 0.1,
-            metalness: 0.3,
-            transparent: true,
-            opacity: 0.85
-        });
-        const pool = new THREE.Mesh(poolGeo, poolMat);
-        pool.rotation.x = -Math.PI / 2;
-        pool.position.set(0, -37, waterfallZ + 10);
-        this.waterfallGroup.add(pool);
-
-        // Splash particles at bottom
-        for (let i = 0; i < 50; i++) {
-            const splashGeo = new THREE.SphereGeometry(0.1 + Math.random() * 0.15, 6, 6);
-            const splashMat = new THREE.MeshStandardMaterial({
-                color: 0xaaddff,
-                transparent: true,
-                opacity: 0.6,
-                emissive: 0x224466,
-                emissiveIntensity: 0.2
-            });
-            const splash = new THREE.Mesh(splashGeo, splashMat);
-            splash.userData = {
-                baseX: (Math.random() - 0.5) * 6,
-                baseY: -36,
-                baseZ: waterfallZ + 6 + Math.random() * 4,
-                speed: 1 + Math.random() * 3,
-                phase: Math.random() * Math.PI * 2,
-                maxHeight: 1 + Math.random() * 3
-            };
-            this.waterfallGroup.add(splash);
-            this.waterParticles.push(splash);
-        }
-
-        // Mist at waterfall base
-        for (let i = 0; i < 30; i++) {
-            const mistGeo = new THREE.SphereGeometry(1 + Math.random() * 2, 8, 8);
-            const mistMat = new THREE.MeshBasicMaterial({
-                color: 0xccddee,
-                transparent: true,
-                opacity: 0.08,
-                depthWrite: false
-            });
-            const mist = new THREE.Mesh(mistGeo, mistMat);
-            mist.position.set(
-                (Math.random() - 0.5) * 15,
-                -35 + Math.random() * 5,
-                waterfallZ + 8 + Math.random() * 8
-            );
-            mist.userData = { phase: Math.random() * Math.PI * 2 };
-            this.waterfallGroup.add(mist);
-            this.mistParticles.push(mist);
-        }
-
-        this.scene.add(this.waterfallGroup);
-    }
-
-    createParticleSystems() {
-        // Dust particles
-        const dustCount = 500;
-        const dustGeo = new THREE.BufferGeometry();
-        const dustPositions = new Float32Array(dustCount * 3);
-        const dustSizes = new Float32Array(dustCount);
-        
-        for (let i = 0; i < dustCount; i++) {
-            dustPositions[i * 3] = (Math.random() - 0.5) * 60;
-            dustPositions[i * 3 + 1] = Math.random() * 20;
-            dustPositions[i * 3 + 2] = Math.random() * 200 - 150;
-            dustSizes[i] = Math.random() * 3 + 1;
-        }
-        
-        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-        dustGeo.setAttribute('size', new THREE.BufferAttribute(dustSizes, 1));
-
-        const dustMat = new THREE.PointsMaterial({
-            color: 0xffeecc,
-            size: 0.15,
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            sizeAttenuation: true
-        });
-        this.dustSystem = new THREE.Points(dustGeo, dustMat);
-        this.scene.add(this.dustSystem);
-
-        // Foot dust particles
-        this.footDustParticles = [];
-        for (let i = 0; i < 40; i++) {
-            const pGeo = new THREE.SphereGeometry(0.08 + Math.random() * 0.1, 4, 4);
-            const pMat = new THREE.MeshBasicMaterial({
-                color: 0x8a7a5a,
-                transparent: true,
-                opacity: 0,
-                depthWrite: false
-            });
-            const p = new THREE.Mesh(pGeo, pMat);
-            p.userData = { life: 0, active: false, vel: new THREE.Vector3() };
-            this.scene.add(p);
-            this.footDustParticles.push(p);
-        }
-
-        // Leaf particles
-        for (let i = 0; i < 60; i++) {
-            const leafGeo = new THREE.PlaneGeometry(0.15 + Math.random() * 0.2, 0.1 + Math.random() * 0.15);
-            const leafMat = new THREE.MeshBasicMaterial({
-                color: new THREE.Color().setHSL(0.25 + Math.random() * 0.12, 0.6, 0.2 + Math.random() * 0.3),
-                transparent: true,
-                opacity: 0.8,
-                side: THREE.DoubleSide,
-                depthWrite: false
-            });
-            const leaf = new THREE.Mesh(leafGeo, leafMat);
-            leaf.position.set(
-                (Math.random() - 0.5) * 40,
-                5 + Math.random() * 15,
-                Math.random() * 200 - 150
-            );
-            leaf.userData = {
-                fallSpeed: 0.3 + Math.random() * 0.5,
-                swaySpeed: 1 + Math.random() * 2,
-                swayAmount: 0.5 + Math.random() * 1,
-                rotSpeed: Math.random() * 2,
-                phase: Math.random() * Math.PI * 2
-            };
-            this.scene.add(leaf);
-            this.leaves.push(leaf);
-        }
-    }
-
-    createMist() {
-        for (let i = 0; i < 40; i++) {
-            const mistGeo = new THREE.PlaneGeometry(8 + Math.random() * 15, 3 + Math.random() * 5);
-            const mistMat = new THREE.MeshBasicMaterial({
-                color: 0x88aa88,
-                transparent: true,
-                opacity: 0.04 + Math.random() * 0.04,
-                side: THREE.DoubleSide,
-                depthWrite: false
-            });
-            const mist = new THREE.Mesh(mistGeo, mistMat);
-            mist.position.set(
-                (Math.random() - 0.5) * 60,
-                0.5 + Math.random() * 3,
-                Math.random() * 200 - 150
-            );
-            mist.rotation.y = Math.random() * Math.PI;
-            mist.userData = { speed: 0.1 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 };
-            this.scene.add(mist);
-        }
-    }
-
-    createFireflies() {
-        for (let i = 0; i < 30; i++) {
-            const ffGeo = new THREE.SphereGeometry(0.05, 4, 4);
-            const ffMat = new THREE.MeshBasicMaterial({
-                color: 0xaaff44,
-                transparent: true,
-                opacity: 0,
-                blending: THREE.AdditiveBlending
-            });
-            const ff = new THREE.Mesh(ffGeo, ffMat);
-            ff.position.set(
-                (Math.random() - 0.5) * 40,
-                1 + Math.random() * 8,
-                Math.random() * 150 - 100
-            );
-            ff.userData = {
-                phase: Math.random() * Math.PI * 2,
-                speed: 0.5 + Math.random() * 1.5,
-                baseY: ff.position.y,
-                baseX: ff.position.x
-            };
-
-            const ffLight = new THREE.PointLight(0xaaff44, 0, 3);
-            ff.add(ffLight);
-            ff.userData.light = ffLight;
-
-            this.scene.add(ff);
-            this.fireflies.push(ff);
-        }
-    }
-
-    animateMan(dt, speed) {
-        this.runCycle += dt * speed * 1.2;
-        const rc = this.runCycle;
-
-        // Torso bob and lean
-        this.manParts.torso.position.y = 2.1 + Math.abs(Math.sin(rc * 2)) * 0.15;
-        this.manParts.torso.rotation.x = -0.15 + Math.sin(rc * 2) * 0.05;
-        this.manParts.torso.rotation.z = Math.sin(rc) * 0.05;
-
-        // Head
-        this.manParts.head.position.y = 2.8 + Math.abs(Math.sin(rc * 2)) * 0.15;
-        this.manParts.head.rotation.x = -0.1;
-        this.manParts.head.rotation.y = Math.sin(rc * 0.5) * 0.15;
-
-        // Arms pumping
-        this.manParts.leftUpperArm.rotation.x = Math.sin(rc) * 1.2;
-        this.manParts.rightUpperArm.rotation.x = -Math.sin(rc) * 1.2;
-        this.manParts.leftForearm.rotation.x = -Math.abs(Math.sin(rc)) * 0.8 - 0.5;
-        this.manParts.rightForearm.rotation.x = -Math.abs(Math.sin(rc + Math.PI)) * 0.8 - 0.5;
-
-        // Legs
-        this.manParts.leftUpperLeg.rotation.x = -Math.sin(rc) * 1.0;
-        this.manParts.rightUpperLeg.rotation.x = Math.sin(rc) * 1.0;
-        this.manParts.leftLowerLeg.rotation.x = Math.max(0, Math.sin(rc - 0.5)) * 1.2;
-        this.manParts.rightLowerLeg.rotation.x = Math.max(0, -Math.sin(rc - 0.5)) * 1.2;
-
-        // Vertical bounce
-        this.manGroup.position.y = Math.abs(Math.sin(rc * 2)) * 0.3;
-
-        // Emit foot dust
-        if (Math.sin(rc * 2) < -0.8) {
-            this.emitFootDust(this.manGroup.position.clone());
-        }
-    }
-
-    animateManJump(dt, jumpProgress) {
-        // Jumping animation
-        const jp = jumpProgress;
-
-        if (jp < 0.15) {
-            // Crouch before jump
-            const crouch = jp / 0.15;
-            this.manParts.leftUpperLeg.rotation.x = -crouch * 1.5;
-            this.manParts.rightUpperLeg.rotation.x = -crouch * 1.5;
-            this.manParts.leftLowerLeg.rotation.x = crouch * 2.0;
-            this.manParts.rightLowerLeg.rotation.x = crouch * 2.0;
-            this.manParts.torso.rotation.x = crouch * 0.3;
-            this.manParts.leftUpperArm.rotation.x = crouch * 0.5;
-            this.manParts.rightUpperArm.rotation.x = crouch * 0.5;
-        } else if (jp < 0.4) {
-            // Launch
-            const launch = (jp - 0.15) / 0.25;
-            this.manParts.leftUpperLeg.rotation.x = -1.5 + launch * 1.0;
-            this.manParts.rightUpperLeg.rotation.x = -1.5 + launch * 2.0;
-            this.manParts.leftLowerLeg.rotation.x = 2.0 - launch * 1.5;
-            this.manParts.rightLowerLeg.rotation.x = 2.0 - launch * 1.5;
-            this.manParts.torso.rotation.x = 0.3 - launch * 0.6;
-            this.manParts.leftUpperArm.rotation.x = 0.5 + launch * 2.0;
-            this.manParts.rightUpperArm.rotation.x = 0.5 + launch * 2.0;
-            this.manParts.leftForearm.rotation.x = -launch * 0.5;
-            this.manParts.rightForearm.rotation.x = -launch * 0.5;
-        } else {
-            // Free fall - spread eagle / diving
-            const fall = (jp - 0.4) / 0.6;
-            this.manParts.leftUpperArm.rotation.x = 2.5 - fall * 1.0;
-            this.manParts.rightUpperArm.rotation.x = 2.5 - fall * 1.0;
-            this.manParts.leftUpperArm.rotation.z = -0.5 - fall * 0.5;
-            this.manParts.rightUpperArm.rotation.z = 0.5 + fall * 0.5;
-            this.manParts.leftForearm.rotation.x = -0.5 - fall * 0.3;
-            this.manParts.rightForearm.rotation.x = -0.5 - fall * 0.3;
-            this.manParts.leftUpperLeg.rotation.x = -0.5 + Math.sin(fall * 5) * 0.3;
-            this.manParts.rightUpperLeg.rotation.x = 0.5 + Math.sin(fall * 5 + 1) * 0.3;
-            this.manParts.leftLowerLeg.rotation.x = 0.5 + fall * 0.5;
-            this.manParts.rightLowerLeg.rotation.x = 0.5 + fall * 0.5;
-            this.manParts.torso.rotation.x = -0.3 + fall * 0.5;
-            this.manParts.head.rotation.x = fall * 0.3;
-
-            // Slight body rotation during fall
-            this.manGroup.rotation.x = fall * 0.3;
-        }
-    }
-
-    animateTiger(dt, speed) {
-        this.tigerRunCycle += dt * speed * 1.5;
-        const rc = this.tigerRunCycle;
-
-        // Galloping motion
-        this.tigerParts.body.position.y = 1.2 + Math.abs(Math.sin(rc * 2)) * 0.3;
-        this.tigerParts.body.rotation.x = Math.sin(rc * 2) * 0.1;
-        this.tigerParts.body.rotation.z = Math.sin(rc) * 0.03;
-
-        // Head
-        this.tigerParts.head.position.y = 1.5 + Math.abs(Math.sin(rc * 2)) * 0.25;
-        this.tigerParts.head.rotation.x = Math.sin(rc * 2) * 0.05;
-
-        // Jaw (roaring)
-        const jawOpen = Math.max(0, Math.sin(rc * 0.5)) * 0.15;
-        this.tigerParts.jaw.position.y = 1.22 - jawOpen;
-        this.tigerParts.jaw.rotation.x = jawOpen * 2;
-
-        // Legs gallop
-        this.tigerParts.frontLeftLeg.rotation.x = Math.sin(rc) * 1.2;
-        this.tigerParts.frontRightLeg.rotation.x = Math.sin(rc + Math.PI) * 1.2;
-        this.tigerParts.backLeftLeg.rotation.x = Math.sin(rc + Math.PI * 0.5) * 1.4;
-        this.tigerParts.backRightLeg.rotation.x = Math.sin(rc + Math.PI * 1.5) * 1.4;
-
-        // Body stretch during gallop
-        this.tigerGroup.scale.z = 1 + Math.sin(rc * 2) * 0.05;
-
-        // Tail whipping
-        this.tigerParts.tail.rotation.y = Math.sin(rc * 3) * 0.5;
-        this.tigerParts.tail.rotation.z = Math.sin(rc * 2) * 0.3;
-
-        // Ears
-        this.tigerParts.leftEar.rotation.x = Math.sin(rc * 4) * 0.2;
-        this.tigerParts.rightEar.rotation.x = Math.sin(rc * 4 + 1) * 0.2;
-
-        // Vertical bounce
-        this.tigerGroup.position.y = Math.abs(Math.sin(rc * 2)) * 0.4;
-
-        // Emit dust
-        if (Math.sin(rc * 2) < -0.8) {
-            this.emitFootDust(this.tigerGroup.position.clone());
-        }
-    }
-
-    emitFootDust(position) {
-        for (let i = 0; i < 3; i++) {
-            const p = this.footDustParticles.find(p => !p.userData.active);
-            if (p) {
-                p.userData.active = true;
-                p.userData.life = 1;
-                p.position.copy(position);
-                p.position.y = 0.1;
-                p.position.x += (Math.random() - 0.5) * 0.5;
-                p.position.z += (Math.random() - 0.5) * 0.5;
-                p.userData.vel.set(
-                    (Math.random() - 0.5) * 2,
-                    1 + Math.random() * 2,
-                    (Math.random() - 0.5) * 2
-                );
-                p.material.opacity = 0.5;
-                p.scale.setScalar(1);
-            }
-        }
-    }
-
-    updateParticles(dt) {
-        // Foot dust
-        this.footDustParticles.forEach(p => {
-            if (p.userData.active) {
-                p.userData.life -= dt * 1.5;
-                if (p.userData.life <= 0) {
-                    p.userData.active = false;
-                    p.material.opacity = 0;
-                    return;
-                }
-                p.position.add(p.userData.vel.clone().multiplyScalar(dt));
-                p.userData.vel.y -= dt * 5;
-                p.material.opacity = p.userData.life * 0.4;
-                p.scale.setScalar(1 + (1 - p.userData.life) * 2);
-            }
-        });
-
-        // Floating dust
-        if (this.dustSystem) {
-            const positions = this.dustSystem.geometry.attributes.position.array;
-            for (let i = 0; i < positions.length; i += 3) {
-                positions[i] += Math.sin(this.time + i) * 0.005;
-                positions[i + 1] += Math.sin(this.time * 0.5 + i * 0.5) * 0.003;
-                positions[i + 2] += 0.01;
-                if (positions[i + 2] > 50) positions[i + 2] = -150;
-            }
-            this.dustSystem.geometry.attributes.position.needsUpdate = true;
-        }
-
-        // Leaves
-        this.leaves.forEach(leaf => {
-            const d = leaf.userData;
-            leaf.position.y -= d.fallSpeed * dt;
-            leaf.position.x += Math.sin(this.time * d.swaySpeed + d.phase) * d.swayAmount * dt;
-            leaf.rotation.x += d.rotSpeed * dt;
-            leaf.rotation.y += d.rotSpeed * 0.7 * dt;
-            leaf.rotation.z += d.rotSpeed * 0.5 * dt;
-            
-            if (leaf.position.y < 0) {
-                leaf.position.y = 15 + Math.random() * 5;
-                leaf.position.x = this.manGroup.position.x + (Math.random() - 0.5) * 30;
-                leaf.position.z = this.manGroup.position.z + (Math.random() - 0.5) * 30;
-            }
-        });
-
-        // Water particles
-        this.waterParticles.forEach(wp => {
-            const d = wp.userData;
-            const t = this.time * d.speed + d.phase;
-            wp.position.x = d.baseX + Math.sin(t * 2) * 0.5;
-            wp.position.y = d.baseY + Math.abs(Math.sin(t)) * d.maxHeight;
-            wp.position.z = d.baseZ + Math.cos(t * 1.5) * 0.3;
-            wp.material.opacity = 0.3 + Math.sin(t) * 0.3;
-        });
-
-        // Mist
-        this.mistParticles.forEach(mp => {
-            mp.position.x += Math.sin(this.time * 0.5 + mp.userData.phase) * 0.02;
-            mp.position.y += Math.sin(this.time * 0.3 + mp.userData.phase) * 0.01;
-            mp.material.opacity = 0.05 + Math.sin(this.time * 0.5 + mp.userData.phase) * 0.03;
-        });
-
-        // Fireflies
-        this.fireflies.forEach(ff => {
-            const d = ff.userData;
-            const glow = Math.max(0, Math.sin(this.time * d.speed + d.phase));
-            ff.material.opacity = glow * 0.6;
-            if (d.light) d.light.intensity = glow * 0.5;
-            ff.position.y = d.baseY + Math.sin(this.time * 0.5 + d.phase) * 1;
-            ff.position.x = d.baseX + Math.sin(this.time * 0.3 + d.phase * 2) * 2;
-        });
-    }
-
-    drawSpeedLines() {
-        const ctx = this.speedLinesCtx;
-        const w = this.speedLinesCanvas.width;
-        const h = this.speedLinesCanvas.height;
-        ctx.clearRect(0, 0, w, h);
-
-        if (this.phase !== 'chase' && this.phase !== 'close_chase') return;
-
-        const centerX = w / 2;
-        const centerY = h / 2;
-        const intensity = this.phase === 'close_chase' ? 0.15 : 0.05;
-
-        ctx.strokeStyle = `rgba(255, 255, 255, ${intensity})`;
-        ctx.lineWidth = 1;
-
-        for (let i = 0; i < 30; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const innerRadius = 100 + Math.random() * 200;
-            const outerRadius = innerRadius + 100 + Math.random() * 200;
-
-            ctx.beginPath();
-            ctx.moveTo(
-                centerX + Math.cos(angle) * innerRadius,
-                centerY + Math.sin(angle) * innerRadius
-            );
-            ctx.lineTo(
-                centerX + Math.cos(angle) * outerRadius,
-                centerY + Math.sin(angle) * outerRadius
-            );
-            ctx.stroke();
-        }
-    }
-
-    showSubtitle(text, duration = 3000) {
-        this.subtitle.textContent = text;
-        this.subtitle.style.opacity = '1';
-        clearTimeout(this.subtitleTimeout);
-        this.subtitleTimeout = setTimeout(() => {
-            this.subtitle.style.opacity = '0';
-        }, duration);
-    }
-
-    startCinematic() {
-        this.phase = 'title';
-        this.phaseTime = 0;
-        
-        // Show title card
-        const titleCard = document.getElementById('title-card');
-        titleCard.style.opacity = '1';
-        titleCard.style.transition = 'opacity 2s ease';
-
-        setTimeout(() => {
-            titleCard.style.opacity = '0';
-            setTimeout(() => {
-                this.phase = 'establishing';
-                this.phaseTime = 0;
-            }, 2000);
-        }, 4000);
-
-        // Start audio context on user interaction
-        document.addEventListener('click', () => {
-            if (this.audioCtx && this.audioCtx.state === 'suspended') {
-                this.audioCtx.resume();
-            }
-        }, { once: true });
-
-        this.animate();
-    }
-
-    updateCinematic(dt) {
-        this.phaseTime += dt;
-        const pt = this.phaseTime;
-        const moveSpeed = 12;
-
-        switch (this.phase) {
-            case 'title':
-                // Static forest shot
-                this.camera.position.set(15, 5, 30);
-                this.camera.lookAt(0, 5, 0);
-                this.camera.position.y += Math.sin(this.time * 0.3) * 0.1;
-                break;
-
-            case 'establishing':
-                // Crane shot through forest canopy
-                if (pt < 5) {
-                    const progress = pt / 5;
-                    this.camera.position.set(
-                        20 - progress * 20,
-                        15 - progress * 10,
-                        40 - progress * 30
-                    );
-                    this.camera.lookAt(0, 2, 0);
-                    
-                    if (pt > 2 && pt < 4) {
-                        this.showSubtitle('Deep within the ancient forest...', 3000);
-                    }
-                } else {
-                    this.phase = 'reveal_tiger';
-                    this.phaseTime = 0;
-                    this.showSubtitle('A predator stalks its prey.', 3000);
-                }
-                break;
-
-            case 'reveal_tiger':
-                // Close-up of tiger
-                if (pt < 4) {
-                    const progress = pt / 4;
-                    this.camera.position.set(
-                        2 * Math.sin(progress * 0.5),
-                        2.5,
-                        this.tigerGroup.position.z + 4
-                    );
-                    this.camera.lookAt(this.tigerGroup.position.x, 1.5, this.tigerGroup.position.z);
-                    
-                    // Tiger breathing animation
-                    this.tigerParts.body.scale.x = 1 + Math.sin(this.time * 3) * 0.02;
-                    this.tigerParts.body.scale.z = 1 + Math.sin(this.time * 3) * 0.02;
-                } else {
-                    this.phase = 'reveal_man';
-                    this.phaseTime = 0;
-                }
-                break;
-
-            case 'reveal_man':
-                // Show man, then start chase
-                if (pt < 3) {
-                    this.camera.position.set(
-                        3,
-                        3,
-                        this.manGroup.position.z + 5
-                    );
-                    this.camera.lookAt(this.manGroup.position.x, 2, this.manGroup.position.z);
-                    this.showSubtitle('Run.', 2000);
-                } else {
-                    this.phase = 'chase';
-                    this.phaseTime = 0;
-                    this.heartbeat.style.opacity = '1';
-                }
-                break;
-
-            case 'chase':
-                // Main chase sequence
-                this.manPosition.z -= moveSpeed * dt;
-                this.tigerPosition.z -= moveSpeed * dt;
-
-                // Tiger gradually gets closer
-                const tigerCatchUp = 0.5 * dt;
-                const dist = this.manPosition.z - this.tigerPosition.z;
-                if (dist < 20) {
-                    this.tigerPosition.z -= tigerCatchUp * 0.5;
-                } else {
-                    this.tigerPosition.z -= tigerCatchUp;
-                }
-
-                this.manGroup.position.z = this.manPosition.z;
-                this.tigerGroup.position.z = this.tigerPosition.z;
-
-                // Man slight weaving
-                this.manGroup.position.x = Math.sin(this.time * 1.5) * 1.5;
-                this.manGroup.rotation.y = Math.PI + Math.sin(this.time * 1.5) * 0.1;
-
-                // Tiger follows man's x position with delay
-                this.tigerGroup.position.x += (this.manGroup.position.x - this.tigerGroup.position.x) * 2 * dt;
-                this.tigerGroup.rotation.y = Math.PI;
-
-                this.animateMan(dt, moveSpeed);
-                this.animateTiger(dt, moveSpeed);
-
-                // Camera positions - cinematic cuts
-                const camPhase = Math.floor(pt / 4) % 5;
-                const camT = (pt % 4) / 4;
-
-                switch (camPhase) {
-                    case 0: // Behind man, looking forward
-                        this.camera.position.set(
-                            this.manGroup.position.x + Math.sin(camT * 0.5) * 1,
-                            3 + Math.sin(camT * 2) * 0.5,
-                            this.manGroup.position.z + 8
-                        );
-                        this.camera.lookAt(
-                            this.manGroup.position.x,
-                            2,
-                            this.manGroup.position.z - 5
-                        );
-                        this.cameraShakeIntensity = 0.15;
-                        break;
-                    case 1: // Side tracking shot
-                        this.camera.position.set(
-                            this.manGroup.position.x + 6,
-                            2.5,
-                            this.manGroup.position.z + 2
-                        );
-                        this.camera.lookAt(
-                            this.manGroup.position.x,
-                            2,
-                            this.manGroup.position.z
-                        );
-                        this.cameraShakeIntensity = 0.1;
-                        break;
-                    case 2: // Low angle behind tiger
-                        this.camera.position.set(
-                            this.tigerGroup.position.x,
-                            0.8,
-                            this.tigerGroup.position.z + 6
-                        );
-                        this.camera.lookAt(
-                            this.manGroup.position.x,
-                            2,
-                            this.manGroup.position.z
-                        );
-                        this.cameraShakeIntensity = 0.2;
-                        break;
-                    case 3: // Overhead drone shot
-                        this.camera.position.set(
-                            this.manGroup.position.x,
-                            18,
-                            this.manGroup.position.z + 5
-                        );
-                        this.camera.lookAt(
-                            this.manGroup.position.x,
-                            0,
-                            this.manGroup.position.z - 5
-                        );
-                        this.cameraShakeIntensity = 0.05;
-                        break;
-                    case 4: // Front facing (man running toward camera)
-                        this.camera.position.set(
-                            this.manGroup.position.x + Math.sin(camT) * 2,
-                            2,
-                            this.manGroup.position.z - 8
-                        );
-                        this.camera.lookAt(
-                            this.manGroup.position.x,
-                            2,
-                            this.manGroup.position.z
-                        );
-                        this.cameraShakeIntensity = 0.15;
-                        break;
-                }
-
-                // Heartbeat
-                const bpm = Math.min(190, 140 + pt * 3);
-                this.heartbeatText.textContent = `♥ ${Math.floor(bpm)} BPM`;
-                if (Math.floor(this.time * bpm / 60) !== Math.floor((this.time - dt) * bpm / 60)) {
-                    this.heartbeatText.style.transform = 'scale(1.3)';
-                    setTimeout(() => this.heartbeatText.style.transform = 'scale(1)', 100);
-                    if (Math.random() < 0.3) this.playHeartbeat();
-                }
-
-                // Subtitles during chase
-                if (pt > 2 && pt < 4) this.showSubtitle('His lungs burned with every breath.', 3000);
-                if (pt > 8 && pt < 10) this.showSubtitle('The beast was gaining ground.', 3000);
-                if (pt > 14 && pt < 16) this.showSubtitle('He could hear it breathing behind him.', 3000);
-
-                // Footstep sounds
-                if (Math.floor(this.runCycle * 2) !== Math.floor((this.runCycle - dt * moveSpeed * 1.2) * 2)) {
-                    this.playFootstep();
-                }
-
-                // Transition to close chase
-                if (pt > 18) {
-                    this.phase = 'close_chase';
-                    this.phaseTime = 0;
-                    this.showSubtitle('The waterfall... his only chance.', 4000);
-                }
-
-                // Move sun light
-                this.sunLight.position.z = this.manGroup.position.z + 20;
-                this.sunLight.target.position.z = this.manGroup.position.z;
-                break;
-
-            case 'close_chase':
-                // Tiger very close, intense
-                this.manPosition.z -= moveSpeed * 1.2 * dt;
-                this.tigerPosition.z -= moveSpeed * 1.4 * dt;
-
-                // Clamp tiger distance
-                if (this.manPosition.z - this.tigerPosition.z < 5) {
-                    this.tigerPosition.z = this.manPosition.z + 5;
-                }
-
-                this.manGroup.position.z = this.manPosition.z;
-                this.tigerGroup.position.z = this.tigerPosition.z;
-
-                this.manGroup.position.x = Math.sin(this.time * 2) * 1;
-                this.manGroup.rotation.y = Math.PI + Math.sin(this.time * 2) * 0.15;
-                this.tigerGroup.position.x += (this.manGroup.position.x - this.tigerGroup.position.x) * 3 * dt;
-                this.tigerGroup.rotation.y = Math.PI;
-
-                this.animateMan(dt, moveSpeed * 1.3);
-                this.animateTiger(dt, moveSpeed * 1.5);
-
-                // Intense close camera
-                if (pt < 2) {
-                    // Close on man's terrified face
-                    this.camera.position.set(
-                        this.manGroup.position.x + 0.5,
-                        3,
-                        this.manGroup.position.z - 2
-                    );
-                    this.camera.lookAt(this.manGroup.position.x, 2.8, this.manGroup.position.z);
-                } else if (pt < 4) {
-                    // Tiger close-up snarl
-                    this.camera.position.set(
-                        this.tigerGroup.position.x + 1,
-                        1.5,
-                        this.tigerGroup.position.z + 3
-                    );
-                    this.camera.lookAt(this.tigerGroup.position.x, 1.5, this.tigerGroup.position.z);
-                } else {
-                    // Behind chase, close
-                    this.camera.position.set(
-                        this.manGroup.position.x + 3,
-                        3,
-                        this.manGroup.position.z + 4
-                    );
-                    this.camera.lookAt(
-                        this.manGroup.position.x,
-                        2,
-                        this.manGroup.position.z - 3
-                    );
-                }
-
-                this.cameraShakeIntensity = 0.3;
-
-                // Heartbeat more frantic
-                this.heartbeatText.textContent = `♥ ${Math.floor(190 + Math.random() * 10)} BPM`;
-                this.heartbeatText.style.color = '#ff0000';
-
-                this.sunLight.position.z = this.manGroup.position.z + 20;
-
-                // Play waterfall sound as approaching
-                if (this.manPosition.z < -80) {
-                    this.playWaterfall();
-                }
-
-                if (pt > 2) {
-                    this.showSubtitle('There was no other way...', 3000);
-                }
-
-                // Transition to waterfall jump
-                if (this.manPosition.z < -120 || pt > 8) {
-                    this.phase = 'waterfall_approach';
-                    this.phaseTime = 0;
-                    this.manPosition.z = -125;
-                    this.tigerPosition.z = -120;
-                    this.showSubtitle('JUMP!', 2000);
-                }
-                break;
-
-            case 'waterfall_approach':
-                // Dramatic slow-mo approach to cliff edge
-                const approachSpeed = moveSpeed * (1 - Math.min(1, pt / 2) * 0.7);
-                this.manPosition.z -= approachSpeed * dt;
+        <nav class="navbar slide-down">
+            <div class="logo">
+                <img src="../assets/opptylogo.png" alt="Oppty Logo" style="width: 120px;">
+            </div>
+        </nav>
+
+        <section class="hero"> 
+            <div class="hero-container">
                 
-                this.manGroup.position.z = this.manPosition.z;
-                this.manGroup.position.x = 0;
-                this.tigerGroup.position.z = this.tigerPosition.z;
+                <div class="hero-text fade-in-left">
+                    <div class="badge-pill">🚀 #1 Talent Acquisition Platform</div>
+                    <h1>Discover Top <br> <span class="text-gradient">Talent</span> Today.</h1>
+                    <p>Streamline your hiring process, easily manage applicant data, and build your dream team effortlessly with our next-gen recruiting platform.</p>
+                </div>
 
-                if (pt < 2) {
-                    this.animateMan(dt, approachSpeed * 0.8);
-                    this.tigerPosition.z -= moveSpeed * 0.5 * dt;
-                    this.animateTiger(dt, moveSpeed * 0.5);
-                }
+                <div class="hero-cards-wrapper fade-in-right">
+                    
+                    <div class="glass-card" onclick="openModal('signupModal')">
+                        <div class="card-glow"></div>
+                        <div class="icon-box icon-signup">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <h2>Create Account</h2>
+                        <p>Start hiring in minutes</p>
+                        <div class="arrow-circle">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
 
-                // Camera: sweeping to show waterfall ahead
-                this.camera.position.set(
-                    8 - pt * 2,
-                    4 + pt * 1,
-                    this.manGroup.position.z + 3 - pt * 2
-                );
-                this.camera.lookAt(
-                    this.manGroup.position.x,
-                    2 - pt * 0.5,
-                    this.manGroup.position.z - 5
-                );
+                    <div class="glass-card" onclick="openModal('signinModal')">
+                        <div class="card-glow"></div>
+                        <div class="icon-box">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                        </div>
+                        <h2>Sign In</h2>
+                        <p>Access your dashboard</p>
+                        <div class="arrow-circle">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
 
-                this.cameraShakeIntensity = 0.15;
+                </div>
+            </div>
+            
+            <div class="scroll-mouse fade-in-up">
+                <div class="wheel"></div>
+            </div>
+        </section>
 
-                if (pt > 2) {
-                    this.phase = 'jump';
-                    this.phaseTime = 0;
-                    this.jumpStarted = true;
-                    this.jumpStartZ = this.manGroup.position.z;
-                    this.jumpStartY = 0;
-                    this.heartbeat.style.opacity = '0';
-                    this.showSubtitle('', 100);
-                }
-                break;
+        <section class="features" id="features">
+            <div class="section-header scroll-reveal">
+                <h2>Why Choose <span class="highlight">Oppty?</span></h2>
+                <p>Everything you need to source, interview, and hire the best candidates.</p>
+            </div>
 
-            case 'jump':
-                // THE JUMP - slow motion
-                const jumpDuration = 8;
-                const jp = Math.min(1, pt / jumpDuration);
+            <div class="features-grid">
+                <div class="feature-item scroll-reveal delay-1">
+                    <div class="f-icon color-1"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h3>Smart Matching</h3>
+                    <p>AI-driven applicant parsing automatically highlights the candidates most suited to your open roles.</p>
+                </div>
+                <div class="feature-item scroll-reveal delay-2">
+                    <div class="f-icon color-2"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h3>Interview Scheduling</h3>
+                    <p>Automated calendar integrations allow candidates to book their own interview slots seamlessly.</p>
+                </div>
+                <div class="feature-item scroll-reveal delay-3">
+                    <div class="f-icon color-3"><i class="fa-solid fa-file-contract"></i></div>
+                    <h3>Offer Management</h3>
+                    <p>Generate, send, and track digital offer letters with legally binding e-signatures built right in.</p>
+                </div>
+            </div>
+        </section>
+    </div> 
+    
+    <div id="hiringDashboard" class="fade-in-up" style="display: none;">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h2><i class="fa-solid fa-address-card" style="color: var(--primary); margin-right: 10px;"></i>Candidate Details</h2>
+                <button class="btn-outline" onclick="signOut()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+            </div>
 
-                // Jump physics (slowed)
-                const jumpVelocityY = 8;
-                const jumpVelocityZ = -6;
-                const gravity = 12;
+            <form id="hiringForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" placeholder="" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="oppty@gmail.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="9448989819" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Date of Birth</label> 
+                        <input type="date" min="1900" max="2023" placeholder="e.g. 2001" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Passedout Year</label>
+                        <input type="number" min="1900" max="2023" placeholder="e.g. 2020" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Years of Experience</label>
+                        <input type="number" min="0" placeholder="e.g. 4" required>
+                    </div>
+                </div>
 
-                if (jp < 0.15) {
-                    // Crouching
-                    this.manGroup.position.z = this.jumpStartZ;
-                    this.manGroup.position.y = 0 - jp / 0.15 * 0.3;
-                } else {
-                    const flyTime = (jp - 0.15) / 0.85;
-                    this.manGroup.position.z = this.jumpStartZ + jumpVelocityZ * flyTime * jumpDuration;
-                    this.manGroup.position.y = this.jumpStartY + 
-                        jumpVelocityY * flyTime * jumpDuration * 0.15 - 
-                        0.5 * gravity * Math.pow(flyTime * jumpDuration * 0.15, 2);
-                }
+                <div class="full-width-container">
+                    <label for="resumeInput" class="upload-area" id="dropZone">
+                        <div class="upload-icon-container"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div class="upload-text-container">
+                            <p><strong>Click to upload</strong> or drag and drop</p>
+                            <p class="subtext">PDF, DOCX up to 10MB</p>
+                            <span id="fileNameDisplay" style="display: none; color: var(--primary); font-weight: 700; margin-top: 5px;"></span>
+                        </div>
+                    </label>
+                    <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" required>
 
-                this.manGroup.position.x = Math.sin(jp * 2) * 0.5;
+                    <button type="submit" class="btn-full" style="padding: 18px; font-size: 18px; margin-top: 20px;">
+                        <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Submit Profile
+                    </button>
+                </div>
+            </form>
 
-                this.animateManJump(dt, jp);
+            <div id="processingSection" class="process-status-view" style="display: none;">
+                <svg class="pl" viewBox="0 0 160 160" width="160px" height="160px" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto 30px; display: block;">
+                    <defs>
+                        <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#000"></stop>
+                            <stop offset="100%" stop-color="#fff"></stop>
+                        </linearGradient>
+                        <mask id="mask1">
+                            <rect x="0" y="0" width="160" height="160" fill="url(#grad)"></rect>
+                        </mask>
+                        <mask id="mask2">
+                            <rect x="28" y="28" width="104" height="104" fill="url(#grad)"></rect>
+                        </mask>
+                    </defs>
+                    <g>
+                        <g class="pl__ring-rotate">
+                            <circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(223,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)"></circle>
+                        </g>
+                    </g>
+                    <g mask="url(#mask1)">
+                        <g class="pl__ring-rotate">
+                            <circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(193,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)"></circle>
+                        </g>
+                    </g>
+                    <g>
+                        <g stroke-width="4" stroke-dasharray="12 12" stroke-dashoffset="12" stroke-linecap="round" transform="translate(80,80)">
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(0,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(180,0,0) translate(0,40)"></polyline>
+                        </g>
+                    </g>
+                    <g mask="url(#mask1)">
+                        <g stroke-width="4" stroke-dasharray="12 12" stroke-dashoffset="12" stroke-linecap="round" transform="translate(80,80)">
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(0,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(45,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(90,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(135,0,0) translate(0,40)"></polyline>
+                            <polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(180,0,0) translate(0,40)"></polyline>
+                        </g>
+                    </g>
+                    <g>
+                        <g transform="translate(64,28)">
+                            <g class="pl__arrows" transform="rotate(45,16,52)">
+                                <line x1="16" y1="42" x2="16" y2="86" stroke="#0f172a" stroke-width="14" stroke-linecap="round" />
+                                <circle cx="16" cy="24" r="14" fill="none" stroke="#0f172a" stroke-width="6" />
+                                <circle cx="16" cy="24" r="21" fill="none" stroke="#ff6b00" stroke-width="8" />
+                            </g>
+                        </g>
+                    </g>
+                    <g mask="url(#mask2)">
+                        <g transform="translate(64,28)">
+                            <g class="pl__arrows" transform="rotate(45,16,52)">
+                                <line x1="16" y1="42" x2="16" y2="86" stroke="#475569" stroke-width="14" stroke-linecap="round" />
+                                <circle cx="16" cy="24" r="14" fill="none" stroke="#475569" stroke-width="6" />
+                                <circle cx="16" cy="24" r="21" fill="none" stroke="#ff9f43" stroke-width="8" />
+                            </g>
+                        </g>
+                    </g>
+                </svg>
 
-                // Tiger stops at edge
-                if (pt < 3) {
-                    this.tigerPosition.z -= moveSpeed * 0.3 * dt;
-                    this.animateTiger(dt, moveSpeed * 0.3);
-                } else {
-                    // Tiger at edge, looking down
-                    this.tigerParts.head.rotation.x = 0.3;
-                }
-                this.tigerGroup.position.z = Math.max(this.tigerPosition.z, -130);
+                <h3>Processing Profile...</h3>
+                <p>Our HR team is currently reviewing your skills, experience, and portfolio.<br>This may take some time. Please leave this page.</p>
+            </div>
 
-                // Cinematic camera for jump
-                if (jp < 0.2) {
-                    // Low angle, about to jump
-                    this.camera.position.set(
-                        3,
-                        1,
-                        this.manGroup.position.z - 3
-                    );
-                    this.camera.lookAt(this.manGroup.position.x, 2, this.manGroup.position.z);
-                    this.cameraShakeIntensity = 0.1;
-                } else if (jp < 0.4) {
-                    // Side view of launch
-                    const t = (jp - 0.2) / 0.2;
-                    this.camera.position.set(
-                        6,
-                        3 + t * 2,
-                        this.manGroup.position.z + 2
-                    );
-                    this.camera.lookAt(this.manGroup.position);
-                    this.cameraShakeIntensity = 0.05;
-                } else if (jp < 0.6) {
-                    // Slow-mo Matrix style rotating camera
-                    const t = (jp - 0.4) / 0.2;
-                    const angle = t * Math.PI;
-                    this.camera.position.set(
-                        this.manGroup.position.x + Math.cos(angle) * 6,
-                        this.manGroup.position.y + 2,
-                        this.manGroup.position.z + Math.sin(angle) * 6
-                    );
-                    this.camera.lookAt(this.manGroup.position);
-                    this.cameraShakeIntensity = 0.02;
-                } else if (jp < 0.8) {
-                    // Looking up at falling man from below
-                    const t = (jp - 0.6) / 0.2;
-                    this.camera.position.set(
-                        this.manGroup.position.x + 2,
-                        this.manGroup.position.y - 8 - t * 5,
-                        this.manGroup.position.z - 3
-                    );
-                    this.camera.lookAt(this.manGroup.position);
-                    this.cameraShakeIntensity = 0.05;
-                } else {
-                    // Wide shot of the fall
-                    this.camera.position.set(
-                        15,
-                        this.manGroup.position.y + 5,
-                        this.manGroup.position.z + 10
-                    );
-                    this.camera.lookAt(this.manGroup.position);
-                    this.cameraShakeIntensity = 0.03;
-                }
-
-                // Cut to tiger at edge looking down (brief)
-                if (jp > 0.5 && jp < 0.55) {
-                    this.camera.position.set(
-                        this.tigerGroup.position.x + 2,
-                        2,
-                        this.tigerGroup.position.z + 3
-                    );
-                    this.camera.lookAt(this.tigerGroup.position.x, 1.5, this.tigerGroup.position.z);
-                }
-
-                // Update waterfall shader
-                if (this.waterfallMaterial) {
-                    this.waterfallMaterial.uniforms.time.value = this.time;
-                }
-
-                this.sunLight.position.z = this.manGroup.position.z + 20;
-
-                if (jp >= 1) {
-                    this.phase = 'splash';
-                    this.phaseTime = 0;
-                    this.createSplash();
-                    this.showSubtitle('He survived... this time.', 5000);
-                }
-                break;
-
-            case 'splash':
-                // Splash impact and aftermath
-                if (pt < 1) {
-                    // Impact flash
-                    this.renderer.toneMappingExposure = 0.8 + (1 - pt) * 2;
-                    this.cameraShakeIntensity = 1 - pt;
-                } else {
-                    this.renderer.toneMappingExposure = 0.8;
-                    this.cameraShakeIntensity = Math.max(0, 0.1 - pt * 0.01);
-                }
-
-                // Camera slowly pulls back
-                const splashTarget = new THREE.Vector3(
-                    this.manGroup.position.x,
-                    this.manGroup.position.y,
-                    this.manGroup.position.z
-                );
-
-                this.camera.position.set(
-                    splashTarget.x + 10 + pt * 2,
-                    splashTarget.y + 5 + pt * 3,
-                    splashTarget.z + 8 + pt * 2
-                );
-                this.camera.lookAt(splashTarget);
-
-                // Man sinking
-                if (this.manGroup.position.y > -40) {
-                    this.manGroup.position.y -= dt * 2;
-                }
-
-                // Update splash particles
-                this.updateSplashParticles(dt);
-
-                // Tiger pacing at top
-                this.tigerGroup.position.x = Math.sin(this.time * 0.5) * 3;
-                this.tigerParts.head.rotation.x = 0.3;
-
-                if (pt > 6) {
-                    this.phase = 'ending';
-                    this.phaseTime = 0;
-                }
-                break;
-
-            case 'ending':
-                // Final wide shot, fade to black
-                const endProgress = Math.min(1, pt / 5);
+            <div id="interviewSection" class="process-status-view" style="display: none;">
+                <div class="success-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <h3>Interview Scheduled!</h3>
+                <p>Congratulations! Your profile matches our requirements perfectly. HR has sent you an invite.</p>
                 
-                this.camera.position.set(
-                    20,
-                    15 + endProgress * 10,
-                    -110
-                );
-                this.camera.lookAt(0, -10, -130);
+                <div class="interview-card">
+                    <div class="i-row">
+                        <span><i class="fa-solid fa-clock"></i> Date & Time:</span>
+                        <strong>Tomorrow, 10:00 AM (EST)</strong>
+                    </div>
+                    <div class="i-row">
+                        <span><i class="fa-solid fa-user-tie"></i> Interviewer:</span>
+                        <strong>Sarah Jenkins (HR Manager)</strong>
+                    </div>
+                    
+                    <a href="#" class="btn-primary join-btn" onclick="alert('Starting Video Interview Bridge...')">
+                        <i class="fa-solid fa-video"></i> Join Live Interview
+                    </a>
+                </div>
+            </div>
 
-                this.renderer.toneMappingExposure = Math.max(0, 0.8 - endProgress * 0.8);
+            <div id="postInterviewSection" class="process-status-view" style="display: none;">
+                <div class="success-icon" style="color: #ff9f43; font-size: 48px; margin-bottom: 20px;"><i class="fa-solid fa-trophy"></i></div>
+                <h3>Congratulations!</h3>
+                <p>You have successfully cleared the interview round.<br>Your Offer and Onboarding letters will be sent to your registered email shortly.</p>
+                
+                <div class="app-cards-wrapper" style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                    
+                    <div class="glass-card app-link-card" onclick="window.location.href='https://theoppty.com/'" style="cursor: pointer; flex: 1; min-width: 200px; max-width: 250px; padding: 25px; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
+                        <div class="icon-box" style="margin: 0 auto 15px; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255, 159, 67, 0.1); color: #ff9f43; font-size: 24px;">
+                            <i class="fa-solid fa-users-gear"></i>
+                        </div>
+                        <h4 style="margin-bottom: 10px; font-weight: 700;">Employee HRMS</h4>
+                        <p style="font-size: 14px; opacity: 0.8; margin: 0;">Access your profile, attendance, and payroll records.</p>
+                    </div>
 
-                if (pt > 3 && pt < 5) {
-                    this.showSubtitle('The forest kept its secrets.', 4000);
-                }
+                    <div class="glass-card app-link-card" onclick="window.location.href='https://chat.theoppty.com/'" style="cursor: pointer; flex: 1; min-width: 200px; max-width: 250px; padding: 25px; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
+                        <div class="icon-box" style="margin: 0 auto 15px; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0, 210, 255, 0.1); color: #00d2ff; font-size: 24px;">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h4 style="margin-bottom: 10px; font-weight: 700;">Oppty Chats</h4>
+                        <p style="font-size: 14px; opacity: 0.8; margin: 0;">Connect, collaborate, and chat with your new team.</p>
+                    </div>
 
-                if (pt > 6) {
-                    document.getElementById('restart-btn').style.display = 'block';
-                    const titleCard = document.getElementById('title-card');
-                    titleCard.querySelector('p').textContent = 'A Story of Survival';
-                    titleCard.style.opacity = '1';
-                }
-                break;
-        }
+                </div>
+            </div>
 
-        // Camera shake
-        if (this.cameraShakeIntensity > 0) {
-            this.camera.position.x += (Math.random() - 0.5) * this.cameraShakeIntensity;
-            this.camera.position.y += (Math.random() - 0.5) * this.cameraShakeIntensity * 0.5;
-        }
-    }
+        </div>
+    </div>
 
-    createSplash() {
-        this.splashParticles = [];
-        for (let i = 0; i < 100; i++) {
-            const size = 0.1 + Math.random() * 0.3;
-            const geo = new THREE.SphereGeometry(size, 4, 4);
-            const mat = new THREE.MeshBasicMaterial({
-                color: new THREE.Color().setHSL(0.55, 0.5, 0.6 + Math.random() * 0.3),
-                transparent: true,
-                opacity: 0.8
-            });
-            const p = new THREE.Mesh(geo, mat);
-            p.position.copy(this.manGroup.position);
-            p.position.y = -37;
 
-            const angle = Math.random() * Math.PI * 2;
-            const speed = 2 + Math.random() * 8;
-            p.userData = {
-                vel: new THREE.Vector3(
-                    Math.cos(angle) * speed,
-                    5 + Math.random() * 10,
-                    Math.sin(angle) * speed
-                ),
-                life: 1
-            };  
-            this.scene.add(p);
-            this.splashParticles.push(p);
-        }
-    }
+    <div class="modal-overlay" id="signinModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('signinModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your hiring dashboard</p>
+            </div>
+            <form onsubmit="performSignIn(event)">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-full">Sign In</button>
+                <div class="modal-footer">        
+                    Don't have an account? <a onclick="switchModal('signinModal', 'signupModal')">Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    updateSplashParticles(dt) {
-        if (!this.splashParticles) return;
-        this.splashParticles.forEach(p => {
-            p.userData.life -= dt * 0.5;
-            if (p.userData.life <= 0) {
-                p.material.opacity = 0;
-                return;
-            }
-            p.position.add(p.userData.vel.clone().multiplyScalar(dt));
-            p.userData.vel.y -= 15 * dt;
-            p.material.opacity = p.userData.life * 0.8;
-            p.scale.setScalar(1 + (1 - p.userData.life));
-        });
-    }
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('signupModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h2>Create Account</h2>
+                <p>Start building your dream team today</p>
+            </div>
+            <form id="create-form">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input id="fullName" type="text" placeholder="Your full name" required>
+                </div>
+                <div class="input-group">
+                    <label>Company Email</label>
+                    <input id="email" type="email" placeholder="name@company.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Create Password</label>
+                    <input id="password" type="password" placeholder="Minimum 8 characters" required>
+                </div>
+                <button type="submit" class="btn-full">Sign Up Free</button>
+                <div class="modal-footer">
+                    Already have an account? <a onclick="switchModal('signupModal', 'signinModal')">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    animate() {
-        requestAnimationFrame(() => this.animate());
+    <div id="hrSimulatorTool" class="hr-simulator-panel" style="display: none;">
+        <p><i class="fa-solid fa-user-tie"></i> <b>HR Dashboard</b> (Simulator)</p>
+        <p id="hrSimText" style="font-size: 12px; margin-bottom: 10px;">A profile is waiting for review.</p>
+        <button id="btnApprove" onclick="approveCandidate()" class="btn-hr-approve"><i class="fa-solid fa-check"></i> Approve & Schedule</button>
+        <button id="btnReleaseOffer" onclick="releaseOffer()" class="btn-hr-approve" style="display: none; background: #28a745;"><i class="fa-solid fa-envelope-open-text"></i> Release Offer</button>
+    </div>
 
-        const dt = Math.min(this.clock.getDelta(), 0.05);
-        this.time += dt;
-
-        this.updateCinematic(dt);
-        this.updateParticles(dt);
-        this.drawSpeedLines();
-
-        // Update waterfall shader
-        if (this.waterfallMaterial) {
-            this.waterfallMaterial.uniforms.time.value = this.time;
-        }
-
-        // Animate speed lines opacity
-        const speedLines = document.getElementById('speed-lines');
-        if (this.phase === 'chase' || this.phase === 'close_chase') {
-            speedLines.style.opacity = this.phase === 'close_chase' ? '0.3' : '0.1';
-        } else {
-            speedLines.style.opacity = '0';
-        }
-
-        this.renderer.render(this.scene, this.camera);
-    }
-
-    onResize() {
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.speedLinesCanvas.width = window.innerWidth;
-        this.speedLinesCanvas.height = window.innerHeight;
-    }
-}
-
-// Start
-const engine = new CinematicEngine();
-</script>
-
+    <script src="script.js"></script>
 </body>
-</html> 
+</html>

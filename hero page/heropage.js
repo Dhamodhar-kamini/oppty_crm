@@ -31,7 +31,7 @@ document.getElementById('create-form').addEventListener('submit',(event)=>{
         password: document.getElementById('password').value
     };
 
-    fetch('http://192.168.1.10:8000/api/createaccount/', {
+    fetch('http://127.0.0.1:8000/api/createaccount/', {
        method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -55,7 +55,7 @@ function performSignIn(event) {
         password: document.querySelector('#signinModal input[type="password"]').value
     };
 
-    fetch('http://192.168.1.10:8000/api/signin/', {
+    fetch('http://127.0.0.1:8000/api/signin/', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -157,7 +157,7 @@ function handleFormSubmit(event) {
     formData.append("experiences", form.querySelectorAll('input[type="number"]')[1].value.toString());
     formData.append("resume", fileInput.files[0]);
 
-    fetch('http://192.168.1.10:8000/api/formsubmit/', {
+    fetch('http://127.0.0.1:8000/api/formsubmit/', {
         method: "POST",
         body: formData
     })

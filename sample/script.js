@@ -1,255 +1,245 @@
-let scene, camera, renderer, composer, clock;
-let asteroid, explosionParticles;
-let dinoMixers = []; // For skeletal walking/fighting animations
-
-function init() {
-    // 1. Scene Setup
-    scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x020205, 0.015);
-
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-    camera.position.set(0, 8, 30);
-
-    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('world'), antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimize for high DPI
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Realistic soft shadows
-    renderer.toneMapping = THREE.ACESFilmicToneMapping; // Cinematic color grading
-    renderer.toneMappingExposure = 1.0;
-
-    clock = new THREE.Clock();
-
-    // 2. Post-Processing (Bloom for glowing asteroid and fires)
-    const renderScene = new THREE.RenderPass(scene, camera);
-    const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-    bloomPass.threshold = 0;
-    bloomPass.strength = 1.2;
-    bloomPass.radius = 0.5;
-
-    composer = new THREE.EffectComposer(renderer);
-    composer.addPass(renderScene);
-    composer.addPass(bloomPass);
-
-    // 3. Environment & Lighting
-    createEnvironment();
-    
-    // 4. Load Models & Effects
-    loadRealisticModels();
-    createAsteroid();
-    createExplosionSystem();
-
-    // Resize Handler
-    window.addEventListener('resize', onWindowResize);
-    
-    animate();
+// ====== MODAL LOGIC ======
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
 }
 
-function createEnvironment() {
-    // Ambient moon/starlight
-    const ambientLight = new THREE.AmbientLight(0x111122, 0.4);
-    scene.add(ambientLight);
-
-    // Cinematic directional rim light
-    const dirLight = new THREE.DirectionalLight(0x4455aa, 1.5);
-    dirLight.position.set(-20, 30, -10);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    scene.add(dirLight);
-
-    // High-res realistic ground (Replace material map with real textures if desired)
-    const groundGeo = new THREE.PlaneGeometry(500, 500, 100, 100);
-    const groundMat = new THREE.MeshStandardMaterial({ 
-        color: 0x0a0a0c, 
-        roughness: 0.9, 
-        metalness: 0.1,
-        displacementScale: 2 
-    });
-    
-    // Add procedural bumpiness to ground
-    const positions = groundGeo.attributes.position;
-    for(let i=0; i<positions.count; i++) {
-        positions.setZ(i, Math.random() * 0.5); 
-    }
-    
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    scene.add(ground);
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
 }
 
-function loadRealisticModels() {
-    const loader = new THREE.GLTFLoader();
-    
-    // =========================================================================
-    // ⚠️ IMPORTANT: To make this hyper-realistic, download a free GLTF dinosaur 
-    // model from Sketchfab and place it in your folder. Update the path below.
-    // Example: loader.load('models/trex.glb', function(gltf) { ... });
-    // =========================================================================
-    
-    // Fallback: If no model is found, we log a warning but the asteroid will still work.
-    console.warn("Place realistic '.glb' or '.gltf' dinosaur models in your directory to replace this placeholder logic.");
-    
-    // Hide loading screen and show button assuming models loaded
+function switchModal(closeId, openId) {
+    closeModal(closeId);
     setTimeout(() => {
-        document.getElementById('loading-screen').style.opacity = 0;
-        setTimeout(() => {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('start-btn').style.display = 'block';
-        }, 1000);
-    }, 1500);
+        openModal(openId);
+    }, 300); 
 }
 
-function createAsteroid() {
-    // The core of the asteroid
-    const geo = new THREE.IcosahedronGeometry(3, 2);
-    const mat = new THREE.MeshStandardMaterial({ 
-        color: 0x222222, 
-        emissive: 0xff4500, 
-        emissiveIntensity: 5, // Triggers the bloom effect
-        roughness: 1 
-    });
-    asteroid = new THREE.Mesh(geo, mat);
-    asteroid.position.set(100, 120, -50);
-    asteroid.visible = false;
-    scene.add(asteroid);
-
-    // Add a point light to the asteroid so it illuminates the ground as it falls
-    const asteroidLight = new THREE.PointLight(0xff4500, 10, 200);
-    asteroid.add(asteroidLight);
-}
-
-function createExplosionSystem() {
-    const count = 5000; // High particle count for realism
-    const geo = new THREE.BufferGeometry();
-    const pos = new Float32Array(count * 3);
-    const vel = [];
-
-    for (let i = 0; i < count; i++) {
-        pos[i * 3] = 0; pos[i * 3 + 1] = -50; pos[i * 3 + 2] = 0; // Hide underground initially
-        
-        // Spherical explosion physics
-        const phi = Math.acos(-1 + (2 * i) / count);
-        const theta = Math.sqrt(count * Math.PI) * phi;
-        
-        const vx = Math.cos(theta) * Math.sin(phi);
-        const vy = Math.abs(Math.cos(phi)) + 0.5; // Bias upwards
-        const vz = Math.sin(theta) * Math.sin(phi);
-        
-        const speed = Math.random() * 5 + 2;
-        vel.push(new THREE.Vector3(vx * speed, vy * speed, vz * speed));
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal-overlay')) {
+        event.target.classList.remove('active');
     }
-    
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    
-    // Realistic fire/dust particle material
-    const mat = new THREE.PointsMaterial({ 
-        color: 0xff5500, 
-        size: 0.4, 
-        transparent: true, 
-        opacity: 0,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
-    });
-    
-    explosionParticles = new THREE.Points(geo, mat);
-    explosionParticles.userData.velocities = vel;
-    scene.add(explosionParticles);
 }
 
-let isExploded = false;
 
-document.getElementById('start-btn').addEventListener('click', () => {
-    document.getElementById('start-btn').style.display = 'none';
-    asteroid.visible = true;
+// ====== LOGIN / REGISTRATION LOGIC ======
+document.getElementById('create-form').addEventListener('submit',(event)=>{
+    event.preventDefault();
 
-    const tl = gsap.timeline();
+    const data = {
+        name: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+    };
 
-    // 1. Asteroid enters atmosphere (Fast!)
-    tl.to(asteroid.position, { 
-        x: 0, y: 0, z: -10, 
-        duration: 2.0, 
-        ease: "power2.in" 
-    }, 0);
-    
-    // Dynamic Camera tracking the asteroid
-    tl.to(camera.position, { z: 20, y: 5, duration: 1.8, ease: "sine.inOut" }, 0);
-
-    // 2. The Impact Event
-    tl.add(() => {
-        isExploded = true;
-        asteroid.visible = false;
-        
-        // Flash of light on impact
-        const flash = new THREE.PointLight(0xffaa00, 50, 500);
-        flash.position.set(0, 5, -10);
-        scene.add(flash);
-        gsap.to(flash, { intensity: 0, duration: 2 });
-
-        // Trigger Explosion Particles
-        explosionParticles.material.opacity = 1;
-        
-        // Massive Cinematic Screen Shake
-        gsap.fromTo(camera.position, 
-            { x: -2, y: 3 }, 
-            { x: 0, y: 5, duration: 0.5, ease: "elastic.out(1, 0.1)" }
-        );
-
-        // Logo Reveal Sequence
-        setTimeout(() => {
-            document.getElementById('logo-container').classList.add('reveal-logo');
-        }, 800);
+    fetch('http://127.0.0.1:8000/api/createaccount/', {
+       method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        alert("Account created successfully!");
+        switchModal('signupModal', 'signinModal');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Something went wrong");
     });
+})
 
-    // 3. Slow pan out after destruction
-    tl.to(camera.position, { z: 40, y: 15, duration: 5, ease: "power2.out" });
+function performSignIn(event) {
+    event.preventDefault();
+
+    const data = {
+        email: document.querySelector('#signinModal input[type="email"]').value,
+        password: document.querySelector('#signinModal input[type="password"]').value
+    };
+
+    fetch('http://127.0.0.1:8000/api/signin/', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(async res => {
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.message || "Login failed");
+        return result;
+    })
+    .then(result => {
+        if (result.status === "success") {
+            localStorage.setItem('id', result.id);
+            closeModal('signinModal');
+
+            document.getElementById('mainLandingPage').style.display = 'none';
+            document.getElementById('hiringDashboard').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const status = result.form_status;
+
+            // Reset all sections first
+            document.getElementById('hiringForm').style.display = 'none';
+            document.getElementById('processingSection').style.display = 'none';
+            document.getElementById('interviewSection').style.display = 'none';
+            document.getElementById('postInterviewSection').style.display = 'none'; // NEW
+            document.getElementById('hrSimulatorTool').style.display = 'none';
+
+            if (status === "form_pending" || !status) {
+                document.getElementById('hiringForm').style.display = 'block';
+            } else if (status === "form_submitted") {
+                document.getElementById('processingSection').style.display = 'block';
+                document.getElementById('hrSimulatorTool').style.display = 'block';
+            } else if (status === "interview_scheduled") {
+                document.getElementById('interviewSection').style.display = 'block';
+                
+                // Setup simulator for the next stage
+                document.getElementById('hrSimulatorTool').style.display = 'block';
+                document.getElementById('btnApprove').style.display = 'none';
+                document.getElementById('btnReleaseOffer').style.display = 'inline-block';
+                document.getElementById('hrSimText').innerText = 'Interview completed. Release offer?';
+                
+            } else if (status === "offer_released") {
+                // UPDATED: Now shows the Post-Interview Section instead of just an alert
+                document.getElementById('postInterviewSection').style.display = 'block';
+            }
+
+        } else {
+            alert(result.message || "INVALID EMAIL OR PASSWORD");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert(err.message || "INVALID EMAIL OR PASSWORD");
+    });
+}
+
+
+function signOut() {
+    document.getElementById('hiringForm').style.display = 'block';
+    document.getElementById('processingSection').style.display = 'none';
+    document.getElementById('interviewSection').style.display = 'none';
+    document.getElementById('postInterviewSection').style.display = 'none'; // NEW
+    document.getElementById('hrSimulatorTool').style.display = 'none';
+    
+    document.getElementById('hiringForm').reset();
+    document.getElementById('fileNameDisplay').style.display = 'none';
+    
+    document.getElementById('hiringDashboard').style.display = 'none';
+    document.getElementById('mainLandingPage').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+// ====== FORM SUBMISSION ======
+function handleFormSubmit(event) {
+    event.preventDefault();
+
+    const form = document.getElementById('hiringForm');
+    const formData = new FormData();
+    const emp_id = localStorage.getItem('id');
+
+    if (!emp_id) {
+        alert("User not logged in");
+        return;
+    }
+
+    const fileInput = document.getElementById('resumeInput');
+    if (fileInput.files.length === 0) {
+        alert("Resume is required");
+        return;
+    }
+
+    formData.append("name", emp_id);
+    formData.append("full_name", form.querySelector('input[type="text"]').value);
+    formData.append("email", form.querySelector('input[type="email"]').value);
+    formData.append("phone", form.querySelector('input[type="tel"]').value.slice(0,10));
+    formData.append("dob", form.querySelector('input[type="date"]').value);
+    formData.append("passed_out", form.querySelectorAll('input[type="number"]')[0].value.toString().slice(0,4));
+    formData.append("experiences", form.querySelectorAll('input[type="number"]')[1].value.toString());
+    formData.append("resume", fileInput.files[0]);
+
+    fetch('http://127.0.0.1:8000/api/formsubmit/', {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(result => {
+        document.getElementById('hiringForm').style.display = 'none';
+        document.getElementById('processingSection').style.display = 'block';
+        
+        // Reset simulator buttons for fresh flow
+        document.getElementById('btnApprove').style.display = 'inline-block';
+        document.getElementById('btnReleaseOffer').style.display = 'none';
+        document.getElementById('hrSimText').innerText = 'A profile is waiting for review.';
+        document.getElementById('hrSimulatorTool').style.display = 'block';
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error submitting form");
+    });
+}
+
+// ====== HR SIMULATOR LOGIC ======
+function approveCandidate() {
+    document.getElementById('processingSection').style.display = 'none';
+    document.getElementById('interviewSection').style.display = 'block';
+    
+    // Switch simulator button to Offer mode
+    document.getElementById('btnApprove').style.display = 'none';
+    document.getElementById('btnReleaseOffer').style.display = 'inline-block';
+    document.getElementById('hrSimText').innerText = 'Interview completed. Release offer?';
+}
+
+// NEW: Simulator button to mimic sending the offer and updating status to "offer_released"
+function releaseOffer() {
+    document.getElementById('interviewSection').style.display = 'none';
+    document.getElementById('postInterviewSection').style.display = 'block';
+    document.getElementById('hrSimulatorTool').style.display = 'none'; // Hide simulator as flow is complete
+}
+
+
+// ====== FILE UPLOAD INTERACTION ======
+const fileInput = document.getElementById('resumeInput');
+const dropZone = document.getElementById('dropZone');
+const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+fileInput.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        fileNameDisplay.innerText = "Selected: " + this.files[0].name;
+        fileNameDisplay.style.display = 'block';
+    } else {
+        fileNameDisplay.style.display = 'none';
+    }
 });
 
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    composer.setSize(window.innerWidth, window.innerHeight);
-}
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+});
 
-function animate() {
-    requestAnimationFrame(animate);
-    const delta = clock.getDelta();
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+});
 
-    // Update skeletal animations if models are loaded
-    dinoMixers.forEach(mixer => mixer.update(delta));
-
-    // Physics simulation for explosion
-    if (isExploded) {
-        const pos = explosionParticles.geometry.attributes.position.array;
-        const vels = explosionParticles.userData.velocities;
-        
-        for (let i = 0; i < vels.length; i++) {
-            pos[i * 3] += vels[i].x;
-            pos[i * 3 + 1] += vels[i].y;
-            pos[i * 3 + 2] += vels[i].z;
-            
-            // Gravity & Air Resistance
-            vels[i].y -= 0.05; 
-            vels[i].x *= 0.98;
-            vels[i].z *= 0.98;
-            
-            // Floor collision for particles
-            if(pos[i * 3 + 1] < 0) {
-                pos[i * 3 + 1] = 0;
-                vels[i].y *= -0.3; // Bounce
-            }
-        }
-        explosionParticles.geometry.attributes.position.needsUpdate = true;
-        
-        // Particles cool down and fade out (Orange to Grey)
-        explosionParticles.material.opacity = Math.max(0, explosionParticles.material.opacity - 0.005);
-        if(explosionParticles.material.color.g > 0.1) {
-            explosionParticles.material.color.g -= 0.01; // Shifts from orange to red
-        }
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        fileNameDisplay.innerText = "Selected: " + e.dataTransfer.files[0].name;
+        fileNameDisplay.style.display = 'block';
     }
+});
 
-    // Use Composer for the Bloom effect instead of standard renderer
-    composer.render();
-}
+
+// ====== SCROLL REVEAL ANIMATION ======
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.scroll-reveal').forEach(el => {
+    observer.observe(el);
+});
