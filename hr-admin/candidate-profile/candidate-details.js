@@ -40,32 +40,27 @@ const showToast = (message) => {
         setTimeout(() => toast.remove(), 300);
     }, 3500);
 }
-// Assuming BASE_URL and candidateId are already defined in your file
-// const BASE_URL = 'http://127.0.0.1:8000';
-// const candidateId = ...;
 
+// Handle the "Yes" and "No" Button API clicks independently
 const btnYes = document.getElementById('btnInterviewYes');
 const btnNo = document.getElementById('btnInterviewNo');
+const urlParamsGlobal = new URLSearchParams(window.location.search);
+const candidateIdGlobal = parseInt(urlParamsGlobal.get('id'));
 
-// Handle the "Yes" Button Click
 if (btnYes) {
     btnYes.addEventListener('click', async () => {
         try {
-            // Disable button to prevent multiple clicks
             btnYes.disabled = true;
             btnYes.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
 
-            const response = await fetch(`${BASE_URL}/api/update_candidate_status/${candidateId}/`, {
+            const response = await fetch(`${BASE_URL}/api/update_candidate_status/${candidateIdGlobal}/`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ status: 'yes' }) // Sending "yes" as the status
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'yes' }) 
             });
 
             if (response.ok) {
                 showToast("Interview status updated to Yes!");
-                // Reload the page after 1 second to show the updated UI
                 setTimeout(() => location.reload(), 1000);
             } else {
                 alert("Failed to update status on the server.");
@@ -74,24 +69,21 @@ if (btnYes) {
             }
         } catch (error) {
             console.error("Error updating status:", error);
-            alert("Network error. Could not connect to the server.");
+            alert("Network error.");
         }
     });
 }
 
-// Handle the "No" Button Click (Optional, for completeness)
 if (btnNo) {
     btnNo.addEventListener('click', async () => {
         try {
             btnNo.disabled = true;
             btnNo.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
 
-            const response = await fetch(`${BASE_URL}/api/update_candidate_status/${candidateId}/`, {
+            const response = await fetch(`${BASE_URL}/api/update_candidate_status/${candidateIdGlobal}/`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ status: 'no' }) // Sending "no" as the status
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'no' }) 
             });
 
             if (response.ok) {
@@ -107,6 +99,7 @@ if (btnNo) {
         }
     });
 }
+
 const getInitials = (name) => {
     if (!name || typeof name !== 'string') return '?';
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
@@ -130,6 +123,7 @@ if (document.getElementById('profileBannerInfo')) {
 
     // Local state for UI updates
     let currentFeeState = { total: 0, paid: 0, balance: 0 }; 
+    let currentCandidateStatus = ""; // NEW: Added to track status globally for UI logic
 
     const fetchCandidateProfile = async () => {
         if (!candidateId) return;
@@ -147,7 +141,9 @@ if (document.getElementById('profileBannerInfo')) {
     const renderProfileDetails = (data) => {
         const cand = data.name;
         const payments = data.payments || [];
-        const status = cand.status; 
+        
+        // Save status globally to determine Offer Letter visibility
+        currentCandidateStatus = cand.status ? cand.status.toLowerCase().trim() : ''; 
         
         // Populate Profile Banner
         document.getElementById('profileBannerInfo').innerHTML = `
@@ -202,18 +198,16 @@ if (document.getElementById('profileBannerInfo')) {
         }
 
         // ==========================================
-        // UPDATED: Hiring Actions Status Logic
+        // Hiring Actions Status Logic
         // ==========================================
         const oldStatusSelect = document.getElementById('interviewStatusSelect');
         const hiringCardContainer = oldStatusSelect ? oldStatusSelect.closest('.card') : document.querySelectorAll('.card')[1]; 
 
         if (hiringCardContainer) {
-            const currentStatus = cand.status ? cand.status.toLowerCase().trim() : '';
-
             // Dynamically inject the UI based on status
             let uiHtml = `<h3><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Hiring Actions</h3>`;
 
-            if (currentStatus === 'approved') {
+            if (currentCandidateStatus === 'approved') {
                 uiHtml += `
                     <div style="text-align: center; margin-top: 20px;">
                         <button class="btn btn-primary" style="width: 100%;" id="btnScheduleNow">
@@ -221,7 +215,7 @@ if (document.getElementById('profileBannerInfo')) {
                         </button>
                     </div>
                 `;
-            } else if (currentStatus === 'interview sheduled' || currentStatus === 'interview scheduled') {
+            } else if (currentCandidateStatus === 'interview sheduled' || currentCandidateStatus === 'interview scheduled') {
                 uiHtml += `
                     <div style="text-align: center; margin-top: 20px;">
                         <p style="margin-bottom: 20px; font-weight: 500;">Does the employee completed his interview?</p>
@@ -235,7 +229,7 @@ if (document.getElementById('profileBannerInfo')) {
                         </div>
                     </div>
                 `;
-            } else if (currentStatus === 'interview completed') {
+            } else if (currentCandidateStatus === 'interview completed') {
                 uiHtml += `
                     <div style="text-align: center; margin-top: 20px;">
                         <div style="background: var(--bg-body); padding: 20px; border-radius: 12px;">
@@ -271,20 +265,16 @@ if (document.getElementById('profileBannerInfo')) {
 
             // Attach listeners to whichever buttons were rendered
             document.getElementById('btnScheduleNow')?.addEventListener('click', () => {
-    // Redirects to the interviews page and passes the candidate's ID in the URL
-    window.location.href = `../interviews/interviews.html`;
-});
+                // Redirects to the interviews page and passes the candidate's ID in the URL
+                window.location.href = `../interviews/interviews.html`;
+            });
             document.getElementById('btnInterviewYes')?.addEventListener('click', () => updateBackendStatus('interview completed'));
             document.getElementById('btnInterviewNo')?.addEventListener('click', () => updateBackendStatus('approved'));
         }
-        // ==========================================
-        // END OF HIRING ACTIONS LOGIC
-        // ==========================================
     };
 
     // Render Payment Box & Progress Bar dynamically
     const renderPaymentSummaryUI = () => {
-        // We now rely on the backend's balance calculation, unless we just updated it locally
         const remaining = currentFeeState.total - currentFeeState.paid;
         const percent = currentFeeState.total > 0 ? ((currentFeeState.paid / currentFeeState.total) * 100).toFixed(0) : 0;
 
@@ -307,10 +297,17 @@ if (document.getElementById('profileBannerInfo')) {
             </div>
         `;
 
-        // Manage Send Offer Section visibility based on payments
+        // ==========================================
+        // Offer Section Visibility Logic
+        // ==========================================
         const offerSection = document.getElementById('sendOfferSection');
         if (offerSection) {
-            offerSection.style.display = (currentFeeState.paid >= currentFeeState.total) ? 'block' : 'none';
+            // Show only if the interview is completed (no fee condition required)
+            if (currentCandidateStatus === 'interview completed') {
+                offerSection.style.display = 'block';
+            } else {
+                offerSection.style.display = 'none';
+            }
         }
 
         // Attach Inline Edit Total Fee Handlers
@@ -328,7 +325,6 @@ if (document.getElementById('profileBannerInfo')) {
                 input.focus();
             });
 
-            // --- API CONNECTION: UPDATE TOTAL FEE ---
             saveBtn.addEventListener('click', async () => {
                 const newFee = parseInt(input.value);
                 if(!newFee || newFee <= 0 || newFee < currentFeeState.paid) {
@@ -336,7 +332,6 @@ if (document.getElementById('profileBannerInfo')) {
                     return;
                 }
 
-                // Show loading state
                 const originalText = saveBtn.innerHTML;
                 saveBtn.innerHTML = 'Saving...';
                 saveBtn.disabled = true;
@@ -344,16 +339,11 @@ if (document.getElementById('profileBannerInfo')) {
                 try {
                     const response = await fetch(`${BASE_URL}/api/employee-fee/${candidateId}/`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ 
-                            amount: newFee 
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: newFee })
                     });
 
                     if (response.ok) {
-                        // Success: Update local state with the exact new fee and redraw
                         currentFeeState.total = newFee;
                         showToast(`Total Fee updated to ₹${newFee}.`);
                         renderPaymentSummaryUI();
@@ -379,7 +369,6 @@ if (document.getElementById('profileBannerInfo')) {
     const closePaymentModalBtn = document.getElementById('closePaymentModalBtn');
     const paymentScreenshotFile = document.getElementById('paymentScreenshotFile');
 
-    // Open/Close Modal
     if (paymentUpdateModal && openPaymentModalBtn && closePaymentModalBtn) {
         openPaymentModalBtn.addEventListener('click', () => paymentUpdateModal.style.display = 'flex');
         closePaymentModalBtn.addEventListener('click', () => paymentUpdateModal.style.display = 'none');
@@ -388,7 +377,6 @@ if (document.getElementById('profileBannerInfo')) {
         });
     }
 
-    // Show filename on custom upload button
     if (paymentScreenshotFile) {
         paymentScreenshotFile.addEventListener('change', function(e) {
             const fileName = e.target.files[0] ? e.target.files[0].name : "Select Image";
@@ -397,7 +385,6 @@ if (document.getElementById('profileBannerInfo')) {
         });
     }
 
-    // Save Payment to Database
     if (savePaymentUpdateBtn) {
         savePaymentUpdateBtn.addEventListener('click', async () => {
             const amountInput = document.getElementById('updatePaidAmount').value;
@@ -407,7 +394,6 @@ if (document.getElementById('profileBannerInfo')) {
 
             if (!addedAmount || addedAmount <= 0) return alert('Please enter a valid amount.');
 
-            // Prepare FormData to handle both text and the Image File
             const formData = new FormData();
             formData.append('amount', addedAmount);
             formData.append('bank_name', bankNameInput);
@@ -416,29 +402,24 @@ if (document.getElementById('profileBannerInfo')) {
                 formData.append('screenshot', fileInput.files[0]);
             }
 
-            // Show loading state
             const originalBtnText = savePaymentUpdateBtn.innerHTML;
             savePaymentUpdateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
             savePaymentUpdateBtn.disabled = true;
 
             try {
-                // Send POST request to Django
                 const response = await fetch(`${BASE_URL}/api/add_payment/${candidateId}/`, {
                     method: 'POST',
-                    // CRITICAL: Do NOT set 'Content-Type' headers when using FormData. 
                     body: formData
                 });
 
                 if (response.ok) {
                     const responseData = await response.json();
 
-                    // Update UI State locally (or re-fetch the entire profile to be safe)
                     currentFeeState.paid += addedAmount;
                     if (currentFeeState.paid > currentFeeState.total) currentFeeState.paid = currentFeeState.total;
                     
-                    renderPaymentSummaryUI(); // Re-draw progress bar
+                    renderPaymentSummaryUI(); 
                     
-                    // Add the newly uploaded image directly to the gallery UI
                     if (responseData.payment && responseData.payment.screenshot) {
                         const gallery = document.querySelector('.screenshot-gallery');
                         if (gallery) {
@@ -456,7 +437,6 @@ if (document.getElementById('profileBannerInfo')) {
                         }
                     }
 
-                    // Close and reset modal
                     paymentUpdateModal.style.display = 'none';
                     document.getElementById('updatePaidAmount').value = '';
                     document.getElementById('updateBankName').value = '';
@@ -476,17 +456,14 @@ if (document.getElementById('profileBannerInfo')) {
                 console.error("Payment API Error:", error);
                 alert("Network error. Could not save payment.");
             } finally {
-                // Reset button state
                 savePaymentUpdateBtn.innerHTML = originalBtnText;
                 savePaymentUpdateBtn.disabled = false;
             }
         });
     }
 
-    // Trigger Initial Fetch on page load
     fetchCandidateProfile();
 }
-
 
 // ==========================================
 // 6. GLOBAL IMAGE PREVIEW MODAL
