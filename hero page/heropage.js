@@ -1,4 +1,3 @@
-// ====== MODAL LOGIC ======
 function openModal(id) {
     document.getElementById(id).classList.add('active');
 }
@@ -11,10 +10,10 @@ function switchModal(closeId, openId) {
     closeModal(closeId);
     setTimeout(() => {
         openModal(openId);
-    }, 300); // Wait for fade out
+    }, 300);
 }
 
-// Close modal on outside click
+
 window.onclick = function(event) {
     if (event.target.classList.contains('modal-overlay')) {
         event.target.classList.remove('active');
@@ -22,9 +21,7 @@ window.onclick = function(event) {
 }
 
 
-// ====== LOGIN / REGISTRATION LOGIC ======
 
-// 1. Sign Up Flow (Does NOT open dashboard directly)
 document.getElementById('create-form').addEventListener('submit',(event)=>{
     event.preventDefault();
 
@@ -50,7 +47,7 @@ document.getElementById('create-form').addEventListener('submit',(event)=>{
     });
 })
 
-// 2. Sign In Flow (Opens the dashboard)
+
 function performSignIn(event) {
     event.preventDefault();
 
@@ -80,7 +77,7 @@ function performSignIn(event) {
 
         if (result.status === "success") {
 
-            // ✅ store user id
+           
             localStorage.setItem('id', result.id);
 
             closeModal('signinModal');
@@ -90,27 +87,35 @@ function performSignIn(event) {
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // 🔥 NEW: handle tracking UI
-            const status = result.form_status;
+           
+            const status = result.form_status ? result.form_status.toLowerCase().trim() : "form_pending";
+            console.log("Parsed Status:", status); // Check your console to see the exact status string
 
-            // Reset all sections first
             document.getElementById('hiringForm').style.display = 'none';
             document.getElementById('processingSection').style.display = 'none';
             document.getElementById('interviewSection').style.display = 'none';
             document.getElementById('hrSimulatorTool').style.display = 'none';
 
-            if (status === "form_pending" || !status) {
+            if (status === "form_pending" || status === "pending") {
                 
                 document.getElementById('hiringForm').style.display = 'block';
 
-            } else if (status === "form_submitted") {
+            } else if (status === "form_submitted" || status === "approved") {
                
                 document.getElementById('processingSection').style.display = 'block';
 
-            } else if (status === "interview_scheduled") {
+            } else if (status === "interview sheduled" || status === "interview scheduled") {
+                
                 
                 document.getElementById('interviewSection').style.display = 'block';
 
+            } else if (status === "interview completed") {
+                
+               
+                document.getElementById('processingSection').style.display = 'block';
+                document.querySelector('#processingSection h3').innerText = "Interview Completed!";
+                document.querySelector('#processingSection p').innerText = "HR is reviewing your interview. We will get back to you shortly.";
+                
             } else if (status === "offer_released") {
                 
                 alert("Offer Letter Released 🎉");
@@ -127,27 +132,25 @@ function performSignIn(event) {
 }
 
 
-// 3. Sign Out Function
 function signOut() {
-    // Reset Dashboard Views to default form state
+    
     document.getElementById('hiringForm').style.display = 'block';
     document.getElementById('processingSection').style.display = 'none';
     document.getElementById('interviewSection').style.display = 'none';
     document.getElementById('hrSimulatorTool').style.display = 'none';
     
-    // Reset the Form
+    
     document.getElementById('hiringForm').reset();
     document.getElementById('fileNameDisplay').style.display = 'none';
     
-    // Switch Views Back to Landing
+
     document.getElementById('hiringDashboard').style.display = 'none';
     document.getElementById('mainLandingPage').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 
-// ====== FORM SUBMISSION & HR SIMULATION ======
-const emp_id = localStorage.getItem('id');  // Retrieved from login response, used for form submission
+const emp_id = localStorage.getItem('id'); 
 function handleFormSubmit(event) {
     event.preventDefault();
 
@@ -177,7 +180,6 @@ function handleFormSubmit(event) {
     formData.append("experiences", form.querySelectorAll('input[type="number"]')[1].value.toString());
     formData.append("resume", fileInput.files[0]);
 
-    // DEBUG
     for (let pair of formData.entries()) {
         console.log(pair[0], pair[1]);
     }
@@ -200,25 +202,25 @@ function handleFormSubmit(event) {
     });
 }
 
-// Manually triggered by the presenter using the floating "Approve & Schedule" button
+
 function approveCandidate() {
-    // Hide processing spinner and HR Simulator panel
+    
     document.getElementById('processingSection').style.display = 'none';
     document.getElementById('hrSimulatorTool').style.display = 'none';
     
-    // Show the final Scheduled Interview view
+    
     document.getElementById('interviewSection').style.display = 'block';
 }
 
 
-// ====== FILE UPLOAD INTERACTION ======
+
 const fileInput = document.getElementById('resumeInput');
 const dropZone = document.getElementById('dropZone');
 const fileNameDisplay = document.getElementById('fileNameDisplay');
 
 fileInput.addEventListener('change', function() {
     if (this.files && this.files[0]) {
-        // Display the selected file name
+       
         fileNameDisplay.innerText = "Selected: " + this.files[0].name;
         fileNameDisplay.style.display = 'block';
     } else {
@@ -226,7 +228,7 @@ fileInput.addEventListener('change', function() {
     }
 });
 
-// Drag and drop visual effects
+
 dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropZone.classList.add('dragover');
@@ -247,7 +249,7 @@ dropZone.addEventListener('drop', (e) => {
 });
 
 
-// ====== SCROLL REVEAL ANIMATION ======
+
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {

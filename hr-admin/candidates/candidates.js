@@ -1,16 +1,12 @@
-/** * HR CRM Admin - Unified Logic
- */
 
-// 1. Global State
 let candidatesData = [];
 
 async function fetchCandidates() {
     try {
         const response = await fetch('http://127.0.0.1:8000/api/approved_candidates/');
-        console.log("Response Status:", response.status); // Check if it's 200
-        
+        console.log("Response Status:", response.status);
         const data = await response.json();
-        console.log("Data received from API:", data); // Check the structure
+        console.log("Data received from API:", data); 
         
         if (!Array.isArray(data)) {
             console.warn("Expected an array but received:", typeof data);
@@ -26,7 +22,6 @@ async function fetchCandidates() {
     }
 }
 
-// 3. Helper Functions
 const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
 const getPaymentBadge = (paid, total) => {
@@ -49,8 +44,7 @@ const showToast = (message) => {
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3500);
 };
 
-// 4. Render Table
-// 4. Render Table
+
 const renderTable = (data) => {
     const tbody = document.getElementById('candidatesBody');
     if (!tbody) return;
@@ -83,7 +77,7 @@ const renderTable = (data) => {
     });
 };
 
-// 5. Main Initialization
+
 document.addEventListener("DOMContentLoaded", () => {
     // Page Loader
     const loader = document.getElementById('oppty-page-loader');
@@ -116,9 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
         renderTable(candidatesData);
     });
 
-    // Start App
+   
     fetchCandidates();
 });
 
-// 6. Global Helpers
+
 window.logoutAdmin = () => showToast('Logging out...');

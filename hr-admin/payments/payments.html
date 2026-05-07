@@ -4,40 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR CRM Admin - Payments Ledger</title>
-    <link rel="icon" href="../assets/opptylogo2.png" type="image/png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="../../assets/opptylogo.png" type="image/png">
+    <link rel="stylesheet" href="./payments.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     <div id="oppty-page-loader" class="oppty-loader-overlay">
-    <div class="loader-content">
-        <img src="../assets/opptylogo.png" alt="Oppty Logo" class="oppty-logo-loader">
-        <div class="wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="shadow"></div>
-            <div class="shadow"></div>
-            <div class="shadow"></div>
+        <div class="loader-content">
+            <img src="../../assets/opptylogo.png" alt="Oppty Logo" class="oppty-logo-loader">
+            <div class="wrapper">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="shadow"></div>
+                <div class="shadow"></div>
+                <div class="shadow"></div>
+            </div>
         </div>
     </div>
-</div>
 
     <div class="dashboard-container">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <!-- <div style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-briefcase"></i> HR Admin</div> -->
-                <img src="../assets/opptylogo.png" alt=" Logo" style="width: 150px; margin-bottom: 20px;">
+                <img src="../../assets/opptylogo.png" alt="Logo" style="width: 150px; margin-bottom: 20px;">
                 <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="./dashboard/dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a href="./index.html"><i class="fa-solid fa-users"></i> Candidates</a></li>
+                <li><a href="../dashboard/dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="../candidates/candidates.html"><i class="fa-solid fa-user-group"></i> Candidates</a></li>
                 <li class="active"><a href="./payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
-                <li><a href="./interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
-                <li><a href="./expenses.html"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses</a></li>
-                <li><a href="./settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li><a href="../interviews/interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
+                <li class="finance-item"><a href="../expensives/expensives.html"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses</a></li>
+                <li><a href="../settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </aside>
 
@@ -59,12 +58,19 @@
             </header>
 
             <div class="content-wrapper">
-                <div class="page-header mt-15" style="margin-top: 30px;">
+                <div class="page-header" style="margin-top: 30px;">
                     <h1>Payment Ledger</h1>
                 </div>
                 
                 <div class="card">
-                    <h3>Recent Transactions</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0;">Recent Transactions</h3>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="paymentMonthFilter" style="font-size: 0.9rem; color: var(--text-muted);">Filter by Date:</label>
+                            <input type="date" id="paymentMonthFilter" class="form-control" style="width: 180px; padding: 8px; border-radius: 8px; border: 1px solid #ddd;">
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -78,24 +84,11 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="paymentsTableBody">
                                 <tr>
-                                    <td>#TRX-9081</td>
-                                    <td><strong>Rahul Sharma</strong></td>
-                                    <td>Oct 15, 2023</td>
-                                    <td>HDFC Bank Ltd.</td>
-                                    <td>₹5000</td>
-                                    <td><span class="badge paid">Paid</span></td>
-                                    <td><button class="btn btn-secondary btn-sm" onclick="openModal('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80')">Receipt</button></td>
-                                </tr>
-                                <tr>
-                                    <td>#TRX-9082</td>
-                                    <td><strong>Priya Desai</strong></td>
-                                    <td>Oct 18, 2023</td>
-                                    <td>ICICI Bank</td>
-                                    <td>₹8000</td>
-                                    <td><span class="badge paid">Paid</span></td>
-                                    <td><button class="btn btn-secondary btn-sm" onclick="openModal('https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?w=400&q=80')">Receipt</button></td>
+                                    <td colspan="7" style="text-align:center; padding: 40px; color: var(--text-muted);">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Loading records...
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -106,11 +99,12 @@
     </div>
 
     <div id="imageModal" class="modal">
-        <span class="modal-close" id="modalClose" onclick="document.getElementById('imageModal').style.display='none'">&times;</span>
+        <span class="modal-close" id="modalClose">&times;</span>
         <img class="modal-content" id="modalImg">
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-    <script src="script.js"></script>
+
+    <script src="./payments.js"></script>
 </body>
 </html>

@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR CRM Admin - Expenses</title>
-    <link rel="icon" href="../assets/opptylogo2.png" type="image/png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="../../assets/opptylogo.png" type="image/png">
+    <link rel="stylesheet" href="./expensives.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     <div id="oppty-page-loader" class="oppty-loader-overlay">
     <div class="loader-content">
-        <img src="../assets/opptylogo.png" alt="Oppty Logo" class="oppty-logo-loader">
+        <img src="../../assets/opptylogo.png" alt="Oppty Logo" class="oppty-logo-loader">
         <div class="wrapper">
             <div class="circle"></div>
             <div class="circle"></div>
@@ -26,19 +26,21 @@
 
     <div class="dashboard-container">
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="../assets/opptylogo.png" alt="Logo" style="width: 150px; margin-bottom: 20px;">
-                <button id="sidebarClose" class="sidebar-close-btn"><i class="fa-solid fa-times"></i></button>
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="../../assets/opptylogo.png" alt="Oppty Logo" style="height: 40px;">
             </div>
-            <ul class="sidebar-menu">
-                <li><a href="./dashboard/dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a href="./index.html"><i class="fa-solid fa-users"></i> Candidates</a></li>
-                <li><a href="./payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
-                <li><a href="./interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
-                <li class="active"><a href="./expenses.html"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses</a></li>
-                <li><a href="./settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
-            </ul>
-        </aside>
+            <button class="sidebar-close" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li ><a href="../dashboard/dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="../candidates/candidates.html"><i class="fa-solid fa-user-group"></i> Candidates</a></li>
+            <li class="finance-item"><a href="../payments/payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
+            <li><a href="../interviews/interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
+            <li class="active"><a href="./expensives.html"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses</a></li>
+            <li><a href="../settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+        </ul>
+    </aside>
 
         <main class="main-content">
             <header class="top-nav">
@@ -168,6 +170,6 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-    <script src="script.js"></script>
+    <script src="./expensives.js"></script>
 </body>
 </html>

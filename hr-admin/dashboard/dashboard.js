@@ -47,7 +47,7 @@ async function initDashboardData() {
         allCandidates = Array.isArray(data) ? data : (data.candidates || []);
 
         // Filter based on status
-        const pending = allCandidates.filter(c => c.status === 'form_pending');
+        const pending = allCandidates.filter(c => c.status === 'form_submitted');
         const accepted = allCandidates.filter(c => c.status === 'approved');
         const rejected = allCandidates.filter(c => c.status === 'rejected');
 

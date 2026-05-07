@@ -40,7 +40,73 @@ const showToast = (message) => {
         setTimeout(() => toast.remove(), 300);
     }, 3500);
 }
+// Assuming BASE_URL and candidateId are already defined in your file
+// const BASE_URL = 'http://127.0.0.1:8000';
+// const candidateId = ...;
 
+const btnYes = document.getElementById('btnInterviewYes');
+const btnNo = document.getElementById('btnInterviewNo');
+
+// Handle the "Yes" Button Click
+if (btnYes) {
+    btnYes.addEventListener('click', async () => {
+        try {
+            // Disable button to prevent multiple clicks
+            btnYes.disabled = true;
+            btnYes.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+
+            const response = await fetch(`${BASE_URL}/api/update_candidate_status/${candidateId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: 'yes' }) // Sending "yes" as the status
+            });
+
+            if (response.ok) {
+                showToast("Interview status updated to Yes!");
+                // Reload the page after 1 second to show the updated UI
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                alert("Failed to update status on the server.");
+                btnYes.disabled = false;
+                btnYes.innerHTML = '<i class="fa-solid fa-check"></i> Yes';
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            alert("Network error. Could not connect to the server.");
+        }
+    });
+}
+
+// Handle the "No" Button Click (Optional, for completeness)
+if (btnNo) {
+    btnNo.addEventListener('click', async () => {
+        try {
+            btnNo.disabled = true;
+            btnNo.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+
+            const response = await fetch(`${BASE_URL}/api/update_candidate_status/${candidateId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: 'no' }) // Sending "no" as the status
+            });
+
+            if (response.ok) {
+                showToast("Interview status updated to No.");
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                alert("Failed to update status on the server.");
+                btnNo.disabled = false;
+                btnNo.innerHTML = '<i class="fa-solid fa-xmark"></i> No';
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+        }
+    });
+}
 const getInitials = (name) => {
     if (!name || typeof name !== 'string') return '?';
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
@@ -63,7 +129,7 @@ if (document.getElementById('profileBannerInfo')) {
     const candidateId = parseInt(urlParams.get('id'));
 
     // Local state for UI updates
-    let currentFeeState = { total: 100000, paid: 0 }; 
+    let currentFeeState = { total: 0, paid: 0, balance: 0 }; 
 
     const fetchCandidateProfile = async () => {
         if (!candidateId) return;
@@ -79,9 +145,10 @@ if (document.getElementById('profileBannerInfo')) {
     };
 
     const renderProfileDetails = (data) => {
-        const cand = data.candidate_info;
+        const cand = data.name;
         const payments = data.payments || [];
-
+        const status = cand.status; 
+        
         // Populate Profile Banner
         document.getElementById('profileBannerInfo').innerHTML = `
             <div class="user-avatar" style="width:70px;height:70px;font-size:1.6rem;border-radius:18px;">${getInitials(cand.name)}</div>
@@ -107,9 +174,11 @@ if (document.getElementById('profileBannerInfo')) {
         const candEmailInput = document.getElementById('candEmail');
         if(candEmailInput) candEmailInput.value = cand.email;
 
-        // Calculate Payments from Database
-        const totalPaid = payments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
-        currentFeeState.paid = totalPaid;
+        // FETCH ALL FINANCIALS DIRECTLY FROM DATABASE
+        currentFeeState.total = parseFloat(cand.fee) || 150000;
+        currentFeeState.paid = parseFloat(cand.total_paid) || 0;
+        currentFeeState.balance = parseFloat(cand.balance) || 0;
+        
         renderPaymentSummaryUI();
 
         // Render Screenshot Gallery dynamically
@@ -132,29 +201,90 @@ if (document.getElementById('profileBannerInfo')) {
             }
         }
 
-        // Hiring Actions Status Logic (Toggle Views based on interview status)
-        const statusSelect = document.getElementById('interviewStatusSelect');
-        const scheduleSection = document.getElementById('scheduleSection');
-        const emailSection = document.getElementById('emailSection');
+        // ==========================================
+        // UPDATED: Hiring Actions Status Logic
+        // ==========================================
+        const oldStatusSelect = document.getElementById('interviewStatusSelect');
+        const hiringCardContainer = oldStatusSelect ? oldStatusSelect.closest('.card') : document.querySelectorAll('.card')[1]; 
 
-        if(statusSelect) {
-            statusSelect.value = (cand.status === 'Completed') ? 'Completed' : 'Pending';
-            const toggleHiringViews = (status) => {
-                if (status === 'Completed') {
-                    scheduleSection.style.display = 'none';
-                    emailSection.style.display = 'block';
-                } else {
-                    scheduleSection.style.display = 'block';
-                    emailSection.style.display = 'none';
-                }
+        if (hiringCardContainer) {
+            const currentStatus = cand.status ? cand.status.toLowerCase().trim() : '';
+
+            // Dynamically inject the UI based on status
+            let uiHtml = `<h3><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Hiring Actions</h3>`;
+
+            if (currentStatus === 'approved') {
+                uiHtml += `
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-primary" style="width: 100%;" id="btnScheduleNow">
+                            <i class="fa-regular fa-calendar-check"></i> Schedule Interview
+                        </button>
+                    </div>
+                `;
+            } else if (currentStatus === 'interview sheduled' || currentStatus === 'interview scheduled') {
+                uiHtml += `
+                    <div style="text-align: center; margin-top: 20px;">
+                        <p style="margin-bottom: 20px; font-weight: 500;">Does the employee completed his interview?</p>
+                        <div style="display: flex; gap: 15px;">
+                            <button class="btn btn-primary" id="btnInterviewYes" style="flex: 1; background: #05cd99; border: none;">
+                                <i class="fa-solid fa-check"></i> Yes
+                            </button>
+                            <button class="btn btn-secondary" id="btnInterviewNo" style="flex: 1; color: #ee5d50; border-color: #ee5d50;">
+                                <i class="fa-solid fa-xmark"></i> No
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (currentStatus === 'interview completed') {
+                uiHtml += `
+                    <div style="text-align: center; margin-top: 20px;">
+                        <div style="background: var(--bg-body); padding: 20px; border-radius: 12px;">
+                            <i class="fa-solid fa-circle-check" style="color: #05cd99; font-size: 2.5rem; margin-bottom: 10px;"></i>
+                            <p style="font-weight: 600; margin: 0;">Interview Process Finished</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                uiHtml += `<p style="margin-top: 20px; text-align: center; color: var(--text-muted);">Current Status: ${cand.status}</p>`;
             }
-            toggleHiringViews(statusSelect.value);
-            statusSelect.addEventListener('change', (e) => toggleHiringViews(e.target.value));
+
+            hiringCardContainer.innerHTML = uiHtml;
+
+            // API Call function to update backend
+            const updateBackendStatus = async (newStatus) => {
+                try {
+                    const response = await fetch(`${BASE_URL}/api/update_candidate_status/${candidateId}/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                    if (response.ok) {
+                        showToast(`Status updated successfully!`);
+                        setTimeout(() => location.reload(), 1000); // Reload page to see the new UI
+                    } else {
+                        alert("Failed to update status on server.");
+                    }
+                } catch (err) {
+                    console.error("Status update error:", err);
+                }
+            };
+
+            // Attach listeners to whichever buttons were rendered
+            document.getElementById('btnScheduleNow')?.addEventListener('click', () => {
+    // Redirects to the interviews page and passes the candidate's ID in the URL
+    window.location.href = `../interviews/interviews.html`;
+});
+            document.getElementById('btnInterviewYes')?.addEventListener('click', () => updateBackendStatus('interview completed'));
+            document.getElementById('btnInterviewNo')?.addEventListener('click', () => updateBackendStatus('approved'));
         }
+        // ==========================================
+        // END OF HIRING ACTIONS LOGIC
+        // ==========================================
     };
 
     // Render Payment Box & Progress Bar dynamically
     const renderPaymentSummaryUI = () => {
+        // We now rely on the backend's balance calculation, unless we just updated it locally
         const remaining = currentFeeState.total - currentFeeState.paid;
         const percent = currentFeeState.total > 0 ? ((currentFeeState.paid / currentFeeState.total) * 100).toFixed(0) : 0;
 
@@ -198,20 +328,51 @@ if (document.getElementById('profileBannerInfo')) {
                 input.focus();
             });
 
-            saveBtn.addEventListener('click', () => {
+            // --- API CONNECTION: UPDATE TOTAL FEE ---
+            saveBtn.addEventListener('click', async () => {
                 const newFee = parseInt(input.value);
                 if(!newFee || newFee <= 0 || newFee < currentFeeState.paid) {
-                    alert('Invalid fee amount.');
+                    alert('Invalid fee amount. It cannot be less than what is already paid.');
                     return;
                 }
-                currentFeeState.total = newFee; 
-                showToast(`Total Fee updated to ₹${newFee}.`);
-                renderPaymentSummaryUI();
+
+                // Show loading state
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = 'Saving...';
+                saveBtn.disabled = true;
+
+                try {
+                    const response = await fetch(`${BASE_URL}/api/employee-fee/${candidateId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            amount: newFee 
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Success: Update local state with the exact new fee and redraw
+                        currentFeeState.total = newFee;
+                        showToast(`Total Fee updated to ₹${newFee}.`);
+                        renderPaymentSummaryUI();
+                    } else {
+                        alert('Failed to update the fee in the database. Please try again.');
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error("Error updating fee:", error);
+                    alert('Network error. Could not connect to the server.');
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }
             });
         }
     };
 
-    // --- 5. Add Payment Modal Logic ---
+    // --- 5. Add Payment API Connection ---
     const savePaymentUpdateBtn = document.getElementById('savePaymentUpdateBtn');
     const paymentUpdateModal = document.getElementById('paymentUpdateModal');
     const openPaymentModalBtn = document.getElementById('openPaymentModalBtn');
@@ -236,30 +397,89 @@ if (document.getElementById('profileBannerInfo')) {
         });
     }
 
-    // Save Payment locally (Setup for future API POST request)
+    // Save Payment to Database
     if (savePaymentUpdateBtn) {
-        savePaymentUpdateBtn.addEventListener('click', () => {
-            const addedAmount = parseInt(document.getElementById('updatePaidAmount').value);
+        savePaymentUpdateBtn.addEventListener('click', async () => {
+            const amountInput = document.getElementById('updatePaidAmount').value;
+            const bankNameInput = document.getElementById('updateBankName').value;
+            const fileInput = document.getElementById('paymentScreenshotFile');
+            const addedAmount = parseInt(amountInput);
+
             if (!addedAmount || addedAmount <= 0) return alert('Please enter a valid amount.');
+
+            // Prepare FormData to handle both text and the Image File
+            const formData = new FormData();
+            formData.append('amount', addedAmount);
+            formData.append('bank_name', bankNameInput);
             
-            // Update UI State locally
-            currentFeeState.paid += addedAmount;
-            if (currentFeeState.paid > currentFeeState.total) currentFeeState.paid = currentFeeState.total;
-            
-            renderPaymentSummaryUI(); // Re-draw progress bar
-            
-            // Close and reset modal
-            paymentUpdateModal.style.display = 'none';
-            document.getElementById('updatePaidAmount').value = '';
-            document.getElementById('updateBankName').value = '';
-            document.getElementById('updatePaymentDate').value = '';
-            
-            if(paymentScreenshotFile) {
-                paymentScreenshotFile.value = '';
-                paymentScreenshotFile.previousElementSibling.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Select Image`;
+            if (fileInput.files.length > 0) {
+                formData.append('screenshot', fileInput.files[0]);
             }
 
-            showToast(`Added ₹${addedAmount} to candidate payment!`);
+            // Show loading state
+            const originalBtnText = savePaymentUpdateBtn.innerHTML;
+            savePaymentUpdateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            savePaymentUpdateBtn.disabled = true;
+
+            try {
+                // Send POST request to Django
+                const response = await fetch(`${BASE_URL}/api/add_payment/${candidateId}/`, {
+                    method: 'POST',
+                    // CRITICAL: Do NOT set 'Content-Type' headers when using FormData. 
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+
+                    // Update UI State locally (or re-fetch the entire profile to be safe)
+                    currentFeeState.paid += addedAmount;
+                    if (currentFeeState.paid > currentFeeState.total) currentFeeState.paid = currentFeeState.total;
+                    
+                    renderPaymentSummaryUI(); // Re-draw progress bar
+                    
+                    // Add the newly uploaded image directly to the gallery UI
+                    if (responseData.payment && responseData.payment.screenshot) {
+                        const gallery = document.querySelector('.screenshot-gallery');
+                        if (gallery) {
+                            if (gallery.innerHTML.includes('No payment proofs')) gallery.innerHTML = '';
+                            
+                            const imgPath = responseData.payment.screenshot.startsWith('/media/') 
+                                ? `${BASE_URL}${responseData.payment.screenshot}` 
+                                : `${BASE_URL}/media/${responseData.payment.screenshot}`;
+                                
+                            const img = document.createElement('img');
+                            img.src = imgPath;
+                            img.alt = `Receipt ₹${addedAmount}`;
+                            img.onclick = function() { openModal(this.src); };
+                            gallery.appendChild(img);
+                        }
+                    }
+
+                    // Close and reset modal
+                    paymentUpdateModal.style.display = 'none';
+                    document.getElementById('updatePaidAmount').value = '';
+                    document.getElementById('updateBankName').value = '';
+                    document.getElementById('updatePaymentDate').value = '';
+                    
+                    if(fileInput) {
+                        fileInput.value = '';
+                        fileInput.previousElementSibling.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Select Image`;
+                    }
+
+                    showToast(`Added ₹${addedAmount} to database successfully!`);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error saving payment: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error("Payment API Error:", error);
+                alert("Network error. Could not save payment.");
+            } finally {
+                // Reset button state
+                savePaymentUpdateBtn.innerHTML = originalBtnText;
+                savePaymentUpdateBtn.disabled = false;
+            }
         });
     }
 
