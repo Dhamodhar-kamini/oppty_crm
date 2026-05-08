@@ -1,6 +1,7 @@
 // ==========================================
 // HR CRM Admin - Candidate Details Profile Logic
 // ==========================================
+
 const BASE_URL = 'https://hiring-api.theoppty.com';
 
 document.addEventListener("DOMContentLoaded", () => {

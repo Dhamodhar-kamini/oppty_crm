@@ -36,7 +36,7 @@
                 <li class="active"><a href="./payments.html"><i class="fa-solid fa-wallet"></i> Payments</a></li>
                 <li><a href="../interviews/interviews.html"><i class="fa-solid fa-video"></i> Interviews</a></li>
                 <li class="finance-item"><a href="../expensives/expensives.html"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses</a></li>
-                
+                <li><a href="../settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </aside>
 
@@ -45,12 +45,16 @@
                 <div class="nav-left">
                     <button id="sidebarToggle" class="btn-icon"><i class="fa-solid fa-bars"></i></button>
                 </div>
-                <div class="header-actions">
-        <button class="logout-btn-standalone" onclick="signOut()">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Logout</span>
-        </button>
-    </div>
+                <div class="nav-right">
+                    <div class="profile-container">
+                        <div class="profile" id="profileDropdownBtn">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=ff6b00&color=fff&bold=true" alt="Admin">
+                        </div>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <a href="#" onclick="logoutAdmin()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
             </header>
 
             <div class="content-wrapper">

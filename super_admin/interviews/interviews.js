@@ -1,7 +1,8 @@
 // ==========================================
 // HR CRM Admin - Interview Schedule Logic
 // ==========================================
-const BASE_URL = 'https://hiring-api.theoppty.com';// Django Server URL
+
+const BASE_URL = 'https://hiring-api.theoppty.com'; // Django Server URL
 
 document.addEventListener("DOMContentLoaded", () => {
     // --- 1. Page Loader & Sidebar Logic ---

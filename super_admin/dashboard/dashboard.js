@@ -168,30 +168,3 @@ function showToast(message, type) {
     icon.className = type === 'success' ? 'fa-solid fa-circle-check toast-icon' : 'fa-solid fa-circle-xmark toast-icon';
     setTimeout(() => { toast.classList.remove('show'); }, 3500);
 }
-
-
-// Profile Dropdown Toggle
-const profileTrigger = document.getElementById('profileTrigger');
-const profileMenu = document.getElementById('profileMenu');
-
-if (profileTrigger) {
-    profileTrigger.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevents immediate closing
-        profileMenu.classList.toggle('active');
-        profileTrigger.classList.toggle('active');
-    });
-}
-
-// Close menu when clicking anywhere else
-window.addEventListener('click', () => {
-    if (profileMenu.classList.contains('active')) {
-        profileMenu.classList.remove('active');
-        profileTrigger.classList.remove('active');
-    }
-});
-
-// Update your sign-out function to clear the ID correctly
-function signOut() {
-    localStorage.removeItem('id');
-    window.location.href = "../../hero_page/heropage.html"; // Adjust path to your landing page
-}

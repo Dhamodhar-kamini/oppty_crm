@@ -1,57 +1,112 @@
+/**
+ * HR CRM - Candidates Management Script
+ */
 
+// Global State
 let candidatesData = [];
 
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Initialize UI Components
+    initLoader();
+    initSidebar();
+    initProfileDropdown();
+    
+    // 2. Load Data
+    fetchCandidates();
+
+    // 3. Initialize Filters
+    initFilters();
+});
+
+/**
+ * UI: Page Loader Logic
+ */
+function initLoader() {
+    const loader = document.getElementById('oppty-page-loader');
+    if (loader) {
+        // Hide loader after page content is fully ready
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 800);
+        });
+    }
+}
+
+/**
+ * UI: Sidebar Toggle (Mobile)
+ */
+function initSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => sidebar.classList.add('active'));
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => sidebar.classList.remove('active'));
+    }
+}
+
+/**
+ * UI: Profile Dropdown Logic
+ */
+function initProfileDropdown() {
+    const profileTrigger = document.getElementById('profileTrigger');
+    const profileMenu = document.getElementById('profileMenu');
+
+    if (profileTrigger && profileMenu) {
+        profileTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileMenu.classList.toggle('active');
+            profileTrigger.classList.toggle('active');
+        });
+
+        // Close menu when clicking anywhere else on the document
+        document.addEventListener('click', (e) => {
+            if (!profileTrigger.contains(e.target) && !profileMenu.contains(e.target)) {
+                profileMenu.classList.remove('active');
+                profileTrigger.classList.remove('active');
+            }
+        });
+    }
+}
+
+/**
+ * Data: Fetch from API
+ */
 async function fetchCandidates() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/approved_candidates/');
-        console.log("Response Status:", response.status);
-        const data = await response.json();
-        console.log("Data received from API:", data); 
+        const response = await fetch('https://hiring-api.theoppty.com/api/approved_candidates/');
         
-        if (!Array.isArray(data)) {
-            console.warn("Expected an array but received:", typeof data);
-            candidatesData = []; 
-        } else {
-            candidatesData = data;
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        candidatesData = Array.isArray(data) ? data : [];
         
         renderTable(candidatesData);
     } catch (error) {
         console.error('Fetch Error:', error);
-        showToast('Check console for API error details');
+        showToast('Error loading candidates. Please check API.', 'danger');
+        
+        // Show empty state if fetch fails
+        const tbody = document.getElementById('candidatesBody');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:red;">Failed to connect to API.</td></tr>';
     }
 }
 
-const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase();
-
-const getPaymentBadge = (paid, total) => {
-    if (paid === 0) return `<span class="badge pending">Pending</span>`;
-    if (paid < total) return `<span class="badge partial">Partial</span>`;
-    return `<span class="badge paid">Fully Paid</span>`;
-};
-
-const getInterviewBadge = (status) => 
-    status === 'Completed' ? `<span class="badge completed">Completed</span>` : `<span class="badge pending">Pending</span>`;
-
-const showToast = (message) => {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-    const toast = document.createElement('div');
-    toast.className = `toast`;
-    toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <div>Success</div> <small>${message}</small>`;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3500);
-};
-
-
-const renderTable = (data) => {
+/**
+ * Data: Table Rendering
+ */
+function renderTable(data) {
     const tbody = document.getElementById('candidatesBody');
     if (!tbody) return;
     
     tbody.innerHTML = '';
+
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">No candidates found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;">No candidates found matching your criteria.</td></tr>';
         return;
     }
     
@@ -62,57 +117,117 @@ const renderTable = (data) => {
                 <div class="user-cell">
                     <div class="user-avatar">${getInitials(cand.full_name)}</div>
                     <div>
-                        <strong>${cand.full_name}</strong><br>
-                        <small>${cand.email}</small>
+                        <strong>${cand.full_name || 'Unnamed'}</strong><br>
+                        <small style="color:var(--text-muted)">${cand.email || 'No Email'}</small>
                     </div>
                 </div>
             </td>
             <td>${cand.phone || 'N/A'}</td>
-            <td><div>${cand.experiences || '0'} Years</div><small><i class="fa-regular fa-calendar"></i> Joined: 11/08/2020</small></td>
-            <td>${getInterviewBadge(cand.status)}</td>
-            <td>100000</td>
-            <td><a href="../candidate-profile/candidate-details.html?id=${cand.id}" class="btn btn-secondary btn-sm">View Profile</a></td>
+            <td><div>${cand.experiences || '0'} Years</div></td>
+            <td>${getStatusBadge(cand.status)}</td>
+            <td>${cand.refered || 'Direct'}</td>
+            <td><strong>₹${cand.fee || '0'}</strong></td>
+            <td>
+                <a href="../candidate-profile/candidate-details.html?id=${cand.id}" class="btn btn-secondary btn-sm">
+                    View Profile
+                </a>
+            </td>
         `;
         tbody.appendChild(tr);
     });
-};
+}
 
-
-document.addEventListener("DOMContentLoaded", () => {
-    // Page Loader
-    const loader = document.getElementById('oppty-page-loader');
-    window.addEventListener('load', () => { if (loader) setTimeout(() => loader.classList.add('hidden'), 800); });
-
-    // Sidebar
-    const sidebar = document.getElementById('sidebar');
-    document.getElementById('sidebarToggle')?.addEventListener('click', () => sidebar?.classList.add('active'));
-    document.getElementById('sidebarClose')?.addEventListener('click', () => sidebar?.classList.remove('active'));
-
-    // Candidates Page Filters
+/**
+ * Logic: Filtering
+ */
+function initFilters() {
     const searchInput = document.getElementById('candidatesSearch');
     const monthFilter = document.getElementById('candidateMonthFilter');
+    const clearBtn = document.getElementById('clearFiltersBtn');
 
     const applyFilters = () => {
-        const s = searchInput?.value.toLowerCase() || '';
-        const m = monthFilter?.value || '';
-        const filtered = candidatesData.filter(c => 
-            (c.name.toLowerCase().includes(s) || c.email.toLowerCase().includes(s)) &&
-            (m === '' || c.joinDate.startsWith(m))
-        );
+        const searchTerm = searchInput?.value.toLowerCase() || '';
+        const selectedMonth = monthFilter?.value || ''; // Format: YYYY-MM
+        
+        const filtered = candidatesData.filter(c => {
+            const nameMatch = (c.full_name || '').toLowerCase().includes(searchTerm);
+            const expMatch = (c.experiences || '').toString().includes(searchTerm);
+            
+            // Handle date matching (c.date should be in ISO format or starts with YYYY-MM)
+            const candDate = c.date || c.created_at || '';
+            const monthMatch = selectedMonth === '' || candDate.startsWith(selectedMonth);
+            
+            return (nameMatch || expMatch) && monthMatch;
+        });
+        
         renderTable(filtered);
     };
 
     searchInput?.addEventListener('input', applyFilters);
     monthFilter?.addEventListener('change', applyFilters);
-    document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+    
+    clearBtn?.addEventListener('click', () => {
         if(searchInput) searchInput.value = '';
         if(monthFilter) monthFilter.value = '';
         renderTable(candidatesData);
     });
+}
 
-   
-    fetchCandidates();
-});
+/**
+ * Helper: Status Badges
+ */
+function getStatusBadge(status) {
+    if (!status) return `<span class="badge pending">Pending</span>`;
+    
+    const s = status.toLowerCase().trim();
+    
+    if (s === 'approved') return `<span class="badge approved">Approved</span>`;
+    if (s.includes('schedule')) return `<span class="badge scheduled">Interview Scheduled</span>`;
+    if (s.includes('completed')) return `<span class="badge interview-completed">Interview Completed</span>`;
+    if (s === 'offer released') return `<span class="badge offer">Offer Released 🎉</span>`;
+    if (s.includes('reject')) return `<span class="badge rejected">Rejected</span>`;
+    
+    // Default fallback
+    return `<span class="badge pending">${status}</span>`;
+}
 
+/**
+ * Helper: Initials for Avatar
+ */
+function getInitials(name) {
+    if (!name) return '??';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+}
 
-window.logoutAdmin = () => showToast('Logging out...');
+/**
+ * Helper: Toasts
+ */
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast`;
+    if (type === 'danger') toast.style.background = 'var(--danger)';
+    
+    toast.innerHTML = `
+        <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> 
+        <div>${message}</div>
+    `;
+    
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => { 
+        toast.classList.remove('show'); 
+        setTimeout(() => toast.remove(), 300); 
+    }, 3500);
+}
+
+/**
+ * Auth: Sign Out
+ */
+function signOut() {
+    localStorage.removeItem('id');
+    // Change index.html path according to your actual structure
+    window.location.href = "../../index.html"; 
+}

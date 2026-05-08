@@ -2,7 +2,7 @@
 // HR CRM Admin - Payments Ledger Logic
 // ==========================================
 
-const BASE_URL = 'https://hiring-api.theoppty.com'; // Ensure this points to your Django server
+const BASE_URL = 'https://hiring-api.theoppty.com';// Ensure this points to your Django server
 
 document.addEventListener("DOMContentLoaded", () => {
     // --- 1. Page Loader Logic ---

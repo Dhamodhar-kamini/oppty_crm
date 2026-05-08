@@ -816,6 +816,52 @@ tbody tr:hover {
 }
 
 
+.header-actions {
+    margin-left: auto;
+}
+
+.logout-btn-standalone {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff1f2; /* Light red tint */
+    color: #e11d48; /* Crimson red */
+    border: 1px solid #ffe4e6;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-btn-standalone i {
+    font-size: 16px;
+}
+
+.logout-btn-standalone:hover {
+    background-color: #e11d48;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.2);
+}
+
+.logout-btn-standalone:active {
+    transform: translateY(0);
+}
+
+/* Responsive: Hide text on very small screens if needed */
+@media (max-width: 480px) {
+    .logout-btn-standalone span {
+        display: none;
+    }
+    .logout-btn-standalone {
+        padding: 10px;
+        border-radius: 50%;
+    }
+}
+
 
 
 

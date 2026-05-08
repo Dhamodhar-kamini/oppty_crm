@@ -814,51 +814,55 @@ tbody tr:hover {
     transform: scale(1);
   }
 }
-.header-actions {
-    margin-left: auto;
-}
 
-.logout-btn-standalone {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background-color: #fff1f2; /* Light red tint */
-    color: #e11d48; /* Crimson red */
-    border: 1px solid #ffe4e6;
-    padding: 8px 18px;
+/* --- TABLE STATUS BADGES --- */
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
     border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 0.85rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    text-align: center;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
 }
 
-.logout-btn-standalone i {
-    font-size: 16px;
+/* Green - Approved */
+.badge.approved, .badge.paid {
+    background-color: rgba(34, 197, 94, 0.15); 
+    color: #16a34a; 
 }
 
-.logout-btn-standalone:hover {
-    background-color: #e11d48;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.2);
+/* Blue - Interview Scheduled */
+.badge.scheduled, .badge.partial {
+    background-color: rgba(59, 130, 246, 0.15); 
+    color: #2563eb; 
 }
 
-.logout-btn-standalone:active {
-    transform: translateY(0);
+/* Purple - Interview Completed */
+.badge.interview-completed {
+    background-color: rgba(139, 92, 246, 0.15); 
+    color: #7c3aed; 
 }
 
-/* Responsive: Hide text on very small screens if needed */
-@media (max-width: 480px) {
-    .logout-btn-standalone span {
-        display: none;
-    }
-    .logout-btn-standalone {
-        padding: 10px;
-        border-radius: 50%;
-    }
+/* Gold/Orange - Offer Released */
+.badge.offer {
+    background-color: rgba(245, 158, 11, 0.15); 
+    color: #d97706; 
 }
+
+/* Gray - Default / Pending */
+.badge.pending {
+    background-color: rgba(100, 116, 139, 0.15); 
+    color: #475569; 
+}
+
+/* Red - Rejected */
+.badge.rejected {
+    background-color: rgba(239, 68, 68, 0.15); 
+    color: #dc2626; 
+}
+
 
 
 
